@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<view icon="8712" title="TownCrier" width="600" height="450">
+  <control progid="DecalControls.Notebook" name="nbMain">
+    
+    <page label="Events">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.StaticText" name="txtEventsEvent" left="5" top="10" width="40" height="18" text="Event" />
+        <control progid="DecalControls.Choice" name="chcEventsEvent" left="60" top="10" width="100" height="18" />
+        <control progid="DecalControls.StaticText" name="txtEventsWebhook" left="5" top="30" width="40" height="18" text="Webhook" />
+        <control progid="DecalControls.Choice" name="chcEventsWebhook" left="60" top="30" width="535" height="18" />
+        <control progid="DecalControls.PushButton" name="btnEventsEventAdd" left="5" top="50" width="40" height="18" text="Add" />
+
+        <control progid="DecalControls.List" name="lstActions" left="5" top="80" width="590" height="200">
+          <column progid="DecalControls.StaticText" name="colA" fixedwidth="100" /><!-- Event -->
+          <column progid="DecalControls.StaticText" name="colB" fixedwidth="100" /><!-- Webhook -->
+          <column progid="DecalControls.PushButton" name="colC" fixedwidth="40" /><!-- Test -->
+        </control>
+      </control>
+    </page>
+
+    <page label="Webhooks">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.StaticText" name="txtURL" left="5" top="10" width="160" height="18" text="URL" />
+        <control progid="DecalControls.Edit" name="edtURL" left="60" top="10" width="160" height="18" />
+        <control progid="DecalControls.StaticText" name="txtMethod" left="5" top="30" width="160" height="18" text="Method" />
+        <control progid="DecalControls.Edit" name="edtMethod" left="60" top="30" width="160" height="18" />
+        <control progid="DecalControls.StaticText" name="txtPayload" left="5" top="50" width="160" height="18" text="Payload" />
+        <control progid="DecalControls.Edit" name="edtPayload" left="60" top="50" width="160" height="18" />
+        <control progid="DecalControls.PushButton" name="btnWebhookAdd" left="5" top="80" width="90" height="18" text="Add Webhook" />
+
+        
+        <control progid="DecalControls.List" name="lstWebhooks" left="0" top="110" width="590" height="200">
+          <column progid="DecalControls.TextColumn" name="colA" fixedwidth="100" /><!-- URL -->
+          <column progid="DecalControls.TextColumn" name="colB" fixedwidth="60" /><!-- Method -->
+          <column progid="DecalControls.TextColumn" name="colC" fixedwidth="100" /><!-- Payload -->
+          <column progid="DecalControls.PushButton" name="colE" fixedwidth="40" /><!-- Test -->
+        </control>
+      </control>
+    </page>
+    
+  </control>
+</view>
