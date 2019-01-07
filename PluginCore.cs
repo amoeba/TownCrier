@@ -33,8 +33,8 @@ namespace TownCrier
 
         [MVControlReference("edtURL")]
         private ITextBox edtURL = null;
-        [MVControlReference("edtMethod")]
-        private ITextBox edtMethod = null;
+        [MVControlReference("chcMethod")]
+        private ICombo chcMethod = null;
         [MVControlReference("edtPayload")]
         private ITextBox edtPayload = null;
 
@@ -50,14 +50,22 @@ namespace TownCrier
                 Webhook hookB = new Webhook("https://discordapp.com/api/webhooks/531740310674604043/wU1FqslYss6aAlEZ_IPVCHumK53J8hY_BcLVYxjWcpuJwgS4TaI8RIDInYp2zKeSeFy3", "POST", "{\"content\": \"@\"}");
 
                 actions = new List<Action>();
-                actions.Add(new Action(0x0020, hookA));
-                actions.Add(new Action(0x0020, hookB));
+                actions.Add(new Action(0x0013, hookA));
+                actions.Add(new Action(0x0013, hookB));
 
                 webhooks = new List<Webhook>();
                 webhooks.Add(hookA);
                 webhooks.Add(hookB);
 
+                // UI
                 RefreshUI();
+
+                chcMethod.Add("GET", "GET");
+                chcMethod.Add("POST", "POST");
+
+                chcEventsEvent.Add("Login", 0x0013);
+                chcEventsEvent.Add("Death", 0x01AC);
+                chcEventsEvent.Add("@tell", 0x02BD);
             }
             catch (Exception ex) { Util.LogError(ex); }
 		}
@@ -187,7 +195,7 @@ namespace TownCrier
             {
                 Util.WriteToChat("btnWebhookAdd Clicked");
 
-                Webhook webhook = new Webhook(edtURL.Text, edtMethod.Text, edtPayload.Text);
+                Webhook webhook = new Webhook(edtURL.Text, (string)chcMethod.Data[chcMethod.Selected], edtPayload.Text);
                 webhooks.Add(webhook);
 
                 RefreshWebhooksList();
