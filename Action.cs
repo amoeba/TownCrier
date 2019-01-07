@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TownCrier
+﻿namespace TownCrier
 {
     class Action
     {
         public bool Enabled { get; set; }
         public int Event { get; }
         public Webhook Webhook { get; }
-
 
         public Action(int evt, Webhook webhook)
         {
