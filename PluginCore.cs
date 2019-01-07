@@ -94,7 +94,6 @@ namespace TownCrier
 
                 row[0][0] = action.Event.ToString();
                 row[1][0] = action.Webhook.BaseURI.ToString();
-
             }
         }
 
@@ -175,6 +174,7 @@ namespace TownCrier
                     (Webhook)chcEventsWebhook.Data[chcEventsWebhook.Selected]);
 
                 actions.Add(action);
+
                 RefreshEventsList();
             }
             catch (Exception ex) { Util.LogError(ex); }
