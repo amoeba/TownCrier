@@ -57,9 +57,6 @@ namespace TownCrier
 
         public void Send(WebhookMessage message)
         {
-            Util.WriteToChat("Sending webhook message of '" + message.Message + "'");
-            return;
-
             if (Method == "GET")
             {
                 GET(message);

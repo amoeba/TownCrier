@@ -41,10 +41,20 @@ namespace TownCrier
         [MVControlReference("edtPayload")]
         private ITextBox edtPayload = null;
 
-        private enum EVENTS
+        // Events the plugin handles, superset of GameEvent
+        private enum EVENT
+        {
+            LOGIN,
+            LOGOUT,
+            TELL,
+            DEATH,
+            LEVEL
+        };
+
+        // Just GameEvent events the plugin handles
+        private enum GAMEEVENT
         {
             LOGIN = 0x0013,
-            LOGOUT, // No GameEvent for logout
             TELL = 0x0038,
             DEATH = 0x01AC,
             LEVEL = 0x02BD
@@ -57,35 +67,26 @@ namespace TownCrier
                 Globals.Init("TownCrier", Host, Core);
 
                 MVWireupHelper.WireupStart(this, Host);
-
-                //Webhook hookA = new Webhook("SMS", 
-                //"https://hooks.zapier.com/hooks/catch/1226461/0ie1ok/?message=@",
-                //"GET");
-                //Webhook hookB = new Webhook("Discord", 
-                //"https://discordapp.com/api/webhooks/531740310674604043/wU1FqslYss6aAlEZ_IPVCHumK53J8hY_BcLVYxjWcpuJwgS4TaI8RIDInYp2zKeSeFy3", 
-                //"POST", 
-                //"{\"content\": \"@\"}");
-
+    
+                // App state
                 actions = new List<Action>();
                 webhooks = new List<Webhook>();
-
-                //actions.Add(new Action((int)EVENTS.LOGIN, hookB.Name));
-                //actions.Add(new Action((int)EVENTS.LOGOUT, hookB.Name));
-
-                //webhooks.Add(hookA);
-                //webhooks.Add(hookB);
 
                 // UI
                 RefreshUI();
                 PopulateConstantChoiceElements(); // Choice dropdowns that don't change
 
                 // Settings
-                LoadState();
+                LoadSettings();
 
+                // Events
                 lstActions.Click += lstActions_Click;
                 lstWebhooks.Click += lstWebhooks_Click;
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
 
         protected override void Shutdown()
@@ -94,12 +95,14 @@ namespace TownCrier
             {
                 MVWireupHelper.WireupEnd(this);
                 lstActions.Click -= lstActions_Click;
-
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
 
-        public void LoadState()
+        public void LoadSettings()
         {
             try
             {
@@ -116,7 +119,6 @@ namespace TownCrier
                     return;
                 }
 
-                Util.WriteToChat("Starting to stream settings file...");
                 using (StreamReader reader = new StreamReader(path))
                 {
                     string line;
@@ -124,7 +126,6 @@ namespace TownCrier
                     while (!reader.EndOfStream)
                     {
                         line = reader.ReadLine();
-                        Util.WriteToChat("LoadSetting(" + line + ")");
                         LoadSetting(line);
                     }
                 }
@@ -178,7 +179,8 @@ namespace TownCrier
                 Util.LogError(ex);    
             }
         }
-        public void SaveState()
+
+        public void SaveSettings()
         {
             try
             {
@@ -204,7 +206,6 @@ namespace TownCrier
             }            
             catch (Exception ex) { Util.LogError(ex); }
         }
-            
 
         private void RefreshUI()
         {
@@ -218,7 +219,6 @@ namespace TownCrier
             {
                 Util.LogError(ex);
             }
-            
         }
 
         private void RefreshEventsList()
@@ -231,8 +231,10 @@ namespace TownCrier
                 {
                     IListRow row = lstActions.Add();
 
-                    row[0][0] = "EVENT" + action.Event.ToString();
+                    row[0][0] = Enum.GetName(typeof(EVENT), action.Event);
                     row[1][0] = action.WebhookName;
+                    row[2][0] = "Test";
+                    row[3][0] = "Delete";
                 }
             }
             catch (Exception ex)
@@ -250,14 +252,14 @@ namespace TownCrier
 
                 foreach (var webhook in webhooks)
                 {
-                    Util.WriteToChat("Adding a new webhook to the list with name " + webhook.Name);
-
                     IListRow row = lstWebhooks.Add();
 
                     row[0][0] = webhook.Name;
                     row[1][0] = webhook.BaseURI.ToString();
                     row[2][0] = webhook.Method;
                     row[3][0] = webhook.Payload;
+                    row[4][0] = "Test";
+                    row[5][0] = "Delete";
                 }
             }
             catch (Exception ex)
@@ -270,8 +272,6 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("RefreshWebhooksChoice()");
-
                 chcEventsWebhook.Clear();
 
                 foreach (var webhook in webhooks)
@@ -291,11 +291,11 @@ namespace TownCrier
                 chcMethod.Add("GET", "GET");
                 chcMethod.Add("POST", "POST");
 
-                chcEventsEvent.Add("You log in", EVENTS.LOGIN);
-                chcEventsEvent.Add("You log out", EVENTS.LOGOUT);
-                chcEventsEvent.Add("You die", EVENTS.DEATH);
-                chcEventsEvent.Add("You receive an @tell", EVENTS.TELL);
-                chcEventsEvent.Add("You level up", EVENTS.LEVEL);
+                chcEventsEvent.Add("You log in", EVENT.LOGIN);
+                chcEventsEvent.Add("You log out", EVENT.LOGOUT);
+                chcEventsEvent.Add("You die", EVENT.DEATH);
+                chcEventsEvent.Add("You receive an @tell", EVENT.TELL);
+                chcEventsEvent.Add("You level up", EVENT.LEVEL);
             }
             catch (Exception ex)
             {
@@ -303,25 +303,23 @@ namespace TownCrier
             }
         }
 
-
         [BaseEvent("LoginComplete", "CharacterFilter")]
         private void CharacterFilter_LoginComplete(object sender, EventArgs e)
         {
             try
             {
-                
-
+                LoadSettings();
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
-
 
         [BaseEvent("Logoff", "CharacterFilter")]
         private void CharacterFilter_Logoff(object sender, LogoffEventArgs e)
         {
             try
             {
-                TriggerActionsForEvent((int)EVENTS.LOGOUT, "Logout...");
+                TriggerActionsForEvent((int)EVENT.LOGOUT, "Logout...");
+                SaveSettings();
             }
             catch (Exception ex)
             {
@@ -343,33 +341,28 @@ namespace TownCrier
                 {
                     int eventId = (int)e.Message["event"];
 
-                    Util.WriteToChat("Game event = " + eventId.ToString());
-
                     switch (eventId) {
-                        case (int)EVENTS.LOGIN:
-                            TriggerActionsForEvent((int)EVENTS.LOGIN, "LOGIN");
+                        case (int)GAMEEVENT.LOGIN:
+                            TriggerActionsForEvent((int)EVENT.LOGIN, "LOGIN");
                             break;
-                        case (int)EVENTS.DEATH:
-                            TriggerActionsForEvent((int)EVENTS.DEATH, "Death");
+                        case (int)GAMEEVENT.DEATH:
+                            TriggerActionsForEvent((int)EVENT.DEATH, "Death");
                             break;
-                        case (int)EVENTS.TELL:
-                            TriggerActionsForEvent((int)EVENTS.TELL, "TELL");
+                        case (int)GAMEEVENT.TELL:
+                            TriggerActionsForEvent((int)EVENT.TELL, "TELL");
                             break;
-                        case (int)EVENTS.LEVEL:
-                            TriggerActionsForEvent((int)EVENTS.LEVEL, "LEVEL");
+                        case (int)GAMEEVENT.LEVEL:
+                            TriggerActionsForEvent((int)EVENT.LEVEL, "LEVEL");
                             break;
                         default:
                             break;
                     }
-
-                    
                 }
             }
             catch (Exception ex)
             {
                 Util.LogError(ex);
             }
-
         }
 
         private void TriggerActionsForEvent(int eventId, string message)
@@ -406,13 +399,29 @@ namespace TownCrier
             }
         }
 
+        private void TriggerWebhook(string webhookName, WebhookMessage message)
+        {
+            try
+            {
+                List<Webhook> matched = webhooks.FindAll(w => w.Name == webhookName);
+
+                if (matched.Count == 0)
+                {
+                    return;
+                }
+
+                matched[0].Send(message);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
         [MVControlEvent("btnEventsEventAdd", "Click")]
         void btnEventsEventAdd_Click(object sender, MVControlEventArgs e)
         {
             try
             {
-                Util.WriteToChat("btnEventsEventAdd Clicked");
-
                 Action action = new Action(
                     (int)chcEventsEvent.Data[chcEventsEvent.Selected], 
                     (string)chcEventsWebhook.Data[chcEventsWebhook.Selected]);
@@ -420,10 +429,11 @@ namespace TownCrier
                 actions.Add(action);
 
                 RefreshEventsList();
+                SaveSettings();
             }
             catch (Exception ex)
             {
-                Util.WriteToChat(ex.Message);
+                Util.WriteToChat("Error adding new action: " + ex.Message);
                 Util.LogError(ex);
             }
         }
@@ -433,8 +443,6 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("btnWebhookAdd Clicked");
-
                 // Stop if the name isn't unique
                 if (webhooks != null && webhooks.Count > 0)
                 {
@@ -442,7 +450,7 @@ namespace TownCrier
 
                     if (found.Count > 0)
                     {
-                        Util.WriteToChat("Couldn't add new webhook: You must give your webhooks unique names.");
+                        Util.WriteToChat("Couldn't add new webhook: Make sure to use unique names and valid URLs.");
                         return;
                     }
                 }
@@ -450,14 +458,13 @@ namespace TownCrier
                 Webhook webhook = new Webhook(edtName.Text, edtURL.Text, (string)chcMethod.Data[chcMethod.Selected], edtPayload.Text);
                 webhooks.Add(webhook);
 
-                Util.WriteToChat("Adding new webhook with " + webhook.Name + webhook.BaseURI.ToString() + webhook.Method + webhook.Payload);
-
                 RefreshWebhooksList();
                 RefreshWebhooksChoice();
+                SaveSettings();
             }
             catch (Exception ex)
             {
-                Util.WriteToChat(ex.Message);
+                Util.WriteToChat("Error adding new webhook: " + ex.Message);
                 Util.LogError(ex);
             }
         }
@@ -467,9 +474,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("btnLoad Clicked");
-
-                LoadState();
+                LoadSettings();
             }
             catch (Exception ex)
             {
@@ -482,9 +487,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("btnSave Clicked");
-
-                SaveState();
+                SaveSettings();
             }
             catch (Exception ex)
             {
@@ -495,36 +498,40 @@ namespace TownCrier
 
         private void lstActions_Click(object sender, int row, int col)
         {
-            Util.WriteToChat("Clicked on list row " + row.ToString() + " and col " + col.ToString());
-
-            if (col == 4)
+            if (col == 2)
             {
-                // TODO: Test action
+                if (row >= actions.Count)
+                {
+                    return;
+                }
+
+                TriggerWebhooksForAction(actions[row], new WebhookMessage("Testing webhook"));
             }
             else if (col == 3)
             {
-                Util.WriteToChat("Deleting webhook");
-
                 actions.RemoveAt(row);
                 RefreshEventsList();
+                SaveSettings();
             }
         }
 
         private void lstWebhooks_Click(object sender, int row, int col)
         {
-            Util.WriteToChat("Clicked on list row " + row.ToString() + " and col " + col.ToString());
-
             if (col == 4)
             {
-                // TODO: Test webhook
+                if (row >= webhooks.Count)
+                {
+                    return;
+                }
+
+                TriggerWebhook((string)lstWebhooks[row][0][0], new WebhookMessage("Testing webhook"));
             }
             else if (col == 5)
             {
-                Util.WriteToChat("Deleting webhook...");
-
                 webhooks.RemoveAt(row);
                 RefreshWebhooksChoice();
                 RefreshWebhooksList();
+                SaveSettings();
             }
         }
     }
