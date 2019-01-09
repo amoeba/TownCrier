@@ -1,27 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
+using System.Text;
 
 namespace TownCrier
 {
     class Webhook
     {
+        public string Name { get; }
         public Uri BaseURI { get; }
         public string Method { get; }
         public string Payload { get; }
 
-        public Webhook(string url, string method)
+        public Webhook(string name, string url, string method)
         {
+            Name = name;
             BaseURI = new Uri(url);
             Method = method;
             Payload = null;
         }
 
-        public Webhook (string url, string method, string payload)
+        public Webhook (string name, string url, string method, string payload)
         {
+            Name = name;
             BaseURI = new Uri(url);
             Method = method;
             Payload = payload;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("webhook\t");
+            sb.Append(Name);
+            sb.Append("\t");
+            sb.Append(BaseURI);
+            sb.Append("\t");
+            sb.Append(Method);
+            sb.Append("\t");
+            sb.Append(Payload);
+
+            return sb.ToString();
         }
 
         public Uri FullURI(WebhookMessage message)
@@ -38,6 +57,9 @@ namespace TownCrier
 
         public void Send(WebhookMessage message)
         {
+            Util.WriteToChat("Sending webhook message of '" + message.Message + "'");
+            return;
+
             if (Method == "GET")
             {
                 GET(message);

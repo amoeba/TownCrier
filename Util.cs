@@ -9,7 +9,7 @@ namespace TownCrier
 		{
 			try
 			{
-				using (StreamWriter writer = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Asheron's Call\" + Globals.PluginName + " errors.txt", true))
+				using (StreamWriter writer = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Asheron's Call\" + Globals.PluginName + "-errors.txt", true))
 				{
 					writer.WriteLine("============================================================================");
 					writer.WriteLine(DateTime.Now.ToString());
