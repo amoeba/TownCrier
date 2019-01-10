@@ -45,19 +45,15 @@ namespace TownCrier
         private enum EVENT
         {
             LOGIN,
-            LOGOUT,
-            TELL,
             DEATH,
-            LEVEL
         };
 
         // Just GameEvent events the plugin handles
         private enum GAMEEVENT
         {
             LOGIN = 0x0013,
-            TELL = 0x0038,
-            DEATH = 0x01AC,
-            LEVEL = 0x02BD
+            TELL = 0x02BD,
+            DEATH = 0x01AC
         };
 
         protected override void Startup()
@@ -292,10 +288,7 @@ namespace TownCrier
                 chcMethod.Add("POST", "POST");
 
                 chcEventsEvent.Add("You log in", EVENT.LOGIN);
-                chcEventsEvent.Add("You log out", EVENT.LOGOUT);
                 chcEventsEvent.Add("You die", EVENT.DEATH);
-                chcEventsEvent.Add("You receive an @tell", EVENT.TELL);
-                chcEventsEvent.Add("You level up", EVENT.LEVEL);
             }
             catch (Exception ex)
             {
@@ -309,8 +302,16 @@ namespace TownCrier
             try
             {
                 LoadSettings();
+                Core.CharacterFilter.Death += CharacterFilter_Death;
+
+                TriggerActionsForEvent((int)EVENT.LOGIN, Core.CharacterFilter.Name + " has logged in");
             }
             catch (Exception ex) { Util.LogError(ex); }
+        }
+
+        private void CharacterFilter_Death(object sender, DeathEventArgs e)
+        {
+            TriggerActionsForEvent((int)EVENT.DEATH, Core.CharacterFilter.Name + " has died: " + e.Text);
         }
 
         [BaseEvent("Logoff", "CharacterFilter")]
@@ -318,8 +319,8 @@ namespace TownCrier
         {
             try
             {
-                TriggerActionsForEvent((int)EVENT.LOGOUT, "Logout...");
                 SaveSettings();
+                Core.CharacterFilter.Death -= CharacterFilter_Death;
             }
             catch (Exception ex)
             {
@@ -340,23 +341,7 @@ namespace TownCrier
                 if (e.Message.Type == 0xF7B0) // Game Event
                 {
                     int eventId = (int)e.Message["event"];
-
-                    switch (eventId) {
-                        case (int)GAMEEVENT.LOGIN:
-                            TriggerActionsForEvent((int)EVENT.LOGIN, "LOGIN");
-                            break;
-                        case (int)GAMEEVENT.DEATH:
-                            TriggerActionsForEvent((int)EVENT.DEATH, "Death");
-                            break;
-                        case (int)GAMEEVENT.TELL:
-                            TriggerActionsForEvent((int)EVENT.TELL, "TELL");
-                            break;
-                        case (int)GAMEEVENT.LEVEL:
-                            TriggerActionsForEvent((int)EVENT.LEVEL, "LEVEL");
-                            break;
-                        default:
-                            break;
-                    }
+                    // TODO
                 }
             }
             catch (Exception ex)
