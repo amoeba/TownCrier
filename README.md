@@ -34,13 +34,13 @@ This guide assumes you're at least somewhat familiar with webhooks or at least t
 1. Provide a name for your webhook. It must be unique.
 2. Provide a URL for your webhook
 
-	Some webhook providers allow webhooks as GET requests and accept webhook parameters via query parameters (http://example.com/?foo=bar) instead of via POST requests with JSON payloads.
+	Some webhook providers use query parameters (http://example.com/?foo=bar) instead of JSON payloads to send webhook parameters.
 	For these cases, put an `@` symbol in the URL where your message should go.
 	For example, a webhook for Zapier can look like `https://hooks.zapier.com/hooks/catch/123456/abcdefg/?message=@`, note the `@`.
 	If the ingame message is "You died.", TownCrier would send a GET request to `https://hooks.zapier.com/hooks/catch/123456/abcdefg/?message=You%20died`.
 
 3. Provide an HTTP method (GET or POST) for your webhook
-4. Provide a JSON payload (only for POST webhooks). There's no need to fill this in for GET webhooks.
+4. Optional. Provide a JSON payload (only for POST webhooks). There's no need to fill this in for GET webhooks.
 
 	Similar to how the `@` gets used in the URL for GET webhooks, enter a JSON template with an `@` where your message should go.
 	For example, a Discord webhook payload would could like `{"content": "@"}` and the `@` would get replaced by the ingame message.
