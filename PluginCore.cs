@@ -235,8 +235,6 @@ namespace TownCrier
                         writer.WriteLine(action.ToString());
                     }
 
-                   
-
                     foreach (Webhook webhook in webhooks)
                     {
                         writer.WriteLine(webhook.ToString());
@@ -247,7 +245,6 @@ namespace TownCrier
                     // to be present when timers are loaded
                     foreach (Timer timer in timers)
                     {
-                        Util.WriteToChat("Saving timer " + timer.ToString());
                         writer.WriteLine(timer.ToString());
                     }
 
