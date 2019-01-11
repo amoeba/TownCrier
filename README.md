@@ -2,7 +2,7 @@
 
 ![](docs/discord-webhook-example.png)
 
-A webhook plugin for Decal. Send ingame events (such as dying) to a webhook (such as a Discord channel).
+A webhook plugin for Decal. Send ingame events (such as dying) to a webhook (such as a Discord channel). TownCrier can also send webhooks on timed intervals (e.g., sending your unassigned XP every hour).
 
 ## What is a webhook?
 
@@ -54,5 +54,17 @@ Creating an action binds an ingame event to a particular webhook.
 A single webhook can be bound to multiple ingame events.
 
 1. Pick an Event (e.g., You log in)
-2. Pick a Webhook you created above
+2. Pick a Webhook
 3. Click Add Action
+
+### Creating a timer
+
+Creating a timer causes the desired webhook to trigger at the time interval (in minutes) you specify.
+
+1. Provide a timer interval (in minutes). e.g., a value of '1' means your webook will trigger every minute.
+2. Pick a Webhook
+3. Enter a message:
+
+	In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, and $VITAE. 
+	
+	Example: "Hello, $NAME, your vitae is $VITAE".
