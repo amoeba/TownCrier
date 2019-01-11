@@ -31,7 +31,7 @@ namespace TownCrier
             Message = message;
             Enabled = enabled;
 
-            ATimer = new System.Timers.Timer(Minute * 1000);
+            ATimer = new System.Timers.Timer(Minute * 1000 * 60);
             ATimer.Elapsed += Trigger;
             ATimer.AutoReset = true;
             ATimer.Enabled = enabled;
