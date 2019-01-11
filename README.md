@@ -1,5 +1,7 @@
 # TownCrier
 
+![](docs/discord-webhook-example.png)
+
 A webhook plugin for Decal. Send ingame events (such as dying) to a webhook (such as a Discord channel).
 
 ## What is a webhook?
