@@ -59,33 +59,30 @@ namespace TownCrier
         {
             if (Method == "GET")
             {
-                GET(message);
+                DoSend(message);
             }
-            else if (Method == "POST")
+            else if (Payload != null)
             {
-                POST(message);
+                DoSendJSON(message);
             }
         }
-
-        public void Test(WebhookMessage message)
-        {
-            Send(new WebhookMessage("Test"));
-        }
-
-        internal void GET(WebhookMessage message)
+        
+        internal void DoSend(WebhookMessage message)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(FullURI(message));
 
+            req.Method = Method;
+
             req.BeginGetResponse(new AsyncCallback((IAsyncResult result) =>
             {
+                Util.WriteToChat("Sending Webhook " + Method + " to " + FullURI(message).ToString() + " with no payload.");
+
                 WebRequest request = (WebRequest)result.AsyncState;
                 WebResponse response = request.EndGetResponse(result);
-
-                // TODO: Handle response
             }), req);
         }
 
-        internal void POST(WebhookMessage message)
+        internal void DoSendJSON(WebhookMessage message)
         {
             try
             {
@@ -101,7 +98,7 @@ namespace TownCrier
                         }
                     };
 
-                    Util.WriteToChat("Sending Webhook post to" + FullURI(message).ToString() + " with payload " + message.ToJSON(Payload)  + ".");
+                    Util.WriteToChat("Sending Webhook POST to " + FullURI(message).ToString() + " with payload " + message.ToJSON(Payload)  + ".");
                     client.UploadStringAsync(FullURI(message), "POST", message.ToJSON(Payload));
                 }
             }

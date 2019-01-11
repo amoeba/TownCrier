@@ -18,10 +18,14 @@ namespace TownCrier
     public class PluginCore : PluginBase
     {
         List<Action> actions;
+        List<Timer> timers;
         List<Webhook> webhooks;
 
         [MVControlReference("lstWebhooks")]
         private IList lstWebhooks = null;
+
+        [MVControlReference("lstTimers")]
+        private IList lstTimers = null;
 
         [MVControlReference("lstActions")]
         private IList lstActions = null;
@@ -29,8 +33,16 @@ namespace TownCrier
         [MVControlReference("chcEventsEvent")]
         private ICombo chcEventsEvent = null;
 
+        [MVControlReference("chcTimersWebhook")]
+        private ICombo chcTimersWebhook = null;
+
         [MVControlReference("chcEventsWebhook")]
         private ICombo chcEventsWebhook = null;
+
+        [MVControlReference("edtTimersMinutes")]
+        private ITextBox edtTimersMinutes = null;
+        [MVControlReference("edtTimersMessage")]
+        private ITextBox edtTimersMessage = null;
 
         [MVControlReference("edtName")]
         private ITextBox edtName = null;
@@ -61,23 +73,20 @@ namespace TownCrier
             try
             {
                 Globals.Init("TownCrier", Host, Core);
-
                 MVWireupHelper.WireupStart(this, Host);
-    
+                
                 // App state
                 actions = new List<Action>();
+                timers = new List<Timer>();
                 webhooks = new List<Webhook>();
 
                 // UI
                 RefreshUI();
                 PopulateConstantChoiceElements(); // Choice dropdowns that don't change
 
+ 
                 // Settings
                 LoadSettings();
-
-                // Events
-                lstActions.Click += lstActions_Click;
-                lstWebhooks.Click += lstWebhooks_Click;
             }
             catch (Exception ex)
             {
@@ -90,7 +99,6 @@ namespace TownCrier
             try
             {
                 MVWireupHelper.WireupEnd(this);
-                lstActions.Click -= lstActions_Click;
             }
             catch (Exception ex)
             {
@@ -103,6 +111,8 @@ namespace TownCrier
             try
             {
                 actions.Clear();
+                StopAllTimers();
+                timers.Clear();
                 webhooks.Clear();
 
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + 
@@ -127,10 +137,25 @@ namespace TownCrier
                 }
 
                 RefreshEventsList();
+                RefreshTimersList();
                 RefreshWebhooksList();
-                RefreshWebhooksChoice();
+                RefreshActionsWebhooksChoice();
+                RefreshTimersWebhooksChoice();
             }
             catch (Exception ex) { Util.LogError(ex); }
+        }
+
+        private void StopAllTimers()
+        {
+            if (timers == null)
+            {
+                return;
+            }
+
+            foreach (Timer timer in timers)
+            {
+                timer.StopTimer();
+            }
         }
 
         public void LoadSetting(string line)
@@ -153,6 +178,24 @@ namespace TownCrier
                         }
 
                         actions.Add(new Action(int.Parse(tokens[1]), tokens[2], bool.Parse(tokens[3])));
+
+                        break;
+                    case "timer":
+                        if (tokens.Length != 5)
+                        {
+                            return;
+                        }
+
+                        // Look up webhook by name
+                        List<Webhook> found = webhooks.FindAll(w => w.Name == tokens[2]);
+                        
+                        if (found.Count <= 0)
+                        {
+                            Util.WriteToChat("Could not find webhook by name " + tokens[2]);
+                            break;
+                        }
+
+                        timers.Add(new Timer(int.Parse(tokens[1]), found[0], tokens[3], bool.Parse(tokens[4])));
 
                         break;
                     case "webhook":
@@ -192,9 +235,20 @@ namespace TownCrier
                         writer.WriteLine(action.ToString());
                     }
 
+                   
+
                     foreach (Webhook webhook in webhooks)
                     {
                         writer.WriteLine(webhook.ToString());
+                    }
+
+                    // Serialize this last because Timers webhooks are serialized by name
+                    // and they need to get looked on load by name so all webhooks have
+                    // to be present when timers are loaded
+                    foreach (Timer timer in timers)
+                    {
+                        Util.WriteToChat("Saving timer " + timer.ToString());
+                        writer.WriteLine(timer.ToString());
                     }
 
                     writer.Close();
@@ -207,8 +261,10 @@ namespace TownCrier
         {
             try
             {
-                RefreshWebhooksChoice();
+                RefreshActionsWebhooksChoice();
+                RefreshTimersWebhooksChoice();
                 RefreshWebhooksList();
+                RefreshTimersList();
                 RefreshEventsList();
             }
             catch (Exception ex)
@@ -240,6 +296,29 @@ namespace TownCrier
 
         }
 
+        private void RefreshTimersList()
+        {
+            try
+            {
+                lstTimers.Clear();
+
+                foreach (var timer in timers)
+                {
+                    IListRow row = lstTimers.Add();
+
+                    row[0][0] = timer.Minute.ToString();
+                    row[1][0] = timer.Webhook.Name;
+                    row[2][0] = timer.Message;
+                    row[3][0] = "Test";
+                    row[4][0] = "Delete";
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
         private void RefreshWebhooksList()
         {
             try
@@ -264,7 +343,7 @@ namespace TownCrier
             }
         }
 
-        private void RefreshWebhooksChoice()
+        private void RefreshActionsWebhooksChoice()
         {
             try
             {
@@ -276,6 +355,21 @@ namespace TownCrier
                 }
 
                 chcEventsWebhook.Selected = 0;
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+        }
+        private void RefreshTimersWebhooksChoice()
+        {
+            try
+            {
+                chcTimersWebhook.Clear();
+
+                foreach (var webhook in webhooks)
+                {
+                    chcTimersWebhook.Add(webhook.Name, webhook.Name);
+                }
+
+                chcTimersWebhook.Selected = 0;
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
@@ -423,6 +517,35 @@ namespace TownCrier
             }
         }
 
+        [MVControlEvent("btnTimersTimerAdd", "Click")]
+        void btnTimersTimerAdd_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                Webhook webhook = webhooks.Find(h => h.Name == (string)chcTimersWebhook.Data[chcTimersWebhook.Selected]);
+
+                if (webhook == null)
+                {
+                    Util.WriteToChat("Failed to add webhook because it couldn't be found. This is a bad bug.");
+                }
+
+                Timer timer = new Timer(
+                    int.Parse(edtTimersMinutes.Text),
+                    webhook,
+                    (string)edtTimersMessage.Text);
+
+                timers.Add(timer);
+
+                RefreshTimersList();
+                SaveSettings();
+            }
+            catch (Exception ex)
+            {
+                Util.WriteToChat("Error adding new timer: " + ex.Message);
+                Util.LogError(ex);
+            }
+        }
+
         [MVControlEvent("btnWebhookAdd", "Click")]
         void btnWebhookAdd_Click(object sender, MVControlEventArgs e)
         {
@@ -444,7 +567,8 @@ namespace TownCrier
                 webhooks.Add(webhook);
 
                 RefreshWebhooksList();
-                RefreshWebhooksChoice();
+                RefreshActionsWebhooksChoice();
+                RefreshTimersWebhooksChoice();
                 SaveSettings();
             }
             catch (Exception ex)
@@ -480,7 +604,7 @@ namespace TownCrier
             }
         }
 
-
+        [MVControlEvent("lstActions", "Click")]
         private void lstActions_Click(object sender, int row, int col)
         {
             if (col == 2)
@@ -500,6 +624,30 @@ namespace TownCrier
             }
         }
 
+        [MVControlEvent("lstTimers", "Click")]
+        private void lstTimers_Click(object sender, int row, int col)
+        {
+            if (col == 3)
+            {
+                if (row >= timers.Count)
+                {
+                    return;
+                }
+
+                TriggerWebhook((string)lstTimers[row][1][0], new WebhookMessage("Testing webhook"));
+            }
+            else if (col == 4)
+            {
+                Timer timer = timers[row];
+                timer.StopTimer();
+
+                timers.RemoveAt(row);
+                RefreshTimersList();
+                SaveSettings();
+            }
+        }
+
+        [MVControlEvent("lstWebhooks", "Click")]
         private void lstWebhooks_Click(object sender, int row, int col)
         {
             if (col == 4)
@@ -514,7 +662,8 @@ namespace TownCrier
             else if (col == 5)
             {
                 webhooks.RemoveAt(row);
-                RefreshWebhooksChoice();
+                RefreshActionsWebhooksChoice();
+                RefreshTimersWebhooksChoice();
                 RefreshWebhooksList();
                 SaveSettings();
             }

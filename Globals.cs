@@ -15,5 +15,9 @@ namespace TownCrier
             Host = host;
             Core = core;
         }
+
+        public static void TriggerWebhook(string name, string message)
+        {
+        }
 	}
 }
