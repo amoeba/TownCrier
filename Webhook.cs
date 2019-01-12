@@ -6,20 +6,12 @@ namespace TownCrier
 {
     class Webhook
     {
-        public string Name { get; }
-        public Uri BaseURI { get; }
-        public string Method { get; }
-        public string Payload { get; }
+        public string Name;
+        public Uri BaseURI;
+        public string Method;
+        public string Payload;
 
-        public Webhook(string name, string url, string method)
-        {
-            Name = name;
-            BaseURI = new Uri(url);
-            Method = method;
-            Payload = null;
-        }
-
-        public Webhook (string name, string url, string method, string payload)
+        public Webhook(string name, string url, string method, string payload)
         {
             Name = name;
             BaseURI = new Uri(url);

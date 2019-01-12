@@ -196,12 +196,12 @@ namespace TownCrier
                         }
 
                         timers.Add(new Timer(int.Parse(tokens[1]), found[0], tokens[3], bool.Parse(tokens[4])));
-
+                        
                         break;
                     case "webhook":
                         if (tokens.Length == 4)
                         {
-                             webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3]));
+                             webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], null));
                         }
                         else if (tokens.Length == 5)
                         {
@@ -500,7 +500,8 @@ namespace TownCrier
             {
                 Action action = new Action(
                     (int)chcEventsEvent.Data[chcEventsEvent.Selected], 
-                    (string)chcEventsWebhook.Data[chcEventsWebhook.Selected]);
+                    (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
+                    true);
 
                 actions.Add(action);
 
@@ -529,7 +530,8 @@ namespace TownCrier
                 Timer timer = new Timer(
                     int.Parse(edtTimersMinutes.Text),
                     webhook,
-                    (string)edtTimersMessage.Text);
+                    (string)edtTimersMessage.Text,
+                    true);
 
                 timers.Add(timer);
 

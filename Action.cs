@@ -5,16 +5,9 @@ namespace TownCrier
 {
     class Action
     {
-        public int Event { get; set; }
-        public string WebhookName { get; set; }
-        public bool Enabled { get; set; }
-
-        public Action(int evt, string webhookName)
-        {
-            Event = evt;
-            WebhookName = webhookName;
-            Enabled = true;
-        }
+        public int Event;
+        public string WebhookName;
+        public bool Enabled;
 
         public Action(int evt, string webhookName, bool enabled)
         {

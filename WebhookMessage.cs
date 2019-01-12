@@ -4,7 +4,7 @@ namespace TownCrier
 {
     class WebhookMessage
     {
-        public string Message { get; }
+        public string Message;
 
         public WebhookMessage(string message)
         {

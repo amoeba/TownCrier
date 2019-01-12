@@ -5,42 +5,51 @@ namespace TownCrier
 {
     class Timer
     {
-        public int Minute { get; set; }
-        public Webhook Webhook { get; set; }
-        public string Message { get; set; }
-        public bool Enabled { get; set; }
-        public System.Timers.Timer ATimer { get; set; }
+        public int Minute;
+        public Webhook Webhook;
+        public string Message;
+        public bool Enabled;
 
-        public Timer(int evt, Webhook webhook, string message)
-        {
-            Minute = evt;
-            Webhook = webhook;
-            Message = message;
-            Enabled = true;
-
-            ATimer = new System.Timers.Timer(Minute * 1000);
-            ATimer.Elapsed += Trigger;
-            ATimer.AutoReset = true;
-            ATimer.Enabled = true;
-        }
+        // Timer-specific stuff
+        System.Windows.Forms.Timer TimerTimer;
+        ulong LastFrameNum;
+        ulong CurrentFrameNum;
 
         public Timer(int evt, Webhook webhook, string message, bool enabled)
         {
-            Minute = evt;
-            Webhook = webhook;
-            Message = message;
-            Enabled = enabled;
+            try
+            {
+                Minute = evt;
+                Webhook = webhook;
+                Message = message;
+                Enabled = enabled;
 
-            ATimer = new System.Timers.Timer(Minute * 1000 * 60);
-            ATimer.Elapsed += Trigger;
-            ATimer.AutoReset = true;
-            ATimer.Enabled = enabled;
+                // Timer-specific stuff
+                TimerTimer = new System.Windows.Forms.Timer();
+                TimerTimer.Interval = Minute * 1000 * 60; // Interval is milliseconds
+                TimerTimer.Tick += TimerTimer_Tick;
+                TimerTimer.Start();
+                LastFrameNum = 0;
+                CurrentFrameNum = 0;
+                Globals.Host.Underlying.Hooks.RenderPreUI += new Decal.Interop.Core.IACHooksEvents_RenderPreUIEventHandler(hooks_RenderPreUI);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
 
         public void StopTimer()
         {
-            ATimer.Stop();
-            ATimer.Dispose();
+            Globals.Host.Underlying.Hooks.RenderPreUI -= hooks_RenderPreUI;
+
+            TimerTimer.Stop();
+            TimerTimer.Dispose();
+        }
+
+        private void hooks_RenderPreUI()
+        {
+            CurrentFrameNum++;
         }
 
         public override string ToString()
@@ -67,28 +76,79 @@ namespace TownCrier
                 return "Failed to print Timer";
             }
         }
-        
-        private void Trigger(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            Util.WriteToChat("ATimer_Elapsed");
-            Util.WriteToChat("Triggering webhook with " + new WebhookMessage(SubstituteVariables(Message)).ToString());
 
-            Webhook.Send(new WebhookMessage(SubstituteVariables(Message)));
-}
+        private void TimerTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (CurrentFrameNum == LastFrameNum)
+                {
+                    return;
+                }
+
+                Webhook.Send(new WebhookMessage(SubstituteVariables(Message)));
+
+                // Update frame counter so we'll know if we're behind next time
+                LastFrameNum = CurrentFrameNum;
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
 
         private string SubstituteVariables(string message)
         {
-            // TODO: More of this
-            message = message.Replace("$NAME", Globals.Core.CharacterFilter.Name);
-            message = message.Replace("$LEVEL", Globals.Core.CharacterFilter.Level.ToString());
-            message = message.Replace("$UXP", Globals.Core.CharacterFilter.UnassignedXP.ToString());
-            message = message.Replace("$TXP", Globals.Core.CharacterFilter.TotalXP.ToString());
-            message = message.Replace("$HEALTH", Globals.Core.CharacterFilter.Health.ToString());
-            message = message.Replace("$STAMINA", Globals.Core.CharacterFilter.Stamina.ToString());
-            message = message.Replace("$MANA", Globals.Core.CharacterFilter.Mana.ToString());
-            message = message.Replace("$VITAE", Globals.Core.CharacterFilter.Vitae.ToString() + "%");
+            try
+            {
+                if (message.Contains("$NAME"))
+                {
+                    message = message.Replace("$NAME", Globals.Core.CharacterFilter.Name);
+                }
 
-            return message;
+                if (message.Contains("$LEVEL"))
+                {
+                    message = message.Replace("$LEVEL", Globals.Core.CharacterFilter.Level.ToString());
+                }
+
+                if (message.Contains("$UXP"))
+                {
+                    message = message.Replace("$UXP", Globals.Core.CharacterFilter.UnassignedXP.ToString());
+                }
+
+                if (message.Contains("$TXP"))
+                {
+                    message = message.Replace("$TXP", Globals.Core.CharacterFilter.TotalXP.ToString());
+                }
+
+                if (message.Contains("$HEALTH"))
+                {
+                    message = message.Replace("$HEALTH", Globals.Core.CharacterFilter.Health.ToString());
+                }
+
+                if (message.Contains("$STAMINA"))
+                {
+                    message = message.Replace("$STAMINA", Globals.Core.CharacterFilter.Stamina.ToString());
+                }
+
+                if (message.Contains("$MANA"))
+                {
+                    message = message.Replace("$MANA", Globals.Core.CharacterFilter.Mana.ToString());
+                }
+
+                if (message.Contains("$MANA"))
+                {
+                    message = message.Replace("$VITAE", Globals.Core.CharacterFilter.Vitae.ToString() + "%");
+                }
+
+                return message;
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+
+                return message;
+            }
         }
     }
 }
