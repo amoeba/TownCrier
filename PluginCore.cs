@@ -61,12 +61,17 @@ namespace TownCrier
         };
 
         // Just GameEvent events the plugin handles
-        private enum GAMEEVENT
+        private struct GAMEEVENT
         {
-            LOGIN = 0x0013,
-            TELL = 0x02BD,
-            DEATH = 0x01AC
+            public const int LOGIN = 0x0013;
+            public const int TELL = 0x02BD;
+            public const int DEATH = 0x01AC;
         };
+
+        private struct Icons
+        {
+            public const int Delete = 0x060011F8;
+        }
 
         protected override void Startup()
         {
@@ -280,10 +285,10 @@ namespace TownCrier
                 {
                     IListRow row = lstActions.Add();
 
-                    row[0][0] = Enum.GetName(typeof(EVENT), action.Event);
-                    row[1][0] = action.WebhookName;
-                    row[2][0] = "Test";
-                    row[3][0] = "Delete";
+                    row[0][0] = action.Enabled;
+                    row[1][0] = Enum.GetName(typeof(EVENT), action.Event);
+                    row[2][0] = action.WebhookName;
+                    row[3][1] = Icons.Delete;
                 }
             }
             catch (Exception ex)
@@ -303,11 +308,11 @@ namespace TownCrier
                 {
                     IListRow row = lstTimers.Add();
 
-                    row[0][0] = timer.Minute.ToString();
-                    row[1][0] = timer.Webhook.Name;
-                    row[2][0] = timer.Message;
-                    row[3][0] = "Test";
-                    row[4][0] = "Delete";
+                    row[0][0] = timer.Enabled;
+                    row[1][0] = timer.Minute.ToString();
+                    row[2][0] = timer.Webhook.Name;
+                    row[3][0] = timer.Message;
+                    row[4][1] = Icons.Delete;
                 }
             }
             catch (Exception ex)
@@ -331,7 +336,7 @@ namespace TownCrier
                     row[2][0] = webhook.Method;
                     row[3][0] = webhook.Payload;
                     row[4][0] = "Test";
-                    row[5][0] = "Delete";
+                    row[5][1] = Icons.Delete;
                 }
             }
             catch (Exception ex)
@@ -475,24 +480,6 @@ namespace TownCrier
             }
         }
 
-        private void TriggerWebhook(string webhookName, WebhookMessage message)
-        {
-            try
-            {
-                List<Webhook> matched = webhooks.FindAll(w => w.Name == webhookName);
-
-                if (matched.Count == 0)
-                {
-                    return;
-                }
-
-                matched[0].Send(message);
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-            }
-        }
         [MVControlEvent("btnEventsEventAdd", "Click")]
         void btnEventsEventAdd_Click(object sender, MVControlEventArgs e)
         {
@@ -606,65 +593,128 @@ namespace TownCrier
         [MVControlEvent("lstActions", "Click")]
         private void lstActions_Click(object sender, int row, int col)
         {
-            if (col == 2)
+            try
             {
-                if (row >= actions.Count)
+                switch (col)
                 {
-                    return;
-                }
+                    case 0:
+                        actions[row].Enabled = (bool)lstActions[row][col][0];
 
-                TriggerWebhooksForAction(actions[row], new WebhookMessage("Testing webhook"));
+                        break;
+                    case 3:
+                        actions.RemoveAt(row);
+                        RefreshEventsList();
+                        SaveSettings();
+
+                        break;
+                    default:
+                        PrintAction(actions[row]);
+
+                        break;
+                }
             }
-            else if (col == 3)
+            catch (Exception ex)
             {
-                actions.RemoveAt(row);
-                RefreshEventsList();
-                SaveSettings();
+                Util.LogError(ex);
             }
         }
 
         [MVControlEvent("lstTimers", "Click")]
         private void lstTimers_Click(object sender, int row, int col)
         {
-            if (col == 3)
+            try
             {
-                if (row >= timers.Count)
+                switch (col)
                 {
-                    return;
-                }
+                    case 0:
+                        timers[row].Enabled = (bool)lstTimers[row][col][0];
 
-                TriggerWebhook((string)lstTimers[row][1][0], new WebhookMessage("Testing webhook"));
+                        break;
+                    case 4:
+                        Timer timer = timers[row];
+                        timer.StopTimer();
+                        timers.RemoveAt(row);
+
+                        RefreshTimersList();
+                        SaveSettings();
+
+                        break;
+                    default:
+                        PrintTimer(timers[row]);
+
+                        break;
+                };
             }
-            else if (col == 4)
+            catch (Exception ex)
             {
-                Timer timer = timers[row];
-                timer.StopTimer();
-
-                timers.RemoveAt(row);
-                RefreshTimersList();
-                SaveSettings();
+                Util.LogError(ex);
             }
         }
 
         [MVControlEvent("lstWebhooks", "Click")]
         private void lstWebhooks_Click(object sender, int row, int col)
         {
-            if (col == 4)
+            try
             {
-                if (row >= webhooks.Count)
+                switch (col)
                 {
-                    return;
-                }
+                    case 4:
+                        webhooks[row].Send(new WebhookMessage("Testing webhook."));
 
-                TriggerWebhook((string)lstWebhooks[row][0][0], new WebhookMessage("Testing webhook"));
+                        break;
+                    case 5:
+                        webhooks.RemoveAt(row);
+                        RefreshActionsWebhooksChoice();
+                        RefreshTimersWebhooksChoice();
+                        RefreshWebhooksList();
+                        SaveSettings();
+
+                        break;
+                    default:
+                        PrintWebhook(webhooks[row]);
+
+                        break;
+                };
             }
-            else if (col == 5)
+            catch (Exception ex)
             {
-                webhooks.RemoveAt(row);
-                RefreshActionsWebhooksChoice();
-                RefreshTimersWebhooksChoice();
-                RefreshWebhooksList();
-                SaveSettings();
+                Util.LogError(ex);
+            }
+        }
+
+        void PrintAction(Action action)
+        {
+            try
+            {
+                Util.WriteToChat("action...");
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        void PrintTimer(Timer timer)
+        {
+            try
+            {
+                Util.WriteToChat("action...");
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        void PrintWebhook(Webhook webhook)
+        {
+            try
+            {
+                Util.WriteToChat("action...");
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
             }
         }
     }
