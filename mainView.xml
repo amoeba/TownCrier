@@ -31,7 +31,7 @@
         <control progid="DecalControls.StaticText" name="txtTimersWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
         <control progid="DecalControls.Choice" name="chcTimersWebhook" left="80" top="30" width="140" height="18" />
         <control progid="DecalControls.StaticText" name="txtTimersMessage" left="5" top="50" width="100" height="18" text="Message" />
-        <control progid="DecalControls.Edit" name="edtTimersMessage" left="80" top="50" width="535" height="18" />
+        <control progid="DecalControls.Edit" name="edtTimersMessage" left="80" top="50" width="530" height="18" />
         <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="190" top="80" width="200" height="18" text="See Variables, below, for usage" />
         <control progid="DecalControls.PushButton" name="btnTimersTimerAdd" left="5" top="80" width="100" height="18" text="Add Timer" />
 
@@ -47,7 +47,7 @@
           <column progid="DecalControls.TextColumn" name="colMessage" fixedwidth="370" />
           <column progid="DecalControls.IconColumn" name="colDelete" fixedwidth="18" />
         </control>
-        <control progid="DecalControls.StaticText" name="txtTimersVariables" left="10" top="350" width="590" height="100" text="In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, and $VITAE. Example: Hello, $NAME." />
+        <control progid="DecalControls.StaticText" name="txtTimersVariables" left="10" top="350" width="590" height="100" text="In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). Example: Hello, $NAME." />
       </control>
     </page>
 
@@ -80,10 +80,20 @@
       </control>
     </page>
 
+    <page label="Settings">
+      <control progid="DecalControls.FixedLayout" clipped="">
+      </control>
+    </page>
+
+    <page label="About">
+      <control progid="DecalControls.FixedLayout" clipped="">
+      </control>
+    </page>
     <page label="Debug">
       <control progid="DecalControls.FixedLayout" clipped="">
         <control progid="DecalControls.PushButton" name="btnLoad" left="5" top="10" width="60" height="18" text="Load" />
         <control progid="DecalControls.PushButton" name="btnSave" left="100" top="10" width="60" height="18" text="Save" />
+        <control progid="DecalControls.PushButton" name="btnFoo" left="5" top="30" width="60" height="18" text="Save" />
       </control>
     </page>
   </control>

@@ -65,6 +65,6 @@ Creating a timer causes the desired webhook to trigger at the time interval (in 
 2. Pick a Webhook
 3. Enter a message:
 
-	In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, and $VITAE. 
+	In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). 
 	
 	Example: "Hello, $NAME, your vitae is $VITAE".

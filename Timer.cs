@@ -201,6 +201,11 @@ namespace TownCrier
                     message = message.Replace("$VITAE", Globals.Core.CharacterFilter.Vitae.ToString() + "%");
                 }
 
+                if (message.Contains("$LOC"))
+                {
+                    message = message.Replace("$LOC", new Location(Globals.Host.Actions.Landcell, Globals.Host.Actions.LocationX, Globals.Host.Actions.LocationY).ToString());
+                }
+
                 return message;
             }
             catch (Exception ex)
