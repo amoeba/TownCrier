@@ -136,7 +136,7 @@ namespace TownCrier
                     message = message.Replace("$MANA", Globals.Core.CharacterFilter.Mana.ToString());
                 }
 
-                if (message.Contains("$MANA"))
+                if (message.Contains("$VITAE"))
                 {
                     message = message.Replace("$VITAE", Globals.Core.CharacterFilter.Vitae.ToString() + "%");
                 }
