@@ -63,5 +63,15 @@ namespace TownCrier
                 return "Failed to print Action";
             }
         }
+
+        public void Enable()
+        {
+            Enabled = true;
+        }
+
+        public void Disable()
+        {
+            Enabled = false;
+        }
     }
 }

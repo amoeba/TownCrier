@@ -116,7 +116,7 @@ namespace TownCrier
             try
             {
                 actions.Clear();
-                StopAllTimers();
+                DisposeAllTimers();
                 timers.Clear();
                 webhooks.Clear();
 
@@ -148,19 +148,6 @@ namespace TownCrier
                 RefreshTimersWebhooksChoice();
             }
             catch (Exception ex) { Util.LogError(ex); }
-        }
-
-        private void StopAllTimers()
-        {
-            if (timers == null)
-            {
-                return;
-            }
-
-            foreach (Timer timer in timers)
-            {
-                timer.StopTimer();
-            }
         }
 
         public void LoadSetting(string line)
@@ -257,6 +244,19 @@ namespace TownCrier
                 }
             }            
             catch (Exception ex) { Util.LogError(ex); }
+        }
+
+        private void DisposeAllTimers()
+        {
+            if (timers == null)
+            {
+                return;
+            }
+
+            foreach (Timer timer in timers)
+            {
+                timer.Dispose();
+            }
         }
 
         private void RefreshUI()
@@ -450,7 +450,7 @@ namespace TownCrier
         {
             try
             {
-                List<Action> matched = actions.FindAll(action => action.Event == eventId);
+                List<Action> matched = actions.FindAll(action => action.Enabled && action.Event == eventId);
 
                 foreach (Action action in matched)
                 {
@@ -598,7 +598,16 @@ namespace TownCrier
                 switch (col)
                 {
                     case 0:
-                        actions[row].Enabled = (bool)lstActions[row][col][0];
+                        bool enabled = (bool)lstActions[row][col][0];
+
+                        if (enabled)
+                        {
+                            actions[row].Enable();
+                        }
+                        else
+                        {
+                            actions[row].Disable();
+                        }
 
                         break;
                     case 3:
@@ -627,12 +636,22 @@ namespace TownCrier
                 switch (col)
                 {
                     case 0:
-                        timers[row].Enabled = (bool)lstTimers[row][col][0];
+                        bool enabled = (bool)lstTimers[row][col][0];
 
+                        if (enabled)
+                        {
+                            timers[row].Enable();
+                        }
+                        else
+                        {
+                            timers[row].Disable();
+                        }
+
+                        
                         break;
                     case 4:
                         Timer timer = timers[row];
-                        timer.StopTimer();
+                        timer.Dispose();
                         timers.RemoveAt(row);
 
                         RefreshTimersList();

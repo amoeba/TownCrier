@@ -39,12 +39,45 @@ namespace TownCrier
             }
         }
 
-        public void StopTimer()
+        public void Enable()
         {
-            Globals.Host.Underlying.Hooks.RenderPreUI -= hooks_RenderPreUI;
+            try
+            {
+                Enabled = true;
+                TimerTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
 
-            TimerTimer.Stop();
-            TimerTimer.Dispose();
+        public void Disable()
+        {
+            try
+            {
+                Enabled = false;
+                TimerTimer.Stop();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                Globals.Host.Underlying.Hooks.RenderPreUI -= hooks_RenderPreUI;
+                TimerTimer.Stop();
+                TimerTimer.Dispose();
+
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
 
         private void hooks_RenderPreUI()
