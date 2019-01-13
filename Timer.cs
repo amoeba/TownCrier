@@ -58,6 +58,33 @@ namespace TownCrier
             {
                 StringBuilder sb = new StringBuilder();
 
+                sb.Append("Timer: Every ");
+                sb.Append(Minute.ToString());
+                sb.Append(" minute(s), the '");
+                sb.Append(Webhook.Name);
+                sb.Append("' webhook will trigger with format string '");
+                sb.Append(Message);
+                sb.Append("'. Currently ");
+                sb.Append(Enabled ? "Enabled" : "Disabled");
+                sb.Append(".");
+
+                return sb.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+
+                return "Failed to print Timer";
+            }
+        }
+
+        public string ToSetting()
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
                 sb.Append("timer\t");
                 sb.Append(Minute.ToString());
                 sb.Append("\t");
@@ -73,7 +100,7 @@ namespace TownCrier
             {
                 Util.LogError(ex);
 
-                return "Failed to print Timer";
+                return "Failed to print Timer.";
             }
         }
 

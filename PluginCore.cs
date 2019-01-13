@@ -54,7 +54,7 @@ namespace TownCrier
         private ITextBox edtPayload = null;
 
         // Events the plugin handles, superset of GameEvent
-        private enum EVENT
+        public enum EVENT
         {
             LOGIN,
             DEATH,
@@ -237,12 +237,12 @@ namespace TownCrier
                 {
                     foreach (Action action in actions)
                     {
-                        writer.WriteLine(action.ToString());
+                        writer.WriteLine(action.ToSetting());
                     }
 
                     foreach (Webhook webhook in webhooks)
                     {
-                        writer.WriteLine(webhook.ToString());
+                        writer.WriteLine(webhook.ToSetting());
                     }
 
                     // Serialize this last because Timers webhooks are serialized by name
@@ -250,7 +250,7 @@ namespace TownCrier
                     // to be present when timers are loaded
                     foreach (Timer timer in timers)
                     {
-                        writer.WriteLine(timer.ToString());
+                        writer.WriteLine(timer.ToSetting());
                     }
 
                     writer.Close();
@@ -686,7 +686,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("action...");
+                Util.WriteToChat(webhook.ToString());
             }
             catch (Exception ex)
             {
@@ -698,7 +698,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("action...");
+                Util.WriteToChat(timer.ToString());
             }
             catch (Exception ex)
             {
@@ -710,7 +710,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("action...");
+                Util.WriteToChat(action.ToString());
             }
             catch (Exception ex)
             {

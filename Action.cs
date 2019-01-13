@@ -22,6 +22,31 @@ namespace TownCrier
             {
                 StringBuilder sb = new StringBuilder();
 
+                sb.Append("Action: On '");
+                sb.Append(Enum.GetName(typeof(PluginCore.EVENT), Event));
+                sb.Append("', trigger webhook '");
+                sb.Append(WebhookName);
+                sb.Append("'. Currently ");
+                sb.Append(Enabled ? "Enabled" : "Disabled");
+                sb.Append(".");
+
+                return sb.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+
+                return "Failed to print Action";
+            }
+        }
+
+        public string ToSetting()
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
                 sb.Append("action\t");
                 sb.Append(Event.ToString());
                 sb.Append("\t");
@@ -36,27 +61,6 @@ namespace TownCrier
                 Util.LogError(ex);
 
                 return "Failed to print Action";
-            }
-        }
-
-        public void Parse(string action)
-        {
-            try
-            {
-                string[] parts = action.Split('\t');
-
-                if (parts.Length != 3)
-                {
-                    throw (new Exception("Failed to parse serialized Action of '" + action + "'"));
-                }
-
-                Enabled = bool.Parse(parts[0]);
-                Event = int.Parse(parts[1]);
-                WebhookName = parts[2];
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
             }
         }
     }

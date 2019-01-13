@@ -22,6 +22,33 @@ namespace TownCrier
 
         public override string ToString()
         {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append("Webhook: Name: '");
+                sb.Append(Name);
+                sb.Append("', URL: '");
+                sb.Append(BaseURI.ToString());
+                sb.Append(" (");
+                sb.Append(Method);
+                sb.Append(") with payload '");
+                sb.Append(Payload);
+                sb.Append("'.");
+
+                return sb.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+
+                return "Failed to print Webhook";
+            }
+        }
+
+        public string ToSetting()
+        {
             StringBuilder sb = new StringBuilder();
 
             sb.Append("webhook\t");
