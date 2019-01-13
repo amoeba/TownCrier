@@ -54,6 +54,8 @@
     <Compile Include="Coordinate.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="PluginCore.cs" />
+    <Compile Include="PluginCore.Events.cs" />
+    <Compile Include="PluginCore.MainView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="Util.cs" />
