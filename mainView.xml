@@ -91,6 +91,7 @@
 
     <page label="About">
       <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.StaticText" name="txtAbout" left="5" top="10" width="400" height="200" text="TownCrier was created by Bryce Mecum. For more information, visit https://github.com/amoeba/TownCrier." />
       </control>
     </page>
     <page label="Debug">
