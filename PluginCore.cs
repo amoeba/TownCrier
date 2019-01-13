@@ -52,7 +52,7 @@ namespace TownCrier
 
                 // UI
                 RefreshUI();
-                PopulateConstantChoiceElements(); // Choice dropdowns that don't change
+                PopulateEventChoices();
 
                 // Settings
                 LoadSettings();

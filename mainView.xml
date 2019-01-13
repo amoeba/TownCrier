@@ -58,7 +58,10 @@
         <control progid="DecalControls.StaticText" name="txtURL" left="5" top="30" width="60" height="18" text="URL" />
         <control progid="DecalControls.Edit" name="edtURL" left="60" top="30" width="535" height="18" />
         <control progid="DecalControls.StaticText" name="txtMethod" left="5" top="50" width="160" height="18" text="Method" />
-        <control progid="DecalControls.Choice" name="chcMethod" left="60" top="50" width="60" height="18" />
+        <control progid="DecalControls.Choice" name="chcMethod" left="60" top="50" width="60" height="18">
+          <option text="GET" data="GET"/>
+          <option text="POST" data="POST"/>
+        </control>
         <control progid="DecalControls.StaticText" name="txtPayload" left="5" top="70" width="160" height="18" text="Payload" />
         <control progid="DecalControls.Edit" name="edtPayload" left="60" top="70" width="535" height="18" />
         <control progid="DecalControls.PushButton" name="btnWebhookAdd" left="5" top="100" width="100" height="18" text="Add Webhook" />

@@ -450,13 +450,10 @@ namespace TownCrier
             }
         }
 
-        private void PopulateConstantChoiceElements()
+        private void PopulateEventChoices()
         {
             try
             {
-                chcMethod.Add("GET", "GET");
-                chcMethod.Add("POST", "POST");
-
                 chcEventsEvent.Add("You log in", EVENT.LOGIN);
                 chcEventsEvent.Add("You die", EVENT.DEATH);
             }
