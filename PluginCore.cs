@@ -89,7 +89,6 @@ namespace TownCrier
                 RefreshUI();
                 PopulateConstantChoiceElements(); // Choice dropdowns that don't change
 
- 
                 // Settings
                 LoadSettings();
             }
@@ -98,11 +97,12 @@ namespace TownCrier
                 Util.LogError(ex);
             }
         }
-
+        
         protected override void Shutdown()
         {
             try
             {
+                DisposeAllTimers();
                 MVWireupHelper.WireupEnd(this);
             }
             catch (Exception ex)
@@ -141,11 +141,7 @@ namespace TownCrier
                     }
                 }
 
-                RefreshEventsList();
-                RefreshTimersList();
-                RefreshWebhooksList();
-                RefreshActionsWebhooksChoice();
-                RefreshTimersWebhooksChoice();
+                RefreshUI();
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
@@ -590,6 +586,19 @@ namespace TownCrier
             }
         }
 
+        [MVControlEvent("btnFoo", "Click")]
+        void btnFoo_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                Util.WriteToChat("...");
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
         [MVControlEvent("lstActions", "Click")]
         private void lstActions_Click(object sender, int row, int col)
         {
@@ -705,7 +714,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat(webhook.ToString());
+                Util.WriteToChat(action.ToString());
             }
             catch (Exception ex)
             {
@@ -729,7 +738,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat(action.ToString());
+                Util.WriteToChat(webhook.ToString());
             }
             catch (Exception ex)
             {
