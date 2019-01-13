@@ -218,6 +218,8 @@ namespace TownCrier
                             actions[row].Disable();
                         }
 
+                        SaveSettings();
+
                         break;
                     case ActionsList.Delete:
                         actions.RemoveAt(row);
@@ -303,6 +305,20 @@ namespace TownCrier
 
                         break;
                 };
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("chckVerbose", "Change")]
+        private void chkVerbose_Change(object sender, MVCheckBoxChangeEventArgs e)
+        {
+            try
+            {
+                settings["verbose"] = e.Checked;
+                SaveSettings();
             }
             catch (Exception ex)
             {

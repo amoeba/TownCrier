@@ -82,6 +82,7 @@
 
     <page label="Settings">
       <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.Checkbox" name="chckVerbose" left="5" top="10" width="200" height="18" checked="false" text="Verbose output"/>
       </control>
     </page>
 
