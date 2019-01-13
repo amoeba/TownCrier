@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using Decal.Adapter;
 using Decal.Adapter.Wrappers;
@@ -17,7 +15,6 @@ namespace TownCrier
             {
                 LoadSettings();
                 Core.CharacterFilter.Death += CharacterFilter_Death;
-
 
                 TriggerActionsForEvent((int)EVENT.LOGIN, Core.CharacterFilter.Name + " has logged in");
             }

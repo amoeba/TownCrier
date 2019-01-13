@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
 using Decal.Adapter;
-using Decal.Adapter.Wrappers;
 using MyClasses.MetaViewWrappers;
 
 namespace TownCrier
