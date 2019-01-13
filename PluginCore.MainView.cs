@@ -102,7 +102,7 @@ namespace TownCrier
                 Timer timer = new Timer(
                     int.Parse(edtTimersMinutes.Text),
                     webhook,
-                    (string)edtTimersMessage.Text,
+                    edtTimersMessage.Text,
                     true);
 
                 timers.Add(timer);
