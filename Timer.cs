@@ -24,14 +24,16 @@ namespace TownCrier
                 Message = message;
                 Enabled = enabled;
 
-                // Timer-specific stuff
+                // Create a new timer but don't set it up just yet
+                // because timers can be created disabled when saved to settings
                 TimerTimer = new System.Windows.Forms.Timer();
-                TimerTimer.Interval = Minute * 1000 * 60; // Interval is milliseconds
+                TimerTimer.Interval = Minute * 1000; // Interval is milliseconds
                 TimerTimer.Tick += TimerTimer_Tick;
-                TimerTimer.Start();
-                LastFrameNum = 0;
-                CurrentFrameNum = 0;
-                Globals.Host.Underlying.Hooks.RenderPreUI += new Decal.Interop.Core.IACHooksEvents_RenderPreUIEventHandler(hooks_RenderPreUI);
+
+                if (enabled)
+                {
+                    Enable();
+                }
             }
             catch (Exception ex)
             {
@@ -45,6 +47,9 @@ namespace TownCrier
             {
                 Enabled = true;
                 TimerTimer.Start();
+                LastFrameNum = 0;
+                CurrentFrameNum = 0;
+                Globals.Host.Underlying.Hooks.RenderPreUI += new Decal.Interop.Core.IACHooksEvents_RenderPreUIEventHandler(hooks_RenderPreUI);
             }
             catch (Exception ex)
             {
@@ -58,6 +63,7 @@ namespace TownCrier
             {
                 Enabled = false;
                 TimerTimer.Stop();
+                Globals.Host.Underlying.Hooks.RenderPreUI -= hooks_RenderPreUI;
             }
             catch (Exception ex)
             {
@@ -69,8 +75,7 @@ namespace TownCrier
         {
             try
             {
-                Globals.Host.Underlying.Hooks.RenderPreUI -= hooks_RenderPreUI;
-                TimerTimer.Stop();
+                Disable();
                 TimerTimer.Dispose();
 
             }
