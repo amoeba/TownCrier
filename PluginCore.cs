@@ -493,7 +493,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error adding new action: " + ex.Message);
+                Util.WriteToChat("Error adding new Action: " + ex.Message);
                 Util.LogError(ex);
             }
         }
@@ -503,11 +503,21 @@ namespace TownCrier
         {
             try
             {
+                if (int.Parse(edtTimersMinutes.Text) <= 0)
+                {
+                    throw new Exception("Value for Minutes must be a whole number greater than 0.");
+                }
+
                 Webhook webhook = webhooks.Find(h => h.Name == (string)chcTimersWebhook.Data[chcTimersWebhook.Selected]);
 
                 if (webhook == null)
                 {
-                    Util.WriteToChat("Failed to add webhook because it couldn't be found. This is a bad bug.");
+                    throw new Exception("Failed to add webhook because it couldn't be found. This is a bad bug.");
+                }
+
+                if (edtTimersMessage.Text.Length <= 0)
+                {
+                    throw new Exception("You have to enter a Message for your Timer.");
                 }
 
                 Timer timer = new Timer(
@@ -523,7 +533,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error adding new timer: " + ex.Message);
+                Util.WriteToChat("Error adding new Timer: " + ex.Message);
                 Util.LogError(ex);
             }
         }
@@ -533,6 +543,18 @@ namespace TownCrier
         {
             try
             {
+                // Webhooks need names
+                if (edtName.Text.Length <= 0)
+                {
+                    throw new Exception("Webhooks need to have names.");
+                }
+
+                // Either the URL or the Payload should have an @ symbol, but just warn
+                if (!edtName.Text.Contains("@") || !edtPayload.Text.Contains("@"))
+                {
+                    Util.WriteToChat("Warning: Neither your URL or Payload had an @ symbol in them which means your webhooks will trigger without a message.");
+                }
+
                 // Stop if the name isn't unique
                 if (webhooks != null && webhooks.Count > 0)
                 {
@@ -540,8 +562,7 @@ namespace TownCrier
 
                     if (found.Count > 0)
                     {
-                        Util.WriteToChat("Couldn't add new webhook: Make sure to use unique names and valid URLs.");
-                        return;
+                        throw new Exception("A webhook with this name already exists");
                     }
                 }
 
@@ -555,7 +576,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error adding new webhook: " + ex.Message);
+                Util.WriteToChat("Error adding new Webhook: " + ex.Message);
                 Util.LogError(ex);
             }
         }
