@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Text;
+using System.Threading;
 
 namespace TownCrier
 {
@@ -37,62 +38,49 @@ namespace TownCrier
 
         public Uri FullURI(WebhookMessage message)
         {
-            if (Method == "POST")
-            {
-                return BaseURI;
-            }
-            else
+            try
             {
                 return new Uri(BaseURI.ToString().Replace("@", message.ToQueryStringValue()));
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+                return BaseURI;
             }
         }
 
         public void Send(WebhookMessage message)
         {
-            if (Method == "GET")
-            {
-                DoSend(message);
-            }
-            else if (Payload != null)
-            {
-                DoSendJSON(message);
-            }
-        }
-        
-        internal void DoSend(WebhookMessage message)
-        {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(FullURI(message));
-
-            req.Method = Method;
-
-            req.BeginGetResponse(new AsyncCallback((IAsyncResult result) =>
-            {
-                Util.WriteToChat("Sending Webhook " + Method + " to " + FullURI(message).ToString() + " with no payload.");
-
-                WebRequest request = (WebRequest)result.AsyncState;
-                WebResponse response = request.EndGetResponse(result);
-            }), req);
-        }
-
-        internal void DoSendJSON(WebhookMessage message)
-        {
             try
             {
-                using (var client = new WebClient())
+                Thread t = new Thread(() =>
                 {
-                    client.Headers.Add("Content-Type: application/json");
+                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(FullURI(message));
+                    req.Method = Method;
 
-                    client.UploadStringCompleted += (s, e) =>
+                    if (Payload != null)
                     {
-                        if (e.Error != null)
-                        {
-                            Util.WriteToChat("Sending webhook failed with error: " + e.Error.Message);
-                        }
-                    };
+                        req.ContentType = "application/json";
 
-                    Util.WriteToChat("Sending Webhook POST to " + FullURI(message).ToString() + " with payload " + message.ToJSON(Payload)  + ".");
-                    client.UploadStringAsync(FullURI(message), "POST", message.ToJSON(Payload));
-                }
+                        using (var streamWriter = new System.IO.StreamWriter(req.GetRequestStream()))
+                        {
+                            streamWriter.Write(message.ToJSON(Payload));
+                            streamWriter.Flush();
+                        }
+                    }
+
+                    req.BeginGetResponse(new AsyncCallback((IAsyncResult result) =>
+                    {
+                        WebRequest request = (WebRequest)result.AsyncState;
+                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result);
+                        response.Close();
+                    }), req);
+                })
+                {
+                    IsBackground = true
+                };
+
+                t.Start();
             }
             catch (Exception ex)
             {
