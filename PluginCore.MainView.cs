@@ -258,6 +258,7 @@ namespace TownCrier
                             timers[row].Disable();
                         }
 
+                        SaveSettings();
 
                         break;
                     case TimersList.Delete:
