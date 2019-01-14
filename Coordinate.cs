@@ -36,18 +36,7 @@ namespace TownCrier
 
         public override string ToString()
         {
-            if (InDungeon())
-            {
-                return ToDungeonString();
-            } else
-            {
-                return ToCoordString();
-            }
-        }
-
-        public string ToDungeonString()
-        {
-            return "In dungeon (Landcell " + Landcell + ").";
+            return ToCoordString() + ToIndoorString();
         }
 
         public string ToCoordString()
@@ -56,7 +45,19 @@ namespace TownCrier
                  + Math.Abs(Longitude).ToString("0.00") + (Longitude >= 0 ? "E" : "W");
         }
 
-        bool InDungeon()
+        public string ToIndoorString()
+        {
+            if (IsIndoors())
+            {
+                return " (Indoors, landcell " + Landcell + ")";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        bool IsIndoors()
         {
             return (Landcell & 0x0000FF00) != 0;
         }
