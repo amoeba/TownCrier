@@ -5,39 +5,23 @@ namespace TownCrier
 {
     public static class Settings
     {
-        public static void LogError(Exception ex)
+        public static bool Verbose { get; set; }
+
+        public static void Init(bool verbose)
         {
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Asheron's Call\" + Globals.PluginName + " errors.txt", true))
-                {
-                    writer.WriteLine("============================================================================");
-                    writer.WriteLine(DateTime.Now.ToString());
-                    writer.WriteLine("Error: " + ex.Message);
-                    writer.WriteLine("Source: " + ex.Source);
-                    writer.WriteLine("Stack: " + ex.StackTrace);
-                    if (ex.InnerException != null)
-                    {
-                        writer.WriteLine("Inner: " + ex.InnerException.Message);
-                        writer.WriteLine("Inner Stack: " + ex.InnerException.StackTrace);
-                    }
-                    writer.WriteLine("============================================================================");
-                    writer.WriteLine("");
-                    writer.Close();
-                }
-            }
-            catch
-            {
-            }
+            Verbose = verbose;
         }
 
-        public static void WriteToChat(string message)
+        internal static void Write(StreamWriter writer)
         {
             try
             {
-                Globals.Host.Actions.AddChatText("<{" + Globals.PluginName + "}>: " + message, 5);
+                writer.WriteLine("setting\t" + "verbose\t" + Verbose.ToString());
             }
-            catch (Exception ex) { LogError(ex); }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
     }
 }

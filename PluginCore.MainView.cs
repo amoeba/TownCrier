@@ -54,6 +54,9 @@ namespace TownCrier
         [MVControlReference("edtPayload")]
         private ITextBox edtPayload = null;
 
+        [MVControlReference("chckVerbose")]
+        private ICheckBox chckVerbose = null;
+
         [MVControlEvent("btnEventsEventAdd", "Click")]
         void btnEventsEventAdd_Click(object sender, MVControlEventArgs e)
         {
@@ -317,7 +320,7 @@ namespace TownCrier
         {
             try
             {
-                settings["verbose"] = e.Checked;
+                Settings.Verbose = e.Checked;
                 SaveSettings();
             }
             catch (Exception ex)
@@ -335,11 +338,17 @@ namespace TownCrier
                 RefreshWebhooksList();
                 RefreshTimersList();
                 RefreshEventsList();
+                RefreshSettings();
             }
             catch (Exception ex)
             {
                 Util.LogError(ex);
             }
+        }
+
+        private void RefreshSettings()
+        {
+            chckVerbose.Checked = Settings.Verbose;
         }
 
         private void RefreshEventsList()

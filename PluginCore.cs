@@ -13,7 +13,6 @@ namespace TownCrier
         List<Action> actions;
         List<Timer> timers;
         List<Webhook> webhooks;
-        Dictionary<string,object> settings;
 
         // Events the plugin handles, superset of GameEvent
         public enum EVENT
@@ -40,13 +39,13 @@ namespace TownCrier
             try
             {
                 Globals.Init("TownCrier", Host, Core);
+                Settings.Init(false);
                 MVWireupHelper.WireupStart(this, Host);
                 
                 // App state
                 actions = new List<Action>();
                 timers = new List<Timer>();
                 webhooks = new List<Webhook>();
-                settings = new Dictionary<string, object>();
 
                 // UI
                 RefreshUI();
@@ -78,7 +77,6 @@ namespace TownCrier
         {
             try
             {
-                settings.Clear();
                 actions.Clear();
                 DisposeAllTimers();
                 timers.Clear();
@@ -124,18 +122,15 @@ namespace TownCrier
                 switch (tokens[0])
                 {
                     case "setting":
-                        if (tokens.Length != 4)
+                        if (tokens.Length != 3)
                         {
                             return;
                         }
 
-                        switch(tokens[2])
+                        switch(tokens[1])
                         {
-                            case "string":
-                                settings.Add(tokens[1], bool.Parse(tokens[3]));
-                                break;
-                            case "boolean":
-                                settings.Add(tokens[1], tokens[3]);
+                            case "verbose":
+                                Settings.Verbose = bool.Parse(tokens[3]);
                                 break;
                             default:
                                 break;
@@ -201,18 +196,7 @@ namespace TownCrier
 
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
-                    foreach (KeyValuePair<string,object> setting in settings)
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append("setting\t");
-                        sb.Append(setting.Key);
-                        sb.Append("\t");
-                        sb.Append(setting.Value is bool ? "bool" : "string");
-                        sb.Append("\t");
-                        sb.Append(setting.Value.ToString());
-
-                        writer.WriteLine(sb);
-                    }
+                    Settings.Write(writer);
 
                     foreach (Action action in actions)
                     {

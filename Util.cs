@@ -31,6 +31,16 @@ namespace TownCrier
 			}
 		}
 
+        public static void LogInfo(string message)
+        {
+            if (!Settings.Verbose)
+            {
+                return;
+            }
+
+            WriteToChat("[INFO] " + message);
+        }
+
 		public static void WriteToChat(string message)
 		{
 			try

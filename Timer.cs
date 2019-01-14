@@ -151,6 +151,7 @@ namespace TownCrier
                     return;
                 }
 
+                Util.LogInfo("A timer triggered webhook '" + Webhook.Name + "' with message '" + Message + "'");
                 Webhook.Send(new WebhookMessage(SubstituteVariables(Message)));
 
                 // Update frame counter so we'll know if we're behind next time
