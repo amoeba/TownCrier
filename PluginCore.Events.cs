@@ -16,7 +16,7 @@ namespace TownCrier
                 LoadSettings();
                 Core.CharacterFilter.Death += CharacterFilter_Death;
 
-                TriggerActionsForEvent((int)EVENT.LOGIN, Core.CharacterFilter.Name + " has logged in");
+                TriggerWebhooksForEvent((int)EVENT.LOGIN, Core.CharacterFilter.Name + " has logged in");
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
@@ -38,7 +38,7 @@ namespace TownCrier
         [BaseEvent("ServerDispatch", "EchoFilter")]
         private void EchoFilter(object sender, NetworkMessageEventArgs e)
         {
-            if (actions == null)
+            if (EventTriggers == null)
             {
                 return;
             }
@@ -59,7 +59,7 @@ namespace TownCrier
 
         private void CharacterFilter_Death(object sender, DeathEventArgs e)
         {
-            TriggerActionsForEvent((int)EVENT.DEATH, Core.CharacterFilter.Name + " has died: " + e.Text);
+            TriggerWebhooksForEvent((int)EVENT.DEATH, Core.CharacterFilter.Name + " has died: " + e.Text);
         }
     }
 }

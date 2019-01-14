@@ -1,55 +1,6 @@
 <?xml version="1.0"?>
 <view icon="25984" title="TownCrier" width="600" height="450">
   <control progid="DecalControls.Notebook" name="nbMain">
-    
-    <page label="Actions">
-      <control progid="DecalControls.FixedLayout" clipped="">
-        <control progid="DecalControls.StaticText" name="txtEventsEvent" left="5" top="10" width="60" height="18" text="Event" />
-        <control progid="DecalControls.Choice" name="chcEventsEvent" left="80" top="10" width="140" height="18" />
-        <control progid="DecalControls.StaticText" name="txtEventsWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
-        <control progid="DecalControls.Choice" name="chcEventsWebhook" left="80" top="30" width="140" height="18" />
-        <control progid="DecalControls.PushButton" name="btnEventsEventAdd" left="5" top="60" width="100" height="18" text="Add Action" />
-
-        <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="100" width="20" height="18" text="On?" />
-        <control progid="DecalControls.StaticText" name="txtColEvent" left="30" top="100" width="100" height="18" text="Event" />
-        <control progid="DecalControls.StaticText" name="txtColWebhook" left="135" top="100" width="100" height="18" text="Webhook" />
-        <control progid="DecalControls.StaticText" name="txtColDelete" left="260" top="100" width="60" height="18" text="Delete" />
-        <control progid="DecalControls.List" name="lstActions" left="5" top="120" width="300" height="200">
-          <column progid="DecalControls.CheckColumn" name="colEnabled" fixedwidth="20" />
-          <column progid="DecalControls.TextColumn" name="colEvent" fixedwidth="100" />
-          <column progid="DecalControls.TextColumn" name="colWebhook" fixedwidth="120" />
-          <column progid="DecalControls.IconColumn" name="colDelete" fixedwidth="18" />
-        </control>
-      </control>
-    </page>
-
-    <page label="Timers">
-      <control progid="DecalControls.FixedLayout" clipped="">
-        <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="5" top="10" width="60" height="18" text="Every" />
-        <control progid="DecalControls.Edit" name="edtTimersMinutes" left="80" top="10" width="40" height="18" />
-        <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="130" top="10" width="60" height="18" text="minute(s)" />
-        <control progid="DecalControls.StaticText" name="txtTimersWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
-        <control progid="DecalControls.Choice" name="chcTimersWebhook" left="80" top="30" width="140" height="18" />
-        <control progid="DecalControls.StaticText" name="txtTimersMessage" left="5" top="50" width="100" height="18" text="Message" />
-        <control progid="DecalControls.Edit" name="edtTimersMessage" left="80" top="50" width="530" height="18" />
-        <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="190" top="80" width="200" height="18" text="See Variables, below, for usage" />
-        <control progid="DecalControls.PushButton" name="btnTimersTimerAdd" left="5" top="80" width="100" height="18" text="Add Timer" />
-
-        <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="120" width="20" height="18" text="On?" />
-        <control progid="DecalControls.StaticText" name="txtColMinutes" left="30" top="120" width="40" height="18" text="Every" />
-        <control progid="DecalControls.StaticText" name="txtColWebhook" left="75" top="120" width="100" height="18" text="Webhook" />
-        <control progid="DecalControls.StaticText" name="txtColMessage" left="180" top="120" width="300" height="18" text="Message" />
-        <control progid="DecalControls.StaticText" name="txtColDelete" left="555" top="120" width="60" height="18" text="Delete" />
-        <control progid="DecalControls.List" name="lstTimers" left="5" top="140" width="590" height="200">
-          <column progid="DecalControls.CheckColumn" name="colEnabled" fixedwidth="20" />
-          <column progid="DecalControls.TextColumn" name="colMinutes" fixedwidth="40" />
-          <column progid="DecalControls.TextColumn" name="colWebhook" fixedwidth="100" />
-          <column progid="DecalControls.TextColumn" name="colMessage" fixedwidth="370" />
-          <column progid="DecalControls.IconColumn" name="colDelete" fixedwidth="18" />
-        </control>
-        <control progid="DecalControls.StaticText" name="txtTimersVariables" left="10" top="350" width="590" height="100" text="In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). Example: Hello, $NAME." />
-      </control>
-    </page>
 
     <page label="Webhooks">
       <control progid="DecalControls.FixedLayout" clipped="">
@@ -80,6 +31,55 @@
           <column progid="DecalControls.TextColumn" name="colTest" fixedwidth="40" />
           <column progid="DecalControls.IconColumn" name="colDelete" fixedwidth="18" />
         </control>
+      </control>
+    </page>
+
+    <page label="Events">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.StaticText" name="txtEventsEvent" left="5" top="10" width="60" height="18" text="Event" />
+        <control progid="DecalControls.Choice" name="chcEventTriggerEvent" left="80" top="10" width="140" height="18" />
+        <control progid="DecalControls.StaticText" name="txtEventsWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
+        <control progid="DecalControls.Choice" name="chcEventsWebhook" left="80" top="30" width="140" height="18" />
+        <control progid="DecalControls.PushButton" name="btnEventTriggerAdd" left="5" top="60" width="200" height="18" text="Add Event Trigger" />
+
+        <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="100" width="20" height="18" text="On?" />
+        <control progid="DecalControls.StaticText" name="txtColEvent" left="30" top="100" width="100" height="18" text="Event" />
+        <control progid="DecalControls.StaticText" name="txtColWebhook" left="135" top="100" width="100" height="18" text="Webhook" />
+        <control progid="DecalControls.StaticText" name="txtColDelete" left="260" top="100" width="60" height="18" text="Delete" />
+        <control progid="DecalControls.List" name="lstEventTriggers" left="5" top="120" width="300" height="200">
+          <column progid="DecalControls.CheckColumn" name="colEnabled" fixedwidth="20" />
+          <column progid="DecalControls.TextColumn" name="colEvent" fixedwidth="100" />
+          <column progid="DecalControls.TextColumn" name="colWebhook" fixedwidth="120" />
+          <column progid="DecalControls.IconColumn" name="colDelete" fixedwidth="18" />
+        </control>
+      </control>
+    </page>
+
+    <page label="Timed">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="5" top="10" width="60" height="18" text="Every" />
+        <control progid="DecalControls.Edit" name="edtTimedTriggerMinutes" left="80" top="10" width="40" height="18" />
+        <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="130" top="10" width="60" height="18" text="minute(s)" />
+        <control progid="DecalControls.StaticText" name="txtTimersWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
+        <control progid="DecalControls.Choice" name="chcTimedTriggerWebhook" left="80" top="30" width="140" height="18" />
+        <control progid="DecalControls.StaticText" name="txtTimersMessage" left="5" top="50" width="100" height="18" text="Message" />
+        <control progid="DecalControls.Edit" name="edtTimedTriggerMessage" left="80" top="50" width="530" height="18" />
+        <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="190" top="80" width="200" height="18" text="See Variables, below, for usage" />
+        <control progid="DecalControls.PushButton" name="btnTimedTriggerAdd" left="5" top="80" width="100" height="18" text="Add Timer" />
+
+        <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="120" width="20" height="18" text="On?" />
+        <control progid="DecalControls.StaticText" name="txtColMinutes" left="30" top="120" width="40" height="18" text="Every" />
+        <control progid="DecalControls.StaticText" name="txtColWebhook" left="75" top="120" width="100" height="18" text="Webhook" />
+        <control progid="DecalControls.StaticText" name="txtColMessage" left="180" top="120" width="300" height="18" text="Message" />
+        <control progid="DecalControls.StaticText" name="txtColDelete" left="555" top="120" width="60" height="18" text="Delete" />
+        <control progid="DecalControls.List" name="lstTimedTriggers" left="5" top="140" width="590" height="200">
+          <column progid="DecalControls.CheckColumn" name="colEnabled" fixedwidth="20" />
+          <column progid="DecalControls.TextColumn" name="colMinutes" fixedwidth="40" />
+          <column progid="DecalControls.TextColumn" name="colWebhook" fixedwidth="100" />
+          <column progid="DecalControls.TextColumn" name="colMessage" fixedwidth="370" />
+          <column progid="DecalControls.IconColumn" name="colDelete" fixedwidth="18" />
+        </control>
+        <control progid="DecalControls.StaticText" name="txtTimersVariables" left="10" top="350" width="590" height="100" text="In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). Example: Hello, $NAME." />
       </control>
     </page>
 

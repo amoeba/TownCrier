@@ -3,7 +3,7 @@ using System.Text;
 
 namespace TownCrier
 {
-    class Timer
+    class TimedTrigger
     {
         public int Minute;
         public Webhook Webhook;
@@ -11,11 +11,11 @@ namespace TownCrier
         public bool Enabled;
 
         // Timer-specific stuff
-        System.Windows.Forms.Timer TimerTimer;
+        System.Windows.Forms.Timer Timer;
         ulong LastFrameNum;
         ulong CurrentFrameNum;
 
-        public Timer(int evt, Webhook webhook, string message, bool enabled)
+        public TimedTrigger(int evt, Webhook webhook, string message, bool enabled)
         {
             try
             {
@@ -26,9 +26,11 @@ namespace TownCrier
 
                 // Create a new timer but don't set it up just yet
                 // because timers can be created disabled when saved to settings
-                TimerTimer = new System.Windows.Forms.Timer();
-                TimerTimer.Interval = Minute * 1000; // Interval is milliseconds
-                TimerTimer.Tick += TimerTimer_Tick;
+                Timer = new System.Windows.Forms.Timer
+                {
+                    Interval = Minute * 1000 // Interval is milliseconds
+                };
+                Timer.Tick += Timer_Tick;
 
                 if (enabled)
                 {
@@ -46,7 +48,7 @@ namespace TownCrier
             try
             {
                 Enabled = true;
-                TimerTimer.Start();
+                Timer.Start();
                 LastFrameNum = 0;
                 CurrentFrameNum = 0;
                 Globals.Host.Underlying.Hooks.RenderPreUI += new Decal.Interop.Core.IACHooksEvents_RenderPreUIEventHandler(hooks_RenderPreUI);
@@ -62,7 +64,7 @@ namespace TownCrier
             try
             {
                 Enabled = false;
-                TimerTimer.Stop();
+                Timer.Stop();
                 Globals.Host.Underlying.Hooks.RenderPreUI -= hooks_RenderPreUI;
             }
             catch (Exception ex)
@@ -76,7 +78,7 @@ namespace TownCrier
             try
             {
                 Disable();
-                TimerTimer.Dispose();
+                Timer.Dispose();
 
             }
             catch (Exception ex)
@@ -96,7 +98,7 @@ namespace TownCrier
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("Timer: Every ");
+                sb.Append("TimedTrigger: Every ");
                 sb.Append(Minute.ToString());
                 sb.Append(" minute(s), the '");
                 sb.Append(Webhook.Name);
@@ -123,7 +125,7 @@ namespace TownCrier
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("timer\t");
+                sb.Append("timedtrigger\t");
                 sb.Append(Minute.ToString());
                 sb.Append("\t");
                 sb.Append(Webhook.Name);
@@ -138,20 +140,22 @@ namespace TownCrier
             {
                 Util.LogError(ex);
 
-                return "Failed to print Timer.";
+                return "Failed to print TimedTrigger.";
             }
         }
 
-        private void TimerTimer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
             try
             {
                 if (CurrentFrameNum == LastFrameNum)
                 {
+                    Util.LogError(new Exception("Not triggering timer because we're behind on frames."));
+
                     return;
                 }
 
-                Util.LogInfo("A timer triggered webhook '" + Webhook.Name + "' with message '" + Message + "'");
+                Util.LogInfo("A TimedEvent triggered webhook '" + Webhook.Name + "' with message '" + Message + "'");
                 Webhook.Send(new WebhookMessage(SubstituteVariables(Message)));
 
                 // Update frame counter so we'll know if we're behind next time

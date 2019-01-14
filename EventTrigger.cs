@@ -3,13 +3,13 @@ using System.Text;
 
 namespace TownCrier
 {
-    class Action
+    class EventTrigger
     {
         public int Event;
         public string WebhookName;
         public bool Enabled;
 
-        public Action(int evt, string webhookName, bool enabled)
+        public EventTrigger(int evt, string webhookName, bool enabled)
         {
             Event = evt;
             WebhookName = webhookName;
@@ -22,7 +22,7 @@ namespace TownCrier
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("Action: On '");
+                sb.Append("EventTrigger: On '");
                 sb.Append(Enum.GetName(typeof(PluginCore.EVENT), Event));
                 sb.Append("', trigger webhook '");
                 sb.Append(WebhookName);
@@ -37,7 +37,7 @@ namespace TownCrier
             {
                 Util.LogError(ex);
 
-                return "Failed to print Action";
+                return "Failed to print EventTrigger.";
             }
         }
 
@@ -47,7 +47,7 @@ namespace TownCrier
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("action\t");
+                sb.Append("eventtrigger\t");
                 sb.Append(Event.ToString());
                 sb.Append("\t");
                 sb.Append(WebhookName);
@@ -60,7 +60,7 @@ namespace TownCrier
             {
                 Util.LogError(ex);
 
-                return "Failed to print Action";
+                return "Failed to print EventTrigger.";
             }
         }
 

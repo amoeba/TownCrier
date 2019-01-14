@@ -10,16 +10,16 @@ namespace TownCrier
     [MVWireUpControlEvents]
     public partial class PluginCore : PluginBase
     {
-        [MVControlReference("lstActions")]
-        private IList lstActions = null;
-        private struct ActionsList
+        [MVControlReference("lstEventTriggers")]
+        private IList lstEventTriggers = null;
+        private struct EventTriggersList
         {
             public const int Enabled = 0, Event = 1, Webhook = 2, Delete = 3;
         }
 
-        [MVControlReference("lstTimers")]
-        private IList lstTimers = null;
-        private struct TimersList
+        [MVControlReference("lstTimedTriggers")]
+        private IList lstTimedTriggers = null;
+        private struct TimedTriggersList
         {
             public const int Enabled = 0, Minutes = 1, Webhook = 2, Message = 3, Delete = 4;
         }
@@ -31,19 +31,19 @@ namespace TownCrier
             public const int Name = 0, URL = 1, Method = 2, Payload = 3, Test = 4, Delete = 5;
         }
 
-        [MVControlReference("chcEventsEvent")]
-        private ICombo chcEventsEvent = null;
+        [MVControlReference("chcEventTriggerEvent")]
+        private ICombo chcEventTriggerEvent = null;
 
-        [MVControlReference("chcTimersWebhook")]
-        private ICombo chcTimersWebhook = null;
+        [MVControlReference("chcTimedTriggerWebhook")]
+        private ICombo chcTimedTriggerWebhook = null;
 
         [MVControlReference("chcEventsWebhook")]
         private ICombo chcEventsWebhook = null;
 
-        [MVControlReference("edtTimersMinutes")]
-        private ITextBox edtTimersMinutes = null;
-        [MVControlReference("edtTimersMessage")]
-        private ITextBox edtTimersMessage = null;
+        [MVControlReference("edtTimedTriggerMinutes")]
+        private ITextBox edtTimedTriggerMinutes = null;
+        [MVControlReference("edtTimedTriggerMessage")]
+        private ITextBox edtTimedTriggerMessage = null;
 
         [MVControlReference("edtName")]
         private ITextBox edtName = null;
@@ -57,59 +57,59 @@ namespace TownCrier
         [MVControlReference("chckVerbose")]
         private ICheckBox chckVerbose = null;
 
-        [MVControlEvent("btnEventsEventAdd", "Click")]
-        void btnEventsEventAdd_Click(object sender, MVControlEventArgs e)
+        [MVControlEvent("btnEventTriggerAdd", "Click")]
+        void btnEventTriggerAdd_Click(object sender, MVControlEventArgs e)
         {
             try
             {
-                Action action = new Action(
-                    (int)chcEventsEvent.Data[chcEventsEvent.Selected],
+                EventTrigger trigger = new EventTrigger(
+                    (int)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
                     (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
                     true);
 
-                actions.Add(action);
+                EventTriggers.Add(trigger);
 
-                RefreshEventsList();
+                RefreshEventTriggerList();
                 SaveSettings();
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error adding new Action: " + ex.Message);
+                Util.WriteToChat("Error adding new EventTrigger: " + ex.Message);
                 Util.LogError(ex);
             }
         }
 
-        [MVControlEvent("btnTimersTimerAdd", "Click")]
-        void btnTimersTimerAdd_Click(object sender, MVControlEventArgs e)
+        [MVControlEvent("btnTimedTriggerAdd", "Click")]
+        void btnTimedTriggerAdd_Click(object sender, MVControlEventArgs e)
         {
             try
             {
-                if (int.Parse(edtTimersMinutes.Text) <= 0)
+                if (int.Parse(edtTimedTriggerMinutes.Text) <= 0)
                 {
                     throw new Exception("Value for Minutes must be a whole number greater than 0.");
                 }
 
-                Webhook webhook = webhooks.Find(h => h.Name == (string)chcTimersWebhook.Data[chcTimersWebhook.Selected]);
+                Webhook webhook = Webhooks.Find(h => h.Name == (string)chcTimedTriggerWebhook.Data[chcTimedTriggerWebhook.Selected]);
 
                 if (webhook == null)
                 {
                     throw new Exception("Failed to add webhook because it couldn't be found. This is a bad bug.");
                 }
 
-                if (edtTimersMessage.Text.Length <= 0)
+                if (edtTimedTriggerMessage.Text.Length <= 0)
                 {
                     throw new Exception("You have to enter a Message for your Timer.");
                 }
 
-                Timer timer = new Timer(
-                    int.Parse(edtTimersMinutes.Text),
+                TimedTrigger trigger = new TimedTrigger(
+                    int.Parse(edtTimedTriggerMinutes.Text),
                     webhook,
-                    edtTimersMessage.Text,
+                    edtTimedTriggerMessage.Text,
                     true);
 
-                timers.Add(timer);
+                TimedTriggers.Add(trigger);
 
-                RefreshTimersList();
+                RefreshTimedTriggerList();
                 SaveSettings();
             }
             catch (Exception ex)
@@ -137,9 +137,9 @@ namespace TownCrier
                 }
 
                 // Stop if the name isn't unique
-                if (webhooks != null && webhooks.Count > 0)
+                if (Webhooks != null && Webhooks.Count > 0)
                 {
-                    List<Webhook> found = webhooks.FindAll(w => w.Name == edtName.Text);
+                    List<Webhook> found = Webhooks.FindAll(w => w.Name == edtName.Text);
 
                     if (found.Count > 0)
                     {
@@ -148,11 +148,11 @@ namespace TownCrier
                 }
 
                 Webhook webhook = new Webhook(edtName.Text, edtURL.Text, (string)chcMethod.Data[chcMethod.Selected], edtPayload.Text);
-                webhooks.Add(webhook);
+                Webhooks.Add(webhook);
 
                 RefreshWebhooksList();
-                RefreshActionsWebhooksChoice();
-                RefreshTimersWebhooksChoice();
+                RefreshEventTriggerWebhookChoice();
+                RefreshTimedTriggerWebhookChoice();
                 SaveSettings();
             }
             catch (Exception ex)
@@ -201,36 +201,37 @@ namespace TownCrier
             }
         }
 
-        [MVControlEvent("lstActions", "Click")]
-        private void lstActions_Click(object sender, int row, int col)
+        [MVControlEvent("lstEventTriggers", "Click")]
+        private void lstEventTriggers_Click(object sender, int row, int col)
         {
             try
             {
                 switch (col)
                 {
-                    case ActionsList.Enabled:
-                        bool enabled = (bool)lstActions[row][col][0];
+                    case EventTriggersList.Enabled:
+                        bool enabled = (bool)lstEventTriggers[row][col][0];
 
                         if (enabled)
                         {
-                            actions[row].Enable();
+                            EventTriggers[row].Enable();
                         }
                         else
                         {
-                            actions[row].Disable();
+                            EventTriggers[row].Disable();
                         }
 
                         SaveSettings();
 
                         break;
-                    case ActionsList.Delete:
-                        actions.RemoveAt(row);
-                        RefreshEventsList();
+                    case EventTriggersList.Delete:
+                        EventTriggers.RemoveAt(row);
+                        RefreshEventTriggerList();
+
                         SaveSettings();
 
                         break;
                     default:
-                        PrintAction(actions[row]);
+                        PrintEventTrigger(EventTriggers[row]);
 
                         break;
                 }
@@ -241,39 +242,38 @@ namespace TownCrier
             }
         }
 
-        [MVControlEvent("lstTimers", "Click")]
-        private void lstTimers_Click(object sender, int row, int col)
+        [MVControlEvent("lstTimedTriggers", "Click")]
+        private void lstTimedTriggers_Click(object sender, int row, int col)
         {
             try
             {
                 switch (col)
                 {
-                    case TimersList.Enabled:
-                        bool enabled = (bool)lstTimers[row][col][0];
+                    case TimedTriggersList.Enabled:
+                        bool enabled = (bool)lstTimedTriggers[row][col][0];
 
                         if (enabled)
                         {
-                            timers[row].Enable();
+                            TimedTriggers[row].Enable();
                         }
                         else
                         {
-                            timers[row].Disable();
+                            TimedTriggers[row].Disable();
                         }
 
                         SaveSettings();
 
                         break;
-                    case TimersList.Delete:
-                        Timer timer = timers[row];
-                        timer.Dispose();
-                        timers.RemoveAt(row);
+                    case TimedTriggersList.Delete:
+                        TimedTriggers[row].Dispose();
+                        TimedTriggers.RemoveAt(row);
+                        RefreshTimedTriggerList();
 
-                        RefreshTimersList();
                         SaveSettings();
 
                         break;
                     default:
-                        PrintTimer(timers[row]);
+                        PrintTimedTrigger(TimedTriggers[row]);
 
                         break;
                 };
@@ -292,19 +292,20 @@ namespace TownCrier
                 switch (col)
                 {
                     case WebhooksList.Test:
-                        webhooks[row].Send(new WebhookMessage("Testing webhook."));
+                        Webhooks[row].Send(new WebhookMessage("Testing webhook."));
 
                         break;
                     case WebhooksList.Delete:
-                        webhooks.RemoveAt(row);
-                        RefreshActionsWebhooksChoice();
-                        RefreshTimersWebhooksChoice();
+                        Webhooks.RemoveAt(row);
+                        RefreshEventTriggerWebhookChoice();
+                        RefreshTimedTriggerWebhookChoice();
                         RefreshWebhooksList();
+
                         SaveSettings();
 
                         break;
                     default:
-                        PrintWebhook(webhooks[row]);
+                        PrintWebhook(Webhooks[row]);
 
                         break;
                 };
@@ -321,6 +322,7 @@ namespace TownCrier
             try
             {
                 Settings.Verbose = e.Checked;
+
                 SaveSettings();
             }
             catch (Exception ex)
@@ -333,11 +335,11 @@ namespace TownCrier
         {
             try
             {
-                RefreshActionsWebhooksChoice();
-                RefreshTimersWebhooksChoice();
+                RefreshEventTriggerWebhookChoice();
+                RefreshTimedTriggerWebhookChoice();
                 RefreshWebhooksList();
-                RefreshTimersList();
-                RefreshEventsList();
+                RefreshTimedTriggerList();
+                RefreshEventTriggerList();
                 RefreshSettings();
             }
             catch (Exception ex)
@@ -346,49 +348,43 @@ namespace TownCrier
             }
         }
 
-        private void RefreshSettings()
-        {
-            chckVerbose.Checked = Settings.Verbose;
-        }
-
-        private void RefreshEventsList()
+        private void RefreshEventTriggerList()
         {
             try
             {
-                lstActions.Clear();
+                lstEventTriggers.Clear();
 
-                foreach (var action in actions)
+                foreach (var action in EventTriggers)
                 {
-                    IListRow row = lstActions.Add();
+                    IListRow row = lstEventTriggers.Add();
 
-                    row[ActionsList.Enabled][0] = action.Enabled;
-                    row[ActionsList.Event][0] = Enum.GetName(typeof(EVENT), action.Event);
-                    row[ActionsList.Webhook][0] = action.WebhookName;
-                    row[ActionsList.Delete][1] = Icons.Delete;
+                    row[EventTriggersList.Enabled][0] = action.Enabled;
+                    row[EventTriggersList.Event][0] = Enum.GetName(typeof(EVENT), action.Event);
+                    row[EventTriggersList.Webhook][0] = action.WebhookName;
+                    row[EventTriggersList.Delete][1] = Icons.Delete;
                 }
             }
             catch (Exception ex)
             {
                 Util.LogError(ex);
             }
-
         }
 
-        private void RefreshTimersList()
+        private void RefreshTimedTriggerList()
         {
             try
             {
-                lstTimers.Clear();
+                lstTimedTriggers.Clear();
 
-                foreach (var timer in timers)
+                foreach (var timer in TimedTriggers)
                 {
-                    IListRow row = lstTimers.Add();
+                    IListRow row = lstTimedTriggers.Add();
 
-                    row[TimersList.Enabled][0] = timer.Enabled;
-                    row[TimersList.Minutes][0] = timer.Minute.ToString();
-                    row[TimersList.Webhook][0] = timer.Webhook.Name;
-                    row[TimersList.Message][0] = timer.Message;
-                    row[TimersList.Delete][1] = Icons.Delete;
+                    row[TimedTriggersList.Enabled][0] = timer.Enabled;
+                    row[TimedTriggersList.Minutes][0] = timer.Minute.ToString();
+                    row[TimedTriggersList.Webhook][0] = timer.Webhook.Name;
+                    row[TimedTriggersList.Message][0] = timer.Message;
+                    row[TimedTriggersList.Delete][1] = Icons.Delete;
                 }
             }
             catch (Exception ex)
@@ -403,7 +399,7 @@ namespace TownCrier
             {
                 lstWebhooks.Clear();
 
-                foreach (var webhook in webhooks)
+                foreach (var webhook in Webhooks)
                 {
                     IListRow row = lstWebhooks.Add();
 
@@ -421,13 +417,13 @@ namespace TownCrier
             }
         }
 
-        private void RefreshActionsWebhooksChoice()
+        private void RefreshEventTriggerWebhookChoice()
         {
             try
             {
                 chcEventsWebhook.Clear();
 
-                foreach (var webhook in webhooks)
+                foreach (var webhook in Webhooks)
                 {
                     chcEventsWebhook.Add(webhook.Name, webhook.Name);
                 }
@@ -440,18 +436,18 @@ namespace TownCrier
             }
         }
 
-        private void RefreshTimersWebhooksChoice()
+        private void RefreshTimedTriggerWebhookChoice()
         {
             try
             {
-                chcTimersWebhook.Clear();
+                chcTimedTriggerWebhook.Clear();
 
-                foreach (var webhook in webhooks)
+                foreach (var webhook in Webhooks)
                 {
-                    chcTimersWebhook.Add(webhook.Name, webhook.Name);
+                    chcTimedTriggerWebhook.Add(webhook.Name, webhook.Name);
                 }
 
-                chcTimersWebhook.Selected = 0;
+                chcTimedTriggerWebhook.Selected = 0;
             }
             catch (Exception ex)
             {
@@ -459,12 +455,17 @@ namespace TownCrier
             }
         }
 
+        private void RefreshSettings()
+        {
+            chckVerbose.Checked = Settings.Verbose;
+        }
+
         private void PopulateEventChoices()
         {
             try
             {
-                chcEventsEvent.Add("You log in", EVENT.LOGIN);
-                chcEventsEvent.Add("You die", EVENT.DEATH);
+                chcEventTriggerEvent.Add("You log in", EVENT.LOGIN);
+                chcEventTriggerEvent.Add("You die", EVENT.DEATH);
             }
             catch (Exception ex)
             {

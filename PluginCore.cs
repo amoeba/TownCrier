@@ -10,9 +10,9 @@ namespace TownCrier
     [FriendlyName("TownCrier")]
     public partial class PluginCore : PluginBase
     {
-        List<Action> actions;
-        List<Timer> timers;
-        List<Webhook> webhooks;
+        List<EventTrigger> EventTriggers;
+        List<TimedTrigger> TimedTriggers;
+        List<Webhook> Webhooks;
 
         // Events the plugin handles, superset of GameEvent
         public enum EVENT
@@ -43,9 +43,9 @@ namespace TownCrier
                 MVWireupHelper.WireupStart(this, Host);
                 
                 // App state
-                actions = new List<Action>();
-                timers = new List<Timer>();
-                webhooks = new List<Webhook>();
+                EventTriggers = new List<EventTrigger>();
+                TimedTriggers = new List<TimedTrigger>();
+                Webhooks = new List<Webhook>();
 
                 // UI
                 RefreshUI();
@@ -77,10 +77,10 @@ namespace TownCrier
         {
             try
             {
-                actions.Clear();
+                EventTriggers.Clear();
                 DisposeAllTimers();
-                timers.Clear();
-                webhooks.Clear();
+                TimedTriggers.Clear();
+                Webhooks.Clear();
 
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + 
                     @"\Asheron's Call\" + 
@@ -128,23 +128,23 @@ namespace TownCrier
                         }
                         
                         break;
-                    case "action":
+                    case "eventrigger":
                         if (tokens.Length != 4)
                         {
                             return;
                         }
 
-                        actions.Add(new Action(int.Parse(tokens[1]), tokens[2], bool.Parse(tokens[3])));
+                        EventTriggers.Add(new EventTrigger(int.Parse(tokens[1]), tokens[2], bool.Parse(tokens[3])));
 
                         break;
-                    case "timer":
+                    case "timedtrigger":
                         if (tokens.Length != 5)
                         {
                             return;
                         }
 
                         // Look up webhook by name
-                        List<Webhook> found = webhooks.FindAll(w => w.Name == tokens[2]);
+                        List<Webhook> found = Webhooks.FindAll(w => w.Name == tokens[2]);
                         
                         if (found.Count <= 0)
                         {
@@ -152,17 +152,17 @@ namespace TownCrier
                             break;
                         }
 
-                        timers.Add(new Timer(int.Parse(tokens[1]), found[0], tokens[3], bool.Parse(tokens[4])));
+                        TimedTriggers.Add(new TimedTrigger(int.Parse(tokens[1]), found[0], tokens[3], bool.Parse(tokens[4])));
                         
                         break;
                     case "webhook":
                         if (tokens.Length == 4)
                         {
-                             webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], null));
+                             Webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], null));
                         }
                         else if (tokens.Length == 5)
                         {
-                            webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], tokens[4]));
+                            Webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], tokens[4]));
                         }
 
                         break;
@@ -189,12 +189,12 @@ namespace TownCrier
                 {
                     Settings.Write(writer);
 
-                    foreach (Action action in actions)
+                    foreach (EventTrigger trigger in EventTriggers)
                     {
-                        writer.WriteLine(action.ToSetting());
+                        writer.WriteLine(trigger.ToSetting());
                     }
 
-                    foreach (Webhook webhook in webhooks)
+                    foreach (Webhook webhook in Webhooks)
                     {
                         writer.WriteLine(webhook.ToSetting());
                     }
@@ -202,9 +202,9 @@ namespace TownCrier
                     // Serialize this last because Timers webhooks are serialized by name
                     // and they need to get looked on load by name so all webhooks have
                     // to be present when timers are loaded
-                    foreach (Timer timer in timers)
+                    foreach (TimedTrigger trigger in TimedTriggers)
                     {
-                        writer.WriteLine(timer.ToSetting());
+                        writer.WriteLine(trigger.ToSetting());
                     }
 
                     writer.Close();
@@ -215,26 +215,26 @@ namespace TownCrier
 
         private void DisposeAllTimers()
         {
-            if (timers == null)
+            if (TimedTriggers == null)
             {
                 return;
             }
 
-            foreach (Timer timer in timers)
+            foreach (TimedTrigger timer in TimedTriggers)
             {
                 timer.Dispose();
             }
         }
 
-        private void TriggerActionsForEvent(int eventId, string message)
+        private void TriggerWebhooksForEvent(int eventId, string message)
         {
             try
             {
-                List<Action> matched = actions.FindAll(action => action.Enabled && action.Event == eventId);
+                List<EventTrigger> matched = EventTriggers.FindAll(trigger => trigger.Enabled && trigger.Event == eventId);
 
-                foreach (Action action in matched)
+                foreach (EventTrigger trigger in matched)
                 {
-                    TriggerWebhooksForAction(action, new WebhookMessage(message));
+                    TriggerWebhooksForEventTrigger(trigger, new WebhookMessage(message));
                 }
             }
             catch (Exception ex)
@@ -243,11 +243,11 @@ namespace TownCrier
             }
         }
 
-        private void TriggerWebhooksForAction(Action action, WebhookMessage message)
+        private void TriggerWebhooksForEventTrigger(EventTrigger trigger, WebhookMessage message)
         {
             try
             {
-                List<Webhook> matched = webhooks.FindAll(w => w.Name == action.WebhookName);
+                List<Webhook> matched = Webhooks.FindAll(w => w.Name == trigger.WebhookName);
 
                 foreach (Webhook webhook in matched)
                 {
@@ -260,11 +260,11 @@ namespace TownCrier
             }
         }
 
-        void PrintAction(Action action)
+        void PrintEventTrigger(EventTrigger trigger)
         {
             try
             {
-                Util.WriteToChat(action.ToString());
+                Util.WriteToChat(trigger.ToString());
             }
             catch (Exception ex)
             {
@@ -272,11 +272,11 @@ namespace TownCrier
             }
         }
 
-        void PrintTimer(Timer timer)
+        void PrintTimedTrigger(TimedTrigger trigger)
         {
             try
             {
-                Util.WriteToChat(timer.ToString());
+                Util.WriteToChat(trigger.ToString());
             }
             catch (Exception ex)
             {
