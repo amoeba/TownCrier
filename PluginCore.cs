@@ -114,23 +114,14 @@ namespace TownCrier
             {
                 string[] tokens = line.Split('\t');
 
-                if (tokens.Length < 4) // Minimum # for actions or webhooks
-                {
-                    return;
-                }
-
                 switch (tokens[0])
                 {
                     case "setting":
-                        if (tokens.Length != 3)
-                        {
-                            return;
-                        }
-
                         switch(tokens[1])
                         {
                             case "verbose":
-                                Settings.Verbose = bool.Parse(tokens[3]);
+                                Settings.Verbose = bool.Parse(tokens[2]);
+
                                 break;
                             default:
                                 break;
