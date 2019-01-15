@@ -24,16 +24,23 @@ namespace TownCrier
         [BaseEvent("ChatBoxMessage")]
         private void Core_ChatBoxMessage(object sender, ChatTextInterceptEventArgs e)
         {
-            //Util.WriteToChat("ChatBoxMessage: '" + e.Text + "', color " + e.Color.ToString() + " target " + e.Target);
-
-            foreach (ChatPattern pattern in ChatPatterns)
+            try
             {
-                if (!pattern.Match(e))
-                {
-                    continue;
-                }
+                //Util.WriteToChat("ChatBoxMessage: '" + e.Text.Replace(System.Environment.NewLine, "") + "', color " + e.Color.ToString() + " target " + e.Target);
 
-                TriggerWebhooksForEvent(pattern.Event, e.Text);
+                foreach (ChatPattern pattern in ChatPatterns)
+                {
+                    if (!pattern.Match(e))
+                    {
+                        continue;
+                    }
+
+                    TriggerWebhooksForEvent(pattern.Event, e.Text.Replace("\r\n", "").Replace("\r", "").Replace("\n", ""));
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
             }
         }
 
@@ -75,7 +82,14 @@ namespace TownCrier
 
         private void CharacterFilter_Death(object sender, DeathEventArgs e)
         {
-            TriggerWebhooksForEvent(EVENT.DEATH, Core.CharacterFilter.Name + " has died: " + e.Text);
+            try
+            {
+                TriggerWebhooksForEvent(EVENT.DEATH, Core.CharacterFilter.Name + " has died: " + e.Text);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ namespace TownCrier
             public const string LOGIN = "LOGIN";
             public const string DEATH = "DEATH";
             public const string SAY = "SAY";
+            public const string LEVEL = "LEVEL";
         };
 
         // Just GameEvent events the plugin handles
@@ -49,8 +50,13 @@ namespace TownCrier
                 EventTriggers = new List<EventTrigger>();
                 TimedTriggers = new List<TimedTrigger>();
                 Webhooks = new List<Webhook>();
+
+                // Set up chat patterns
+                // TODO: Move to this to a static unless I really wanna make this customizable
                 ChatPatterns = new List<ChatPattern>();
                 ChatPatterns.Add(new ChatPattern(EVENT.SAY, "says, \""));
+                ChatPatterns.Add(new ChatPattern(EVENT.LEVEL, "You are now level ", 13));
+                //ChatPatterns.Add(new ChatPattern(EVENT.DROPONDEATH, "says, \""));
 
                 // UI
                 RefreshUI();
@@ -111,7 +117,10 @@ namespace TownCrier
 
                 RefreshUI();
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
 
         public void LoadSetting(string line)

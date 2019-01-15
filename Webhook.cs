@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -49,18 +50,27 @@ namespace TownCrier
 
         public string ToSetting()
         {
-            StringBuilder sb = new StringBuilder();
+            try
+            {
+                StringBuilder sb = new StringBuilder();
 
-            sb.Append("webhook\t");
-            sb.Append(Name);
-            sb.Append("\t");
-            sb.Append(BaseURI);
-            sb.Append("\t");
-            sb.Append(Method);
-            sb.Append("\t");
-            sb.Append(Payload);
+                sb.Append("webhook\t");
+                sb.Append(Name);
+                sb.Append("\t");
+                sb.Append(BaseURI);
+                sb.Append("\t");
+                sb.Append(Method);
+                sb.Append("\t");
+                sb.Append(Payload);
 
-            return sb.ToString();
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+
+                return "";
+            }
         }
 
         public Uri FullURI(WebhookMessage message)
@@ -82,30 +92,44 @@ namespace TownCrier
             {
                 Thread t = new Thread(() =>
                 {
-                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(FullURI(message));
-                    req.Method = Method;
-
-                    if (Payload != null)
+                    try
                     {
-                        req.ContentType = "application/json";
+                        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(FullURI(message));
+                        req.Method = Method;
 
-                        using (var streamWriter = new System.IO.StreamWriter(req.GetRequestStream()))
+                        if (Payload != null)
                         {
-                            streamWriter.Write(message.ToJSON(Payload));
-                            streamWriter.Flush();
+                            req.ContentType = "application/json";
+
+                            using (var streamWriter = new System.IO.StreamWriter(req.GetRequestStream()))
+                            {
+                                streamWriter.Write(message.ToJSON(Payload));
+                                streamWriter.Flush();
+                                streamWriter.Close();
+                            }
                         }
                     }
-
-                    req.BeginGetResponse(new AsyncCallback((IAsyncResult result) =>
+                    catch (WebException wex)
                     {
-                        WebRequest request = (WebRequest)result.AsyncState;
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result);
-                        response.Close();
-                    }), req);
-                })
-                {
-                    IsBackground = true
-                };
+                        if (wex.Response != null)
+                        {
+                            using (var errorResponse = (HttpWebResponse)wex.Response)
+                            {
+                                using (var reader = new StreamReader(errorResponse.GetResponseStream()))
+                                {
+                                    string error = reader.ReadToEnd();
+
+                                    Util.WriteToChat("Error sending webhook: " + error);
+                                    Util.LogError(new Exception(error));
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Util.LogError(ex);
+                    }
+                });
 
                 t.Start();
             }

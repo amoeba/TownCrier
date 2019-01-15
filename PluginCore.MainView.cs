@@ -466,6 +466,7 @@ namespace TownCrier
             {
                 chcEventTriggerEvent.Add("You log in", EVENT.LOGIN);
                 chcEventTriggerEvent.Add("You die", EVENT.DEATH);
+                chcEventTriggerEvent.Add("You level up", EVENT.LEVEL);
             }
             catch (Exception ex)
             {

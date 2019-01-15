@@ -18,12 +18,30 @@ namespace TownCrier
 
         public string ToQueryStringValue()
         {
-            return Uri.EscapeUriString(Message);
+            try
+            {
+                return Uri.EscapeUriString(Message);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+
+                return Message;
+            }
         }
 
         public string ToJSON(string payload)
         {
-            return payload.Replace("@", Message);
+            try
+            {
+                return payload.Replace("@", Message);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+
+                return payload;
+            }
         }
     }
 }
