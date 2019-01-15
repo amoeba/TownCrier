@@ -5,11 +5,11 @@ namespace TownCrier
 {
     class EventTrigger
     {
-        public int Event;
+        public string Event;
         public string WebhookName;
         public bool Enabled;
 
-        public EventTrigger(int evt, string webhookName, bool enabled)
+        public EventTrigger(string evt, string webhookName, bool enabled)
         {
             Event = evt;
             WebhookName = webhookName;
@@ -23,7 +23,7 @@ namespace TownCrier
                 StringBuilder sb = new StringBuilder();
 
                 sb.Append("EventTrigger: On '");
-                sb.Append(Enum.GetName(typeof(PluginCore.EVENT), Event));
+                sb.Append(Event);
                 sb.Append("', trigger webhook '");
                 sb.Append(WebhookName);
                 sb.Append("'. Currently ");
@@ -48,7 +48,7 @@ namespace TownCrier
                 StringBuilder sb = new StringBuilder();
 
                 sb.Append("eventtrigger\t");
-                sb.Append(Event.ToString());
+                sb.Append(Event);
                 sb.Append("\t");
                 sb.Append(WebhookName);
                 sb.Append("\t");

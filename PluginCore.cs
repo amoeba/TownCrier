@@ -14,11 +14,14 @@ namespace TownCrier
         List<TimedTrigger> TimedTriggers;
         List<Webhook> Webhooks;
 
+        private List<ChatPattern> ChatPatterns;
+
         // Events the plugin handles, superset of GameEvent
-        public enum EVENT
+        public struct EVENT
         {
-            LOGIN,
-            DEATH,
+            public const string LOGIN = "LOGIN";
+            public const string DEATH = "DEATH";
+            public const string SAY = "SAY";
         };
 
         // Just GameEvent events the plugin handles
@@ -46,6 +49,8 @@ namespace TownCrier
                 EventTriggers = new List<EventTrigger>();
                 TimedTriggers = new List<TimedTrigger>();
                 Webhooks = new List<Webhook>();
+                ChatPatterns = new List<ChatPattern>();
+                ChatPatterns.Add(new ChatPattern(EVENT.SAY, "says, \""));
 
                 // UI
                 RefreshUI();
@@ -99,6 +104,7 @@ namespace TownCrier
                     while (!reader.EndOfStream)
                     {
                         line = reader.ReadLine();
+
                         LoadSetting(line);
                     }
                 }
@@ -134,7 +140,7 @@ namespace TownCrier
                             return;
                         }
 
-                        EventTriggers.Add(new EventTrigger(int.Parse(tokens[1]), tokens[2], bool.Parse(tokens[3])));
+                        EventTriggers.Add(new EventTrigger(tokens[1], tokens[2], bool.Parse(tokens[3])));
 
                         break;
                     case "timedtrigger":
@@ -226,11 +232,11 @@ namespace TownCrier
             }
         }
 
-        private void TriggerWebhooksForEvent(int eventId, string message)
+        private void TriggerWebhooksForEvent(string evt, string message)
         {
             try
             {
-                List<EventTrigger> matched = EventTriggers.FindAll(trigger => trigger.Enabled && trigger.Event == eventId);
+                List<EventTrigger> matched = EventTriggers.FindAll(trigger => trigger.Enabled && trigger.Event == evt);
 
                 foreach (EventTrigger trigger in matched)
                 {

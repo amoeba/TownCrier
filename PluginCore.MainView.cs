@@ -63,7 +63,7 @@ namespace TownCrier
             try
             {
                 EventTrigger trigger = new EventTrigger(
-                    (int)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
+                    (string)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
                     (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
                     true);
 
@@ -359,7 +359,7 @@ namespace TownCrier
                     IListRow row = lstEventTriggers.Add();
 
                     row[EventTriggersList.Enabled][0] = action.Enabled;
-                    row[EventTriggersList.Event][0] = Enum.GetName(typeof(EVENT), action.Event);
+                    row[EventTriggersList.Event][0] = action.Event;
                     row[EventTriggersList.Webhook][0] = action.WebhookName;
                     row[EventTriggersList.Delete][1] = Icons.Delete;
                 }
