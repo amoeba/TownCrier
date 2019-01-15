@@ -134,7 +134,7 @@ namespace TownCrier
                         }
                         
                         break;
-                    case "eventrigger":
+                    case "eventtrigger":
                         if (tokens.Length != 4)
                         {
                             return;
