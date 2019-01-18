@@ -4,43 +4,116 @@ namespace TownCrier
 {
     class WebhookMessage
     {
-        public string Message;
+        public string MessageFormatString;
+        public string EventMessage;
 
-        public WebhookMessage(string message)
+        public WebhookMessage(string message, string eventMessage)
         {
-            Message = message;
+            MessageFormatString = message;
+            EventMessage = eventMessage;
         }
 
         public override string ToString()
         {
-            return Message;
+            return MessageFormatString;
         }
 
         public string ToQueryStringValue()
         {
+            return SubstituteVariables(true);
+        }
+
+        public string ToJSONStringValue()
+        {
+            return SubstituteVariables(false);
+        }
+
+        public string SubstituteVariables(bool escape)
+        {
+            string modified = MessageFormatString;
+
             try
             {
-                return Uri.EscapeUriString(Message);
+                if (MessageFormatString == "" && EventMessage == "")
+                {
+                    return "Empty webhook.";
+                }
+
+                // Short circuit to support EventTriggers with no format string
+                if (MessageFormatString == "")
+                {
+                    return EventMessage;
+                }
+
+                if (modified.Contains("$EVENT") && EventMessage != null)
+                {
+                    modified = modified.Replace("$EVENT", MaybeEscape(EventMessage.ToString(), escape));
+                }
+
+                if (modified.Contains("$NAME"))
+                {
+                    modified = modified.Replace("$NAME", MaybeEscape(Globals.Core.CharacterFilter.Name, escape));
+                }
+
+                if (modified.Contains("$LEVEL"))
+                {
+                    modified = modified.Replace("$LEVEL", MaybeEscape(Globals.Core.CharacterFilter.Level.ToString(), escape));
+                }
+
+                if (modified.Contains("$UXP"))
+                {
+                    modified = modified.Replace("$UXP", MaybeEscape(Globals.Core.CharacterFilter.UnassignedXP.ToString(), escape));
+                }
+
+                if (modified.Contains("$TXP"))
+                {
+                    modified = modified.Replace("$TXP", MaybeEscape(Globals.Core.CharacterFilter.TotalXP.ToString(), escape));
+                }
+
+                if (modified.Contains("$HEALTH"))
+                {
+                    modified = modified.Replace("$HEALTH", MaybeEscape(Globals.Core.CharacterFilter.Health.ToString(), escape));
+                }
+
+                if (modified.Contains("$STAMINA"))
+                {
+                    modified = modified.Replace("$STAMINA", MaybeEscape(Globals.Core.CharacterFilter.Stamina.ToString(), escape));
+                }
+
+                if (modified.Contains("$MANA"))
+                {
+                    modified = modified.Replace("$MANA", MaybeEscape(Globals.Core.CharacterFilter.Mana.ToString(), escape));
+                }
+
+                if (modified.Contains("$VITAE"))
+                {
+                    modified = modified.Replace("$VITAE", MaybeEscape(Globals.Core.CharacterFilter.Vitae.ToString() + "%", escape));
+                }
+
+                if (modified.Contains("$LOC"))
+                {
+                    modified = modified.Replace("$LOC", MaybeEscape(new Location(Globals.Host.Actions.Landcell, Globals.Host.Actions.LocationX, Globals.Host.Actions.LocationY).ToString(), escape));
+                }
+
+                return modified;
             }
             catch (Exception ex)
             {
                 Util.LogError(ex);
 
-                return Message;
+                return modified;
             }
         }
 
-        public string ToJSON(string payload)
+        public string MaybeEscape(string str, bool escape)
         {
-            try
+            if (escape)
             {
-                return payload.Replace("@", Message);
+                return Uri.EscapeUriString(str);
             }
-            catch (Exception ex)
+            else
             {
-                Util.LogError(ex);
-
-                return payload;
+                return str;
             }
         }
     }

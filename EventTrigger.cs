@@ -7,12 +7,14 @@ namespace TownCrier
     {
         public string Event;
         public string WebhookName;
+        public string MessageFormat;
         public bool Enabled;
 
-        public EventTrigger(string evt, string webhookName, bool enabled)
+        public EventTrigger(string evt, string webhookName, string messageFormat, bool enabled)
         {
             Event = evt;
             WebhookName = webhookName;
+            MessageFormat = messageFormat;
             Enabled = enabled;
         }
 
@@ -26,6 +28,8 @@ namespace TownCrier
                 sb.Append(Event);
                 sb.Append("', trigger webhook '");
                 sb.Append(WebhookName);
+                sb.Append("' with message: '");
+                sb.Append(MessageFormat);
                 sb.Append("'. Currently ");
                 sb.Append(Enabled ? "Enabled" : "Disabled");
                 sb.Append(".");
@@ -51,6 +55,8 @@ namespace TownCrier
                 sb.Append(Event);
                 sb.Append("\t");
                 sb.Append(WebhookName);
+                sb.Append("\t");
+                sb.Append(MessageFormat);
                 sb.Append("\t");
                 sb.Append(Enabled);
 

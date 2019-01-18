@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Text;
 using Decal.Adapter;
 using Decal.Adapter.Wrappers;
 
@@ -16,7 +16,7 @@ namespace TownCrier
                 LoadSettings();
                 Core.CharacterFilter.Death += CharacterFilter_Death;
 
-                TriggerWebhooksForEvent(EVENT.LOGIN, Core.CharacterFilter.Name + " has logged in");
+                TriggerWebhooksForEvent(EVENT.LOGIN, Core.CharacterFilter.Name + " has logged in.");
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
@@ -26,8 +26,6 @@ namespace TownCrier
         {
             try
             {
-                //Util.WriteToChat("ChatBoxMessage: '" + e.Text.Replace(System.Environment.NewLine, "") + "', color " + e.Color.ToString() + " target " + e.Target);
-
                 foreach (ChatPattern pattern in ChatPatterns)
                 {
                     if (!pattern.Match(e))
@@ -35,7 +33,8 @@ namespace TownCrier
                         continue;
                     }
 
-                    TriggerWebhooksForEvent(pattern.Event, e.Text.Replace("\r\n", "").Replace("\r", "").Replace("\n", ""));
+                    // Messages sometimes have newlines in them
+                    TriggerWebhooksForEvent(pattern.Event, e.Text.Replace("\n", ""));
                 }
             }
             catch (Exception ex)
@@ -49,6 +48,8 @@ namespace TownCrier
         {
             try
             {
+                TriggerWebhooksForEvent(EVENT.LOGOFF, Core.CharacterFilter.Name + " has logged off.");
+
                 SaveSettings();
                 Core.CharacterFilter.Death -= CharacterFilter_Death;
             }

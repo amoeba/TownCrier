@@ -28,7 +28,7 @@ namespace TownCrier
                 // because timers can be created disabled when saved to settings
                 Timer = new System.Windows.Forms.Timer
                 {
-                    Interval = Minute * 1000 // Interval is milliseconds
+                    Interval = Minute * 1000 * 60 // Interval is milliseconds
                 };
                 Timer.Tick += Timer_Tick;
 
@@ -150,13 +150,10 @@ namespace TownCrier
             {
                 if (CurrentFrameNum == LastFrameNum)
                 {
-                    Util.LogError(new Exception("Not triggering timer because we're behind on frames."));
-
                     return;
                 }
 
-                Util.LogInfo("A TimedEvent triggered webhook '" + Webhook.Name + "' with message '" + Message + "'");
-                Webhook.Send(new WebhookMessage(SubstituteVariables(Message)));
+                Webhook.Send(new WebhookMessage(Message, ""));
 
                 // Update frame counter so we'll know if we're behind next time
                 LastFrameNum = CurrentFrameNum;
@@ -164,65 +161,6 @@ namespace TownCrier
             catch (Exception ex)
             {
                 Util.LogError(ex);
-            }
-        }
-
-        private string SubstituteVariables(string message)
-        {
-            try
-            {
-                if (message.Contains("$NAME"))
-                {
-                    message = message.Replace("$NAME", Globals.Core.CharacterFilter.Name);
-                }
-
-                if (message.Contains("$LEVEL"))
-                {
-                    message = message.Replace("$LEVEL", Globals.Core.CharacterFilter.Level.ToString());
-                }
-
-                if (message.Contains("$UXP"))
-                {
-                    message = message.Replace("$UXP", Globals.Core.CharacterFilter.UnassignedXP.ToString());
-                }
-
-                if (message.Contains("$TXP"))
-                {
-                    message = message.Replace("$TXP", Globals.Core.CharacterFilter.TotalXP.ToString());
-                }
-
-                if (message.Contains("$HEALTH"))
-                {
-                    message = message.Replace("$HEALTH", Globals.Core.CharacterFilter.Health.ToString());
-                }
-
-                if (message.Contains("$STAMINA"))
-                {
-                    message = message.Replace("$STAMINA", Globals.Core.CharacterFilter.Stamina.ToString());
-                }
-
-                if (message.Contains("$MANA"))
-                {
-                    message = message.Replace("$MANA", Globals.Core.CharacterFilter.Mana.ToString());
-                }
-
-                if (message.Contains("$VITAE"))
-                {
-                    message = message.Replace("$VITAE", Globals.Core.CharacterFilter.Vitae.ToString() + "%");
-                }
-
-                if (message.Contains("$LOC"))
-                {
-                    message = message.Replace("$LOC", new Location(Globals.Host.Actions.Landcell, Globals.Host.Actions.LocationX, Globals.Host.Actions.LocationY).ToString());
-                }
-
-                return message;
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-
-                return message;
             }
         }
     }

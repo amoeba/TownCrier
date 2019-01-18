@@ -16,10 +16,18 @@ namespace TownCrier
 
         private List<ChatPattern> ChatPatterns;
 
+        // HTTP methods
+        public struct METHOD
+        {
+            public const string GET = "GET";
+            public const string POST = "POST";
+        }
+
         // Events the plugin handles, superset of GameEvent
         public struct EVENT
         {
             public const string LOGIN = "LOGIN";
+            public const string LOGOFF = "LOGOFF";
             public const string DEATH = "DEATH";
             public const string SAY = "SAY";
             public const string LEVEL = "LEVEL";
@@ -61,6 +69,8 @@ namespace TownCrier
                 // UI
                 RefreshUI();
                 PopulateEventChoices();
+                chcMethod.Add("GET", METHOD.GET);
+                chcMethod.Add("POST", METHOD.POST);
 
                 // Settings
                 LoadSettings();
@@ -76,6 +86,11 @@ namespace TownCrier
             try
             {
                 DisposeAllTimers();
+                EventTriggers.Clear();
+                TimedTriggers.Clear();
+                Webhooks.Clear();
+                ChatPatterns.Clear();
+
                 MVWireupHelper.WireupEnd(this);
             }
             catch (Exception ex)
@@ -144,12 +159,12 @@ namespace TownCrier
                         
                         break;
                     case "eventtrigger":
-                        if (tokens.Length != 4)
+                        if (tokens.Length != 5)
                         {
                             return;
                         }
 
-                        EventTriggers.Add(new EventTrigger(tokens[1], tokens[2], bool.Parse(tokens[3])));
+                        EventTriggers.Add(new EventTrigger(tokens[1], tokens[2], tokens[3], bool.Parse(tokens[4])));
 
                         break;
                     case "timedtrigger":
@@ -241,7 +256,7 @@ namespace TownCrier
             }
         }
 
-        private void TriggerWebhooksForEvent(string evt, string message)
+        private void TriggerWebhooksForEvent(string evt, string eventMessage)
         {
             try
             {
@@ -249,7 +264,7 @@ namespace TownCrier
 
                 foreach (EventTrigger trigger in matched)
                 {
-                    TriggerWebhooksForEventTrigger(trigger, new WebhookMessage(message));
+                    TriggerWebhooksForEventTrigger(trigger, eventMessage);
                 }
             }
             catch (Exception ex)
@@ -258,7 +273,7 @@ namespace TownCrier
             }
         }
 
-        private void TriggerWebhooksForEventTrigger(EventTrigger trigger, WebhookMessage message)
+        private void TriggerWebhooksForEventTrigger(EventTrigger trigger, string eventMessage)
         {
             try
             {
@@ -266,7 +281,7 @@ namespace TownCrier
 
                 foreach (Webhook webhook in matched)
                 {
-                    webhook.Send(message);
+                    webhook.Send(new WebhookMessage(trigger.MessageFormat, eventMessage));
                 }
             }
             catch (Exception ex)

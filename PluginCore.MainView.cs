@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Drawing;
 using Decal.Adapter;
 using MyClasses.MetaViewWrappers;
+using VirindiViewService;
+using VirindiViewService.Controls;
 
 namespace TownCrier
 {
@@ -45,6 +47,9 @@ namespace TownCrier
         [MVControlReference("edtTimedTriggerMessage")]
         private ITextBox edtTimedTriggerMessage = null;
 
+        [MVControlReference("edtEventsMessage")]
+        private ITextBox edtEventsMessage = null;
+
         [MVControlReference("edtName")]
         private ITextBox edtName = null;
         [MVControlReference("edtURL")]
@@ -65,6 +70,7 @@ namespace TownCrier
                 EventTrigger trigger = new EventTrigger(
                     (string)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
                     (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
+                    edtEventsMessage.Text,
                     true);
 
                 EventTriggers.Add(trigger);
@@ -130,10 +136,10 @@ namespace TownCrier
                     throw new Exception("Webhooks need to have names.");
                 }
 
-                // Either the URL or the Payload should have an @ symbol, but just warn
+                // Either the URL or the PayloadFormatString should have an @ symbol, but just warn
                 if (!edtName.Text.Contains("@") || !edtPayload.Text.Contains("@"))
                 {
-                    Util.WriteToChat("Warning: Neither your URL or Payload had an @ symbol in them which means your webhooks will trigger without a message.");
+                    Util.WriteToChat("Warning: Neither your URL or PayloadFormatString had an @ symbol in them which means your webhooks will trigger without a message.");
                 }
 
                 // Stop if the name isn't unique
@@ -193,7 +199,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("...");
+                Util.WriteToChat("btnFoo_Click()");
             }
             catch (Exception ex)
             {
@@ -292,7 +298,7 @@ namespace TownCrier
                 switch (col)
                 {
                     case WebhooksList.Test:
-                        Webhooks[row].Send(new WebhookMessage("Testing webhook."));
+                        Webhooks[row].Send(new WebhookMessage("", "Testing webhook."));
 
                         break;
                     case WebhooksList.Delete:
@@ -404,9 +410,9 @@ namespace TownCrier
                     IListRow row = lstWebhooks.Add();
 
                     row[WebhooksList.Name][0] = webhook.Name;
-                    row[WebhooksList.URL][0] = webhook.BaseURI.ToString();
+                    row[WebhooksList.URL][0] = webhook.URLFormatString.ToString();
                     row[WebhooksList.Method][0] = webhook.Method;
-                    row[WebhooksList.Payload][0] = webhook.Payload;
+                    row[WebhooksList.Payload][0] = webhook.PayloadFormatString;
                     row[WebhooksList.Test][0] = "Test";
                     row[WebhooksList.Delete][1] = Icons.Delete;
                 }
@@ -465,6 +471,7 @@ namespace TownCrier
             try
             {
                 chcEventTriggerEvent.Add("You log in", EVENT.LOGIN);
+                chcEventTriggerEvent.Add("You log off", EVENT.LOGOFF);
                 chcEventTriggerEvent.Add("You die", EVENT.DEATH);
                 chcEventTriggerEvent.Add("You level up", EVENT.LEVEL);
             }

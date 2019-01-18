@@ -9,16 +9,16 @@ namespace TownCrier
     class Webhook
     {
         public string Name;
-        public Uri BaseURI;
         public string Method;
-        public string Payload;
+        public string URLFormatString; // Contains an @ somewhere
+        public string PayloadFormatString; // Or contains an @ somewhere
 
         public Webhook(string name, string url, string method, string payload)
         {
             Name = name;
-            BaseURI = new Uri(url);
+            URLFormatString = url;
             Method = method;
-            Payload = payload;
+            PayloadFormatString = payload;
         }
 
         public override string ToString()
@@ -30,11 +30,11 @@ namespace TownCrier
                 sb.Append("Webhook: Name: '");
                 sb.Append(Name);
                 sb.Append("', URL: '");
-                sb.Append(BaseURI.ToString());
+                sb.Append(URLFormatString.ToString());
                 sb.Append(" (");
                 sb.Append(Method);
                 sb.Append(") with payload '");
-                sb.Append(Payload);
+                sb.Append(PayloadFormatString);
                 sb.Append("'.");
 
                 return sb.ToString();
@@ -57,11 +57,11 @@ namespace TownCrier
                 sb.Append("webhook\t");
                 sb.Append(Name);
                 sb.Append("\t");
-                sb.Append(BaseURI);
+                sb.Append(URLFormatString);
                 sb.Append("\t");
                 sb.Append(Method);
                 sb.Append("\t");
-                sb.Append(Payload);
+                sb.Append(PayloadFormatString);
 
                 return sb.ToString();
             }
@@ -73,17 +73,23 @@ namespace TownCrier
             }
         }
 
-        public Uri FullURI(WebhookMessage message)
+        public Uri URI(WebhookMessage message)
         {
             try
             {
-                return new Uri(BaseURI.ToString().Replace("@", message.ToQueryStringValue()));
+                return new Uri(URLFormatString.Replace("@", message.ToQueryStringValue()));
             }
             catch (Exception ex)
             {
                 Util.LogError(ex);
-                return BaseURI;
+
+                return new Uri(URLFormatString);
             }
+        }
+
+        private string Payload(WebhookMessage message)
+        {
+            return PayloadFormatString.Replace("@", message.ToJSONStringValue());
         }
 
         public void Send(WebhookMessage message)
@@ -94,19 +100,26 @@ namespace TownCrier
                 {
                     try
                     {
-                        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(FullURI(message));
+                        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(URI(message));
                         req.Method = Method;
 
-                        if (Payload != null)
+                        if (Method == "POST" && PayloadFormatString != "")
                         {
                             req.ContentType = "application/json";
 
-                            using (var streamWriter = new System.IO.StreamWriter(req.GetRequestStream()))
+                            using (var streamWriter = new StreamWriter(req.GetRequestStream()))
                             {
-                                streamWriter.Write(message.ToJSON(Payload));
+                                streamWriter.Write(Payload(message));
                                 streamWriter.Flush();
                                 streamWriter.Close();
                             }
+                        }
+
+                        var httpResponse = (HttpWebResponse)req.GetResponse();
+
+                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                        {
+                            var responseText = streamReader.ReadToEnd();
                         }
                     }
                     catch (WebException wex)
@@ -119,7 +132,6 @@ namespace TownCrier
                                 {
                                     string error = reader.ReadToEnd();
 
-                                    Util.WriteToChat("Error sending webhook: " + error);
                                     Util.LogError(new Exception(error));
                                 }
                             }
