@@ -16,7 +16,7 @@ namespace TownCrier
         private IList lstEventTriggers = null;
         private struct EventTriggersList
         {
-            public const int Enabled = 0, Event = 1, Webhook = 2, Delete = 3;
+            public const int Enabled = 0, Event = 1, Webhook = 2, MessageFormat = 3, Delete = 4;
         }
 
         [MVControlReference("lstTimedTriggers")]
@@ -360,13 +360,14 @@ namespace TownCrier
             {
                 lstEventTriggers.Clear();
 
-                foreach (var action in EventTriggers)
+                foreach (var trigger in EventTriggers)
                 {
                     IListRow row = lstEventTriggers.Add();
 
-                    row[EventTriggersList.Enabled][0] = action.Enabled;
-                    row[EventTriggersList.Event][0] = action.Event;
-                    row[EventTriggersList.Webhook][0] = action.WebhookName;
+                    row[EventTriggersList.Enabled][0] = trigger.Enabled;
+                    row[EventTriggersList.Event][0] = trigger.Event;
+                    row[EventTriggersList.Webhook][0] = trigger.WebhookName;
+                    row[EventTriggersList.MessageFormat][0] = trigger.MessageFormat;
                     row[EventTriggersList.Delete][1] = Icons.Delete;
                 }
             }

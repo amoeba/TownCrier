@@ -5,13 +5,13 @@
     <page label="Webhooks">
       <control progid="DecalControls.FixedLayout" clipped="">
         <control progid="DecalControls.StaticText" name="txtName" left="5" top="10" width="60" height="18" text="Name" />
-        <control progid="DecalControls.Edit" name="edtName" left="60" top="10" width="100" height="18" />
+        <control progid="DecalControls.Edit" name="edtName" left="80" top="10" width="100" height="18" />
         <control progid="DecalControls.StaticText" name="txtURL" left="5" top="30" width="60" height="18" text="URL" />
-        <control progid="DecalControls.Edit" name="edtURL" left="60" top="30" width="535" height="18" />
+        <control progid="DecalControls.Edit" name="edtURL" left="80" top="30" width="515" height="18" />
         <control progid="DecalControls.StaticText" name="txtMethod" left="5" top="50" width="160" height="18" text="Method" />
-        <control progid="DecalControls.Choice" name="chcMethod" left="60" top="50" width="60" height="18" />
+        <control progid="DecalControls.Choice" name="chcMethod" left="80" top="50" width="60" height="18" />
         <control progid="DecalControls.StaticText" name="txtPayload" left="5" top="70" width="160" height="18" text="Payload" />
-        <control progid="DecalControls.Edit" name="edtPayload" left="60" top="70" width="535" height="18" />
+        <control progid="DecalControls.Edit" name="edtPayload" left="80" top="70" width="515" height="18" />
         <control progid="DecalControls.PushButton" name="btnWebhookAdd" left="5" top="100" width="100" height="18" text="Add Webhook" />
 
         <control progid="DecalControls.StaticText" name="txtColName" left="8" top="130" width="80" height="18" text="Name" />
@@ -38,18 +38,20 @@
         <control progid="DecalControls.StaticText" name="txtEventsWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
         <control progid="DecalControls.Choice" name="chcEventsWebhook" left="80" top="30" width="140" height="18" />
         <control progid="DecalControls.StaticText" name="txtEventsMessage" left="5" top="50" width="160" height="18" text="Message" />
-        <control progid="DecalControls.Edit" name="edtEventsMessage" left="80" top="50" width="300" height="18" />
-        <control progid="DecalControls.StaticText" name="txtEventsMessage" left="210" top="80" width="160" height="18" text="Leave Message blank for default." />
+        <control progid="DecalControls.Edit" name="edtEventsMessage" left="80" top="50" width="515" height="18" />
+        <control progid="DecalControls.StaticText" name="txtEventsMessage" left="210" top="80" width="390" height="18" text="Leave Message blank for default. Or use variable $EVENT." />
         <control progid="DecalControls.PushButton" name="btnEventTriggerAdd" left="5" top="80" width="200" height="18" text="Add Event Trigger" />
 
-        <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="100" width="20" height="18" text="On?" />
-        <control progid="DecalControls.StaticText" name="txtColEvent" left="30" top="100" width="100" height="18" text="Event" />
-        <control progid="DecalControls.StaticText" name="txtColWebhook" left="135" top="100" width="100" height="18" text="Webhook" />
-        <control progid="DecalControls.StaticText" name="txtColDelete" left="260" top="100" width="60" height="18" text="Delete" />
-        <control progid="DecalControls.List" name="lstEventTriggers" left="5" top="120" width="300" height="200">
+        <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="110" width="20" height="18" text="On?" />
+        <control progid="DecalControls.StaticText" name="txtColEvent" left="30" top="110" width="100" height="18" text="Event" />
+        <control progid="DecalControls.StaticText" name="txtColWebhook" left="135" top="110" width="100" height="18" text="Webhook" />
+        <control progid="DecalControls.StaticText" name="txtColMessage" left="230" top="110" width="100" height="18" text="Message" />
+        <control progid="DecalControls.StaticText" name="txtColDelete" left="555" top="110" width="60" height="18" text="Delete" />
+        <control progid="DecalControls.List" name="lstEventTriggers" left="5" top="130" width="590" height="200">
           <column progid="DecalControls.CheckColumn" name="colEnabled" fixedwidth="20" />
           <column progid="DecalControls.TextColumn" name="colEvent" fixedwidth="100" />
-          <column progid="DecalControls.TextColumn" name="colWebhook" fixedwidth="120" />
+          <column progid="DecalControls.TextColumn" name="colWebhook" fixedwidth="80" />
+          <column progid="DecalControls.TextColumn" name="colMessage" fixedwidth="325" />
           <column progid="DecalControls.IconColumn" name="colDelete" fixedwidth="18" />
         </control>
       </control>
@@ -63,7 +65,7 @@
         <control progid="DecalControls.StaticText" name="txtTimersWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
         <control progid="DecalControls.Choice" name="chcTimedTriggerWebhook" left="80" top="30" width="140" height="18" />
         <control progid="DecalControls.StaticText" name="txtTimersMessage" left="5" top="50" width="100" height="18" text="Message" />
-        <control progid="DecalControls.Edit" name="edtTimedTriggerMessage" left="80" top="50" width="530" height="18" />
+        <control progid="DecalControls.Edit" name="edtTimedTriggerMessage" left="80" top="50" width="515" height="18" />
         <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="190" top="80" width="200" height="18" text="See Variables, below, for usage" />
         <control progid="DecalControls.PushButton" name="btnTimedTriggerAdd" left="5" top="80" width="100" height="18" text="Add Timer" />
 
@@ -91,7 +93,7 @@
 
     <page label="About">
       <control progid="DecalControls.FixedLayout" clipped="">
-        <control progid="DecalControls.StaticText" name="txtAbout" left="5" top="10" width="400" height="200" text="TownCrier was created by Bryce Mecum. For more information, visit https://github.com/amoeba/TownCrier." />
+        <control progid="DecalControls.StaticText" name="txtAbout" left="5" top="10" width="400" height="200" text="TownCrier was created by Kolth. For more information, visit https://github.com/amoeba/TownCrier." />
       </control>
     </page>
     
