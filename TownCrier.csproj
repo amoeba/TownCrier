@@ -39,6 +39,7 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\..\..\..\Program Files (x86)\Decal 3.0\.NET 2.0 PIA\Decal.Interop.Core.DLL</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
