@@ -34,7 +34,7 @@
     <page label="Events">
       <control progid="DecalControls.FixedLayout" clipped="">
         <control progid="DecalControls.StaticText" name="txtEventsEvent" left="5" top="10" width="60" height="18" text="Event" />
-        <control progid="DecalControls.Choice" name="chcEventTriggerEvent" left="80" top="10" width="140" height="18" />
+        <control progid="DecalControls.Choice" name="chcEventTriggerEvent" left="80" top="10" width="200" height="18" />
         <control progid="DecalControls.StaticText" name="txtEventsWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
         <control progid="DecalControls.Choice" name="chcEventsWebhook" left="80" top="30" width="140" height="18" />
         <control progid="DecalControls.StaticText" name="txtEventsMessage" left="5" top="50" width="160" height="18" text="Message" />
