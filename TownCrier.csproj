@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatPattern.cs" />
+    <Compile Include="ChatTrigger.cs" />
     <Compile Include="EventTrigger.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Globals.cs" />

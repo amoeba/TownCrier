@@ -3,19 +3,33 @@ using System.Text;
 
 namespace TownCrier
 {
-    class EventTrigger
+    class ChatTrigger
     {
-        public string Event;
+        public string Pattern;
         public Webhook Webhook;
         public string MessageFormat;
         public bool Enabled;
 
-        public EventTrigger(string evt, Webhook webhook, string messageFormat, bool enabled)
+        public ChatTrigger(string pattern, Webhook webhook, string message, bool enabled)
         {
-            Event = evt;
+            Pattern = pattern;
             Webhook = webhook;
-            MessageFormat = messageFormat;
+            MessageFormat = message;
             Enabled = enabled;
+        }
+
+        public bool Match(Decal.Adapter.ChatTextInterceptEventArgs e)
+        {
+            // Match the message and the color (but only match color if
+            // we set a Color to match)
+            if (e.Text.Contains(Pattern))
+            {
+                Util.LogMessage("Matched!");
+                return true;
+            }
+            Util.LogMessage("NotMatched!");
+
+            return false;
         }
 
         public override string ToString()
@@ -25,7 +39,7 @@ namespace TownCrier
                 StringBuilder sb = new StringBuilder();
 
                 sb.Append("EventTrigger: On '");
-                sb.Append(Event);
+                sb.Append(Pattern);
                 sb.Append("', trigger webhook '");
                 sb.Append(Webhook.Name);
                 sb.Append("' with message: '");
@@ -41,7 +55,7 @@ namespace TownCrier
             {
                 Util.LogError(ex);
 
-                return "Failed to print EventTrigger.";
+                return "Failed to print ChatTrigger.";
             }
         }
 
@@ -51,8 +65,8 @@ namespace TownCrier
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("eventtrigger\t");
-                sb.Append(Event);
+                sb.Append("chattrigger\t");
+                sb.Append(Pattern);
                 sb.Append("\t");
                 sb.Append(Webhook.Name);
                 sb.Append("\t");
@@ -66,7 +80,7 @@ namespace TownCrier
             {
                 Util.LogError(ex);
 
-                return "Failed to print EventTrigger.";
+                return "Failed to print ChatTrigger.";
             }
         }
 

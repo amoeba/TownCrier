@@ -25,7 +25,7 @@ namespace TownCrier
 
         public string ToJSONStringValue()
         {
-            return SubstituteVariables(false);
+            return SubstituteVariables(false).Replace("\"", "'");
         }
 
         public string SubstituteVariables(bool escape)

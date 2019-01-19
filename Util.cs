@@ -66,6 +66,8 @@ namespace TownCrier
 			try
 			{
 				Globals.Host.Actions.AddChatText("[" + Globals.PluginName + "] " + message, 1);
+
+                LogMessage(message);
 			}
 			catch (Exception ex)
             {

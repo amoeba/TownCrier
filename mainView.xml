@@ -85,6 +85,32 @@
       </control>
     </page>
 
+    <page label="Chat">
+      <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.StaticText" name="txtChatTriggerPattern" left="5" top="10" width="60" height="18" text="Pattern" />
+        <control progid="DecalControls.Edit" name="edtChatTriggerPattern" left="80" top="10" width="200" height="18" />
+        <control progid="DecalControls.StaticText" name="txtChatTriggerWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
+        <control progid="DecalControls.Choice" name="chcChatTriggerWebhook" left="80" top="30" width="140" height="18" />
+        <control progid="DecalControls.StaticText" name="txtChatTriggerMessage" left="5" top="50" width="160" height="18" text="Message" />
+        <control progid="DecalControls.Edit" name="edtChatTriggerMessage" left="80" top="50" width="515" height="18" />
+        <control progid="DecalControls.StaticText" name="txtChatTriggerMessage" left="210" top="80" width="390" height="18" text="Leave Message blank for default. Or use variable $EVENT." />
+        <control progid="DecalControls.PushButton" name="btnChatTriggerAdd" left="5" top="80" width="200" height="18" text="Add Chat Trigger" />
+
+        <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="110" width="20" height="18" text="On?" />
+        <control progid="DecalControls.StaticText" name="txtColEvent" left="30" top="110" width="100" height="18" text="Event" />
+        <control progid="DecalControls.StaticText" name="txtColWebhook" left="135" top="110" width="100" height="18" text="Webhook" />
+        <control progid="DecalControls.StaticText" name="txtColMessage" left="230" top="110" width="100" height="18" text="Message" />
+        <control progid="DecalControls.StaticText" name="txtColDelete" left="555" top="110" width="60" height="18" text="Delete" />
+        <control progid="DecalControls.List" name="lstChatTriggers" left="5" top="130" width="590" height="200">
+          <column progid="DecalControls.CheckColumn" name="colEnabled" fixedwidth="20" />
+          <column progid="DecalControls.TextColumn" name="colPattern" fixedwidth="100" />
+          <column progid="DecalControls.TextColumn" name="colWebhook" fixedwidth="80" />
+          <column progid="DecalControls.TextColumn" name="colMessage" fixedwidth="325" />
+          <column progid="DecalControls.IconColumn" name="colDelete" fixedwidth="18" />
+        </control>
+      </control>
+    </page>
+
     <page label="Settings">
       <control progid="DecalControls.FixedLayout" clipped="">
         <control progid="DecalControls.Checkbox" name="chckVerbose" left="5" top="10" width="200" height="18" checked="false" text="Verbose output"/>

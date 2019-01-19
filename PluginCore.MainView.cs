@@ -9,13 +9,13 @@ namespace TownCrier
     [MVWireUpControlEvents]
     public partial class PluginCore : PluginBase
     {
-        [MVControlReference("lstEventTriggers")]
-        private IList lstEventTriggers = null;
-        private struct EventTriggersList
-        {
-            public const int Enabled = 0, Event = 1, Webhook = 2, MessageFormat = 3, Delete = 4;
-        }
-
+        // Timed
+        [MVControlReference("edtTimedTriggerMinutes")]
+        private ITextBox edtTimedTriggerMinutes = null;
+        [MVControlReference("edtTimedTriggerMessage")]
+        private ITextBox edtTimedTriggerMessage = null;
+        [MVControlReference("chcTimedTriggerWebhook")]
+        private ICombo chcTimedTriggerWebhook = null;
         [MVControlReference("lstTimedTriggers")]
         private IList lstTimedTriggers = null;
         private struct TimedTriggersList
@@ -23,30 +23,35 @@ namespace TownCrier
             public const int Enabled = 0, Minutes = 1, Webhook = 2, Message = 3, Delete = 4;
         }
 
-        [MVControlReference("lstWebhooks")]
-        private IList lstWebhooks = null;
-        private struct WebhooksList
-        {
-            public const int Name = 0, URL = 1, Method = 2, Payload = 3, Test = 4, Delete = 5;
-        }
-
-        [MVControlReference("chcEventTriggerEvent")]
-        private ICombo chcEventTriggerEvent = null;
-
-        [MVControlReference("chcTimedTriggerWebhook")]
-        private ICombo chcTimedTriggerWebhook = null;
-
-        [MVControlReference("chcEventsWebhook")]
-        private ICombo chcEventsWebhook = null;
-
-        [MVControlReference("edtTimedTriggerMinutes")]
-        private ITextBox edtTimedTriggerMinutes = null;
-        [MVControlReference("edtTimedTriggerMessage")]
-        private ITextBox edtTimedTriggerMessage = null;
-
+        // Events
         [MVControlReference("edtEventsMessage")]
         private ITextBox edtEventsMessage = null;
+        [MVControlReference("chcEventsWebhook")]
+        private ICombo chcEventsWebhook = null;
+        [MVControlReference("chcEventTriggerEvent")]
+        private ICombo chcEventTriggerEvent = null;
+        [MVControlReference("lstEventTriggers")]
+        private IList lstEventTriggers = null;
+        private struct EventTriggersList
+        {
+            public const int Enabled = 0, Event = 1, Webhook = 2, MessageFormat = 3, Delete = 4;
+        }
 
+        // Chat
+        [MVControlReference("edtChatTriggerMessage")]
+        private ITextBox edtChatTriggerMessage = null;
+        [MVControlReference("chcChatTriggerWebhook")]
+        private ICombo chcChatTriggerWebhook = null;
+        [MVControlReference("edtChatTriggerPattern")]
+        private ITextBox edtChatTriggerPattern = null;
+        [MVControlReference("lstChatTriggers")]
+        private IList lstChatTriggers = null;
+        private struct ChatTriggersList
+        {
+            public const int Enabled = 0, Pattern = 1, Webhook = 2, Message = 3, Delete = 4;
+        }
+
+        // Webhooks
         [MVControlReference("edtName")]
         private ITextBox edtName = null;
         [MVControlReference("edtURL")]
@@ -55,7 +60,14 @@ namespace TownCrier
         private ICombo chcMethod = null;
         [MVControlReference("edtPayload")]
         private ITextBox edtPayload = null;
+        [MVControlReference("lstWebhooks")]
+        private IList lstWebhooks = null;
+        private struct WebhooksList
+        {
+            public const int Name = 0, URL = 1, Method = 2, Payload = 3, Test = 4, Delete = 5;
+        }
 
+        // Settings
         [MVControlReference("chckVerbose")]
         private ICheckBox chckVerbose = null;
 
@@ -66,7 +78,7 @@ namespace TownCrier
             {
                 EventTrigger trigger = new EventTrigger(
                     (string)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
-                    (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
+                    (Webhook)chcEventsWebhook.Data[chcEventsWebhook.Selected],
                     edtEventsMessage.Text,
                     true);
 
@@ -92,13 +104,6 @@ namespace TownCrier
                     throw new Exception("Value for Minutes must be a whole number greater than 0.");
                 }
 
-                Webhook webhook = Webhooks.Find(h => h.Name == (string)chcTimedTriggerWebhook.Data[chcTimedTriggerWebhook.Selected]);
-
-                if (webhook == null)
-                {
-                    throw new Exception("Failed to add webhook because it couldn't be found. This is a bad bug.");
-                }
-
                 if (edtTimedTriggerMessage.Text.Length <= 0)
                 {
                     throw new Exception("You have to enter a Message for your Timer.");
@@ -106,7 +111,7 @@ namespace TownCrier
 
                 TimedTrigger trigger = new TimedTrigger(
                     int.Parse(edtTimedTriggerMinutes.Text),
-                    webhook,
+                    (Webhook)chcTimedTriggerWebhook.Data[chcTimedTriggerWebhook.Selected],
                     edtTimedTriggerMessage.Text,
                     true);
 
@@ -118,6 +123,31 @@ namespace TownCrier
             catch (Exception ex)
             {
                 Util.WriteToChat("Error adding new Timer: " + ex.Message);
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("btnChatTriggerAdd", "Click")]
+        void btnChatTriggerAdd_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                Util.LogMessage("btnChatTrigger Add_Click");
+
+                ChatTrigger trigger = new ChatTrigger(
+                    edtChatTriggerPattern.Text,
+                    (Webhook)chcChatTriggerWebhook.Data[chcChatTriggerWebhook.Selected],
+                    edtChatTriggerMessage.Text,
+                    true);
+
+                ChatTriggers.Add(trigger);
+
+                RefreshChatTriggerList();
+                SaveSettings();
+            }
+            catch (Exception ex)
+            {
+                Util.WriteToChat("Error adding new ChatTrigger: " + ex.Message);
                 Util.LogError(ex);
             }
         }
@@ -156,6 +186,7 @@ namespace TownCrier
                 RefreshWebhooksList();
                 RefreshEventTriggerWebhookChoice();
                 RefreshTimedTriggerWebhookChoice();
+                RefreshChatTriggerWebhookChoice();
                 SaveSettings();
             }
             catch (Exception ex)
@@ -287,6 +318,48 @@ namespace TownCrier
             }
         }
 
+        [MVControlEvent("lstChatTriggers", "Click")]
+        private void lstChatTriggers_Click(object sender, int row, int col)
+        {
+            try
+            {
+                switch (col)
+                {
+                    case ChatTriggersList.Enabled:
+                        bool enabled = (bool)lstChatTriggers[row][col][0];
+
+                        if (enabled)
+                        {
+                            ChatTriggers[row].Enable();
+                        }
+                        else
+                        {
+                            ChatTriggers[row].Disable();
+                        }
+
+                        SaveSettings();
+
+                        break;
+                    case ChatTriggersList.Delete:
+                        ChatTriggers.RemoveAt(row);
+                        RefreshChatTriggerList();
+
+                        SaveSettings();
+
+                        break;
+                    default:
+                        PrintChatTrigger(ChatTriggers[row]);
+
+                        break;
+                };
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+
         [MVControlEvent("lstWebhooks", "Click")]
         private void lstWebhooks_Click(object sender, int row, int col)
         {
@@ -302,6 +375,7 @@ namespace TownCrier
                         Webhooks.RemoveAt(row);
                         RefreshEventTriggerWebhookChoice();
                         RefreshTimedTriggerWebhookChoice();
+                        RefreshChatTriggerWebhookChoice();
                         RefreshWebhooksList();
 
                         SaveSettings();
@@ -340,9 +414,11 @@ namespace TownCrier
             {
                 RefreshEventTriggerWebhookChoice();
                 RefreshTimedTriggerWebhookChoice();
+                RefreshChatTriggerWebhookChoice();
                 RefreshWebhooksList();
                 RefreshTimedTriggerList();
                 RefreshEventTriggerList();
+                RefreshChatTriggerList();
                 RefreshSettings();
             }
             catch (Exception ex)
@@ -363,7 +439,7 @@ namespace TownCrier
 
                     row[EventTriggersList.Enabled][0] = trigger.Enabled;
                     row[EventTriggersList.Event][0] = trigger.Event;
-                    row[EventTriggersList.Webhook][0] = trigger.WebhookName;
+                    row[EventTriggersList.Webhook][0] = trigger.Webhook.Name;
                     row[EventTriggersList.MessageFormat][0] = trigger.MessageFormat;
                     row[EventTriggersList.Delete][1] = Icons.Delete;
                 }
@@ -389,6 +465,29 @@ namespace TownCrier
                     row[TimedTriggersList.Webhook][0] = timer.Webhook.Name;
                     row[TimedTriggersList.Message][0] = timer.Message;
                     row[TimedTriggersList.Delete][1] = Icons.Delete;
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        private void RefreshChatTriggerList()
+        {
+            try
+            {
+                lstChatTriggers.Clear();
+
+                foreach (var trigger in ChatTriggers)
+                {
+                    IListRow row = lstChatTriggers.Add();
+
+                    row[ChatTriggersList.Enabled][0] = trigger.Enabled;
+                    row[ChatTriggersList.Pattern][0] = trigger.Pattern;
+                    row[ChatTriggersList.Webhook][0] = trigger.Webhook.Name;
+                    row[ChatTriggersList.Message][0] = trigger.MessageFormat;
+                    row[ChatTriggersList.Delete][1] = Icons.Delete;
                 }
             }
             catch (Exception ex)
@@ -429,7 +528,7 @@ namespace TownCrier
 
                 foreach (var webhook in Webhooks)
                 {
-                    chcEventsWebhook.Add(webhook.Name, webhook.Name);
+                    chcEventsWebhook.Add(webhook.Name, webhook);
                 }
 
                 chcEventsWebhook.Selected = 0;
@@ -448,10 +547,29 @@ namespace TownCrier
 
                 foreach (var webhook in Webhooks)
                 {
-                    chcTimedTriggerWebhook.Add(webhook.Name, webhook.Name);
+                    chcTimedTriggerWebhook.Add(webhook.Name, webhook);
                 }
 
                 chcTimedTriggerWebhook.Selected = 0;
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        private void RefreshChatTriggerWebhookChoice()
+        {
+            try
+            {
+                chcChatTriggerWebhook.Clear();
+
+                foreach (var webhook in Webhooks)
+                {
+                    chcChatTriggerWebhook.Add(webhook.Name, webhook);
+                }
+
+                chcChatTriggerWebhook.Selected = 0;
             }
             catch (Exception ex)
             {

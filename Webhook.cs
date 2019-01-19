@@ -96,6 +96,9 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("URI " + URI(message).ToString());
+                Util.LogMessage("Payload " + Payload(message));
+
                 Thread t = new Thread(() =>
                 {
                     try

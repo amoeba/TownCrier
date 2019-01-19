@@ -7,8 +7,8 @@ namespace TownCrier
     class ChatPattern
     {
         public string Event { get; }
-        string Pattern;
-        int Color;
+        public string Pattern { get;  }
+        public int Color { get; }
 
         public ChatPattern(string evt, string pattern)
         {
@@ -28,7 +28,14 @@ namespace TownCrier
         {
             // Match the message and the color (but only match color if
             // we set a Color to match)
-            return e.Text.Contains(Pattern) && Color == -1 ? true : e.Color == Color;
+            if( e.Text.Contains(Pattern) && (Color == -1 ? true : e.Color == Color))
+            {
+                Util.LogMessage("Matched!");
+                return true;
+            }
+            Util.LogMessage("NotMatched!");
+
+            return false;
         }
     }
 }
