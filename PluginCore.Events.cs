@@ -16,7 +16,7 @@ namespace TownCrier
                 LoadSettings();
                 Core.CharacterFilter.Death += CharacterFilter_Death;
 
-                TriggerWebhooksForEvent(EVENT.LOGIN, Core.CharacterFilter.Name + " has logged in.");
+                TriggerWebhooksForEvent(EVENTS.LOGIN, Core.CharacterFilter.Name + " has logged in.");
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
@@ -48,7 +48,7 @@ namespace TownCrier
         {
             try
             {
-                TriggerWebhooksForEvent(EVENT.LOGOFF, Core.CharacterFilter.Name + " has logged off.");
+                TriggerWebhooksForEvent(EVENTS.LOGOFF, Core.CharacterFilter.Name + " has logged off.");
 
                 SaveSettings();
                 Core.CharacterFilter.Death -= CharacterFilter_Death;
@@ -85,7 +85,7 @@ namespace TownCrier
         {
             try
             {
-                TriggerWebhooksForEvent(EVENT.DEATH, Core.CharacterFilter.Name + " has died: " + e.Text);
+                TriggerWebhooksForEvent(EVENTS.DEATH, Core.CharacterFilter.Name + " has died: " + e.Text);
             }
             catch (Exception ex)
             {

@@ -24,14 +24,22 @@ namespace TownCrier
         }
 
         // Events the plugin handles, superset of GameEvent
-        public struct EVENT
-        {
+        public struct EVENTS {
             public const string LOGIN = "LOGIN";
             public const string LOGOFF = "LOGOFF";
-            public const string DEATH = "DEATH";
-            public const string SAY = "SAY";
             public const string LEVEL = "LEVEL";
+            public const string DEATH = "DEATH";
+            public const string DROPONDEATH = "DROPONDEATH";
         };
+
+        public struct EVENTDESC
+        {
+            public const string LOGIN = "You log in";
+            public const string LOGOFF = "You log off";
+            public const string LEVEL = "You level up";
+            public const string DEATH = "You die";
+            public const string DROPONDEATH = "You drop items on death";
+        }
 
         // Just GameEvent events the plugin handles
         private struct GAMEEVENT
@@ -53,7 +61,7 @@ namespace TownCrier
                 Globals.Init("TownCrier", Host, Core);
                 Settings.Init(false);
                 MVWireupHelper.WireupStart(this, Host);
-                
+
                 // App state
                 EventTriggers = new List<EventTrigger>();
                 TimedTriggers = new List<TimedTrigger>();
@@ -62,9 +70,8 @@ namespace TownCrier
                 // Set up chat patterns
                 // TODO: Move to this to a static unless I really wanna make this customizable
                 ChatPatterns = new List<ChatPattern>();
-                ChatPatterns.Add(new ChatPattern(EVENT.SAY, "says, \""));
-                ChatPatterns.Add(new ChatPattern(EVENT.LEVEL, "You are now level ", 13));
-                //ChatPatterns.Add(new ChatPattern(EVENT.DROPONDEATH, "says, \""));
+                ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You are now level ", 13));
+                ChatPatterns.Add(new ChatPattern(EVENTS.DROPONDEATH, "You've lost "));
 
                 // UI
                 RefreshUI();

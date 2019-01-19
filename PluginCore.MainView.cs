@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Decal.Adapter;
 using MyClasses.MetaViewWrappers;
-using VirindiViewService;
-using VirindiViewService.Controls;
 
 namespace TownCrier
 {
@@ -471,10 +468,11 @@ namespace TownCrier
         {
             try
             {
-                chcEventTriggerEvent.Add("You log in", EVENT.LOGIN);
-                chcEventTriggerEvent.Add("You log off", EVENT.LOGOFF);
-                chcEventTriggerEvent.Add("You die", EVENT.DEATH);
-                chcEventTriggerEvent.Add("You level up", EVENT.LEVEL);
+                chcEventTriggerEvent.Add(EVENTDESC.LOGIN, EVENTS.LOGIN);
+                chcEventTriggerEvent.Add(EVENTDESC.LOGOFF, EVENTS.LOGOFF);
+                chcEventTriggerEvent.Add(EVENTDESC.LEVEL, EVENTS.LEVEL);
+                chcEventTriggerEvent.Add(EVENTDESC.DEATH, EVENTS.DEATH);
+                chcEventTriggerEvent.Add(EVENTDESC.DROPONDEATH, EVENTS.DROPONDEATH);
             }
             catch (Exception ex)
             {
