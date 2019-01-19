@@ -31,34 +31,24 @@ namespace TownCrier
                     return;
                 }
 
-                Util.LogMessage("ChatBoxMessage " + e.Text + " with color " + e.Color.ToString());
-
                 foreach (ChatPattern pattern in ChatPatterns)
                 {
-                    Util.WriteToChat("Testing pattern " + pattern.Pattern + " with color " + pattern.Color.ToString());
-
                     if (!pattern.Match(e))
                     {
-                        Util.WriteToChat("No match for " + e.Text + " and color " + e.Color.ToString());
                         continue;
                     }
 
-                    Util.WriteToChat("Match for " + e.Text + " and color " + e.Color.ToString());
                     // Messages sometimes have newlines in them
                     TriggerWebhooksForEvent(pattern.Event, e.Text.Replace("\n", ""));
                 }
 
                 foreach (ChatTrigger trigger in ChatTriggers)
                 {
-                    Util.WriteToChat("Testing pattern " + trigger.Pattern);
-
                     if (!trigger.Match(e))
                     {
-                        Util.WriteToChat("No match for " + e.Text + " and color " + e.Color.ToString());
                         continue;
                     }
 
-                    Util.WriteToChat("Match for " + e.Text + " and color " + e.Color.ToString());
                     // Messages sometimes have newlines in them
                     TriggerWebhooksForChatTrigger(trigger, e.Text.Replace("\n", ""));
                 }

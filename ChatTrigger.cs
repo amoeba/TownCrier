@@ -24,10 +24,8 @@ namespace TownCrier
             // we set a Color to match)
             if (e.Text.Contains(Pattern))
             {
-                Util.LogMessage("Matched!");
                 return true;
             }
-            Util.LogMessage("NotMatched!");
 
             return false;
         }

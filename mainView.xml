@@ -97,7 +97,7 @@
         <control progid="DecalControls.PushButton" name="btnChatTriggerAdd" left="5" top="80" width="200" height="18" text="Add Chat Trigger" />
 
         <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="110" width="20" height="18" text="On?" />
-        <control progid="DecalControls.StaticText" name="txtColEvent" left="30" top="110" width="100" height="18" text="Event" />
+        <control progid="DecalControls.StaticText" name="txtColPattern" left="30" top="110" width="100" height="18" text="Pattern" />
         <control progid="DecalControls.StaticText" name="txtColWebhook" left="135" top="110" width="100" height="18" text="Webhook" />
         <control progid="DecalControls.StaticText" name="txtColMessage" left="230" top="110" width="100" height="18" text="Message" />
         <control progid="DecalControls.StaticText" name="txtColDelete" left="555" top="110" width="60" height="18" text="Delete" />

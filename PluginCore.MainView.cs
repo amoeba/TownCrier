@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Decal.Adapter;
+﻿using Decal.Adapter;
 using MyClasses.MetaViewWrappers;
+using System;
+using System.Collections.Generic;
 
 namespace TownCrier
 {
@@ -132,7 +132,15 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("btnChatTrigger Add_Click");
+                if (edtChatTriggerPattern.Text.Length <= 0)
+                {
+                    throw new Exception("You have to enter a Pattern for your ChatTrigger.");
+                }
+
+                if (edtChatTriggerMessage.Text.Length <= 0)
+                {
+                    throw new Exception("You have to enter a Message for your ChatTrigger.");
+                }
 
                 ChatTrigger trigger = new ChatTrigger(
                     edtChatTriggerPattern.Text,

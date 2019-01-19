@@ -191,7 +191,6 @@ namespace TownCrier
 
                         if (foundEvent.Count <= 0)
                         {
-                            Util.WriteToChat("eventtrigger Could not find webhook by name " + tokens[2]);
                             break;
                         }
 
@@ -209,7 +208,6 @@ namespace TownCrier
 
                         if (foundTimed.Count <= 0)
                         {
-                            Util.WriteToChat("timedtrigger Could not find webhook by name " + tokens[2]);
                             break;
                         }
 
@@ -227,7 +225,6 @@ namespace TownCrier
 
                         if (foundChat.Count <= 0)
                         {
-                            Util.WriteToChat("chattrigger Could not find webhook by name " + tokens[2]);
                             break;
                         }
 
@@ -333,7 +330,6 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("TriggerWebhooksForChatTrigger() " + eventMessage);
                 trigger.Webhook.Send(new WebhookMessage(trigger.MessageFormat, eventMessage));
             }
             catch (Exception ex)

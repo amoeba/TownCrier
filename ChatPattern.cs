@@ -30,10 +30,8 @@ namespace TownCrier
             // we set a Color to match)
             if( e.Text.Contains(Pattern) && (Color == -1 ? true : e.Color == Color))
             {
-                Util.LogMessage("Matched!");
                 return true;
             }
-            Util.LogMessage("NotMatched!");
 
             return false;
         }
