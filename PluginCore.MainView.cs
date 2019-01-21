@@ -67,10 +67,6 @@ namespace TownCrier
             public const int Name = 0, URL = 1, Method = 2, Payload = 3, Test = 4, Delete = 5;
         }
 
-        // Settings
-        [MVControlReference("chckVerbose")]
-        private ICheckBox chckVerbose = null;
-
         [MVControlEvent("btnEventTriggerAdd", "Click")]
         void btnEventTriggerAdd_Click(object sender, MVControlEventArgs e)
         {
@@ -362,21 +358,6 @@ namespace TownCrier
             }
         }
 
-        [MVControlEvent("chckVerbose", "Change")]
-        private void chkVerbose_Change(object sender, MVCheckBoxChangeEventArgs e)
-        {
-            try
-            {
-                Settings.Verbose = e.Checked;
-
-                SaveSettings();
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-            }
-        }
-
         private void RefreshUI()
         {
             try
@@ -548,7 +529,7 @@ namespace TownCrier
 
         private void RefreshSettings()
         {
-            chckVerbose.Checked = Settings.Verbose;
+            // TODO
         }
 
         private void PopulateEventChoices()
