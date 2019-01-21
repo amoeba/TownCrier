@@ -262,7 +262,6 @@ namespace TownCrier
                         writer.WriteLine(webhook.ToSetting());
                     }
 
-
                     foreach (EventTrigger trigger in EventTriggers)
                     {
                         writer.WriteLine(trigger.ToSetting());
