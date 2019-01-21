@@ -5,26 +5,6 @@ namespace TownCrier
 {
 	public static class Util
 	{
-        public static void LogMessage(string message)
-        {
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Asheron's Call\" + Globals.PluginName + "-errors.txt", true))
-                {
-                    writer.WriteLine("============================================================================");
-                    writer.WriteLine(DateTime.Now.ToString());
-                    writer.WriteLine("Message: " + message);
-                    writer.WriteLine("============================================================================");
-                    writer.WriteLine("");
-                    writer.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                LogError(ex);
-            }
-        }
-
         public static void LogError(Exception ex)
 		{
 			try
