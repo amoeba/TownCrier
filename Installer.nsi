@@ -1,12 +1,12 @@
 ﻿#####
-# Installer for TreeStats
+# Installer for TownCrier
 
 
 ##### Globals
-!define APPNAME "TreeStats"
+!define APPNAME "TownCrier"
 !define GUID "{F86E1BAE-C2F8-4060-9B98-CD74EB41EB6E}"
 !define SURROGATE "{71A69713-6593-47EC-0002-0000000DECA1}"
-!define DLL "TownCrier_v0.1.dll"
+!define DLL "TownCrier_v0.2.dll"
 
 
 ##### Settings
