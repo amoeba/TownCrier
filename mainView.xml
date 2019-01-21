@@ -6,13 +6,19 @@
       <control progid="DecalControls.FixedLayout" clipped="">
         <control progid="DecalControls.StaticText" name="txtName" left="5" top="10" width="60" height="18" text="Name" />
         <control progid="DecalControls.Edit" name="edtName" left="80" top="10" width="100" height="18" />
+
         <control progid="DecalControls.StaticText" name="txtURL" left="5" top="30" width="60" height="18" text="URL" />
         <control progid="DecalControls.Edit" name="edtURL" left="80" top="30" width="515" height="18" />
+        
         <control progid="DecalControls.StaticText" name="txtMethod" left="5" top="50" width="160" height="18" text="Method" />
         <control progid="DecalControls.Choice" name="chcMethod" left="80" top="50" width="60" height="18" />
-        <control progid="DecalControls.StaticText" name="txtPayload" left="5" top="70" width="160" height="18" text="Payload" />
+        <control progid="DecalControls.StaticText" name="txtUsage" left="150" top="50" width="300" height="18" text="Leave JSON blank if Method is GET." />
+
+        
+        <control progid="DecalControls.StaticText" name="txtPayload" left="5" top="70" width="160" height="18" text="JSON" />
         <control progid="DecalControls.Edit" name="edtPayload" left="80" top="70" width="515" height="18" />
         <control progid="DecalControls.PushButton" name="btnWebhookAdd" left="5" top="100" width="100" height="18" text="Add Webhook" />
+        <control progid="DecalControls.StaticText" name="txtUsage" left="120" top="100" width="500" height="18" text="Put an @ symbol in your URL/JSON and they'll get replaced with your message." />
 
         <control progid="DecalControls.StaticText" name="txtColName" left="8" top="130" width="80" height="18" text="Name" />
         <control progid="DecalControls.StaticText" name="txtColURL" left="95" top="130" width="160" height="18" text="URL" />
@@ -41,8 +47,8 @@
               <control progid="DecalControls.Choice" name="chcEventsWebhook" left="80" top="30" width="140" height="18" />
               <control progid="DecalControls.StaticText" name="txtEventsMessage" left="5" top="50" width="160" height="18" text="Message" />
               <control progid="DecalControls.Edit" name="edtEventsMessage" left="80" top="50" width="515" height="18" />
-              <control progid="DecalControls.StaticText" name="txtEventTriggerMessage" left="250" top="80" width="390" height="18" text="Leave Message blank for default. See Variables tab for more details." />
               <control progid="DecalControls.PushButton" name="btnEventTriggerAdd" left="5" top="80" width="120" height="18" text="Add Event Trigger" />
+              <control progid="DecalControls.StaticText" name="txtEventTriggerMessage" left="140" top="80" width="390" height="18" text="Leave Message blank for default. See Variables tab for more details." />
 
               <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="110" width="20" height="18" text="On?" />
               <control progid="DecalControls.StaticText" name="txtColEvent" left="30" top="110" width="100" height="18" text="Event" />
@@ -68,8 +74,8 @@
               <control progid="DecalControls.Choice" name="chcTimedTriggerWebhook" left="80" top="30" width="140" height="18" />
               <control progid="DecalControls.StaticText" name="txtTimersMessage" left="5" top="50" width="100" height="18" text="Message" />
               <control progid="DecalControls.Edit" name="edtTimedTriggerMessage" left="80" top="50" width="515" height="18" />
-              <control progid="DecalControls.StaticText" name="txtTimedTriggerMessage" left="250" top="80" width="390" height="18" text="Leave Message blank for default. See Variables tab for more details." />
               <control progid="DecalControls.PushButton" name="btnTimedTriggerAdd" left="5" top="80" width="120" height="18" text="Add Timer" />
+              <control progid="DecalControls.StaticText" name="txtTimedTriggerMessage" left="140" top="80" width="390" height="18" text="See Variables tab for more details on how to use the Message field." />
 
               <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="110" width="20" height="18" text="On?" />
               <control progid="DecalControls.StaticText" name="txtColMinutes" left="30" top="110" width="40" height="18" text="Every" />
@@ -89,13 +95,13 @@
           <page label="Chat">
             <control progid="DecalControls.FixedLayout" clipped="">
               <control progid="DecalControls.StaticText" name="txtChatTriggerPattern" left="5" top="10" width="515" height="18" text="Pattern" />
-              <control progid="DecalControls.Edit" name="edtChatTriggerPattern" left="80" top="10" width="200" height="18" />
+              <control progid="DecalControls.Edit" name="edtChatTriggerPattern" left="80" top="10" width="515" height="18" />
               <control progid="DecalControls.StaticText" name="txtChatTriggerWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
               <control progid="DecalControls.Choice" name="chcChatTriggerWebhook" left="80" top="30" width="140" height="18" />
               <control progid="DecalControls.StaticText" name="txtChatTriggerMessage" left="5" top="50" width="160" height="18" text="Message" />
               <control progid="DecalControls.Edit" name="edtChatTriggerMessage" left="80" top="50" width="515" height="18" />
-              <control progid="DecalControls.StaticText" name="txtChatTriggerMessage" left="250" top="80" width="390" height="18" text="Leave Message blank for default. See Variables tab for more details." />
               <control progid="DecalControls.PushButton" name="btnChatTriggerAdd" left="5" top="80" width="120" height="18" text="Add Chat Trigger" />
+              <control progid="DecalControls.StaticText" name="txtChatTriggerMessage" left="140" top="80" width="390" height="18" text="Leave Message blank for default. See Variables tab for more details." />
 
               <control progid="DecalControls.StaticText" name="txtColEnabled" left="5" top="110" width="20" height="18" text="On?" />
               <control progid="DecalControls.StaticText" name="txtColPattern" left="30" top="110" width="100" height="18" text="Pattern" />
@@ -112,25 +118,18 @@
             </control>
           </page>
           <page label="Variables">
-            <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="10" width="590" height="200" text="In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). Example: Hello, $NAME." />
+            <control progid="DecalControls.FixedLayout" clipped="">
+              <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="10" width="580" height="200" text="In the Message field, you can make use of special variables to send yourself information about your character. You can use as many variables as you want in each Message and each variable starts with a '$' (e.g., $LOC gives your coordinates)." />
+              <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="70" width="580" height="200" text="Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). Example: 'Hello, $NAME' would print 'Hello, ' followed by your character's name." />
+              <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="130" width="580" height="200" text="Event and Chat Triggers can also make use of a special variable, $EVENT, that lets you print the text of the event or chat message that triggered the webhook. For example, a Chat trigger with the Pattern 'You say' and a Message of '$EVENT' will send everything you say to your webhook. $EVENT does not work for TimedTriggers." />
+            </control>
           </page>
         </control>
     </page>
-
-    <page label="Settings">
-      <control progid="DecalControls.FixedLayout" clipped="">
-        <control progid="DecalControls.Checkbox" name="chckVerbose" left="5" top="10" width="200" height="18" checked="false" text="Verbose output"/>
-      </control>
-    </page>
-
-    <page label="About">
-      <control progid="DecalControls.FixedLayout" clipped="">
-        <control progid="DecalControls.StaticText" name="txtAbout" left="5" top="10" width="400" height="200" text="TownCrier was created by Kolth. For more information, visit https://github.com/amoeba/TownCrier." />
-      </control>
-    </page>
     
-    <page label="Debug">
+    <page label="Help">
       <control progid="DecalControls.FixedLayout" clipped="">
+        <control progid="DecalControls.StaticText" name="txtAbout" left="10" top="10" width="400" height="200" text="TownCrier was created by Kolth. For detailed information about how to use this plugin, visit https://github.com/amoeba/TownCrier. I'm also on most of the AC Discord servers as petridish and also on the TreeStats (https://treestats.net/) Discord." />
       </control>
     </page>
   </control>
