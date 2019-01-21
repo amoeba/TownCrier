@@ -168,9 +168,9 @@ namespace TownCrier
                 }
 
                 // Either the URL or the PayloadFormatString should have an @ symbol, but just warn
-                if (!edtName.Text.Contains("@") || !edtPayload.Text.Contains("@"))
+                if (!(edtName.Text.Contains("@") || edtPayload.Text.Contains("@")))
                 {
-                    Util.WriteToChat("Warning: Neither your URL or PayloadFormatString had an @ symbol in them which means your webhooks will trigger without a message.");
+                    Util.WriteToChat("Warning: Neither your URL or JSON had an @ symbol in them which means your webhooks will trigger without a message.");
                 }
 
                 // Stop if the name isn't unique
