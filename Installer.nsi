@@ -10,7 +10,7 @@
 
 
 ##### Settings
-OutFile "InstallTownCrier_v0.1.exe"
+OutFile "InstallTownCrier_v0.2.exe"
 InstallDir "$PROGRAMFILES\${APPNAME}"
  
 
