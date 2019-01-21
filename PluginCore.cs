@@ -129,27 +129,19 @@ namespace TownCrier
                     return;
                 }
 
-                using (StreamWriter writer = new StreamWriter(path))
+                using (StreamReader reader = new StreamReader(path))
                 {
-                    if (!File.Exists(path))
+                    string line;
+
+                    while (!reader.EndOfStream)
                     {
-                        return;
+                        line = reader.ReadLine();
+
+                        LoadSetting(line);
                     }
-
-                    using (StreamReader reader = new StreamReader(path))
-                    {
-                        string line;
-
-                        while (!reader.EndOfStream)
-                        {
-                            line = reader.ReadLine();
-
-                            LoadSetting(line);
-                        }
-                    }
-
-                    RefreshUI();
                 }
+
+                RefreshUI();
             }
             catch (Exception ex)
             {
