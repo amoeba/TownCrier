@@ -120,28 +120,36 @@ namespace TownCrier
                 Webhooks.Clear();
 
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) +
-                    @"\Asheron's Call\" +
+                    @"\Decal Plugins\" +
                     Globals.PluginName +
-                    "-settings.txt";
+                    @"\settings.txt";
 
                 if (!File.Exists(path))
                 {
                     return;
                 }
 
-                using (StreamReader reader = new StreamReader(path))
+                using (StreamWriter writer = new StreamWriter(path))
                 {
-                    string line;
-
-                    while (!reader.EndOfStream)
+                    if (!File.Exists(path))
                     {
-                        line = reader.ReadLine();
-
-                        LoadSetting(line);
+                        return;
                     }
-                }
 
-                RefreshUI();
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        string line;
+
+                        while (!reader.EndOfStream)
+                        {
+                            line = reader.ReadLine();
+
+                            LoadSetting(line);
+                        }
+                    }
+
+                    RefreshUI();
+                }
             }
             catch (Exception ex)
             {
@@ -245,10 +253,12 @@ namespace TownCrier
         {
             try
             {
+                Util.EnsurePluginFolder();
+
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) +
-                    @"\Asheron's Call\" +
+                    @"\Decal Plugins\" +
                     Globals.PluginName +
-                    "-settings.txt";
+                    @"\settings.txt";
 
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {

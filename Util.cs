@@ -5,13 +5,37 @@ namespace TownCrier
 {
 	public static class Util
 	{
+        public static void EnsurePluginFolder()
+        {
+            try
+            {
+                if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins"))
+                {
+                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins");
+                }
+
+                if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins\" + Globals.PluginName))
+                {
+                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins\" + Globals.PluginName);
+                }
+            }
+            catch (Exception ex) {
+                LogError(ex);
+            }
+        }
+
         public static void LogError(Exception ex)
 		{
 			try
 			{
-				using (StreamWriter writer = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Asheron's Call\" + Globals.PluginName + "-errors.txt", true))
+                EnsurePluginFolder();
+
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins\" + Globals.PluginName + @"\errors.txt";
+
+                using (StreamWriter writer = new StreamWriter(path, true))
 				{
-					writer.WriteLine("============================================================================");
+					writer.WriteLine("==" +
+                        "==========================================================================");
 					writer.WriteLine(DateTime.Now.ToString());
 					writer.WriteLine("Error: " + ex.Message);
 					writer.WriteLine("Source: " + ex.Source);
