@@ -12,8 +12,9 @@ A familiar example is hooking up a Discord channel to a service like GitHub/GitL
 
 ## Installation
 
-Until I release the first version, you'll have to install the plugin manually.
+Until I release the first version, you'll have to build and install the plugin manually.
 
+- Build the plugin (or ask me on [Discord](https://discord.gg/6hUvBrx))
 - Open Decal
 - Click Add (updating if it asks you)
 - Click Browse
@@ -21,11 +22,10 @@ Until I release the first version, you'll have to install the plugin manually.
 
 ## Getting started
 
-The UI is pretty basic at this point and I hope to make it easier to use eventually.
-To get your first webhook set up, you need to do two things:
+To get started, you need to:
 
-1. Create a webhook (in the Webhooks tab) (do this first)
-2. Create an action (in the Actions tab)
+1. Create at least one Webhook
+2. Create at least one Trigger (Event, Timed, or Chat)
 
 ### Creating a webhook
 
@@ -39,7 +39,7 @@ This guide assumes you're at least somewhat familiar with webhooks or at least t
 	Some webhook providers use query parameters (http://example.com/?foo=bar) instead of JSON payloads to send webhook parameters.
 	For these cases, put an `@` symbol in the URL where your message should go.
 	For example, a webhook for Zapier can look like `https://hooks.zapier.com/hooks/catch/123456/abcdefg/?message=@`, note the `@`.
-	If the ingame message is "You died.", TownCrier would send a GET request to `https://hooks.zapier.com/hooks/catch/123456/abcdefg/?message=You%20died`.
+	If the ingame message is "You died.", TownCrier would replace that `@` with "You died." and send a GET request to `https://hooks.zapier.com/hooks/catch/123456/abcdefg/?message=You%20died`.
 
 3. Provide an HTTP method (GET or POST) for your webhook
 4. Optional. Provide a JSON payload (only for POST webhooks). There's no need to fill this in for GET webhooks.
@@ -48,23 +48,20 @@ This guide assumes you're at least somewhat familiar with webhooks or at least t
 	For example, a Discord webhook payload would could like `{"content": "@"}` and the `@` would get replaced by the ingame message.
 5. Click Add Webhook
 
-### Creating an action
+### Creating Trigger
 
-Creating an action binds an ingame event to a particular webhook.
-A single webhook can be bound to multiple ingame events.
+Triggers cause Webhooks to be sent.
+There are three types of Triggers:
 
-1. Pick an Event (e.g., You log in)
-2. Pick a Webhook
-3. Click Add Action
+1. Event: Send Webhooks when certain events happen ingame (e.g., you dying)
+2. Timer: Send Webhooks at timed intervals
+3. Chat: Send Webhooks when you see certain text in chat (doesn't have to be actual chat, just messages in the chat window)
 
-### Creating a timer
+The trickiest part of setting up a trigger is using the Message field.
 
-Creating a timer causes the desired webhook to trigger at the time interval (in minutes) you specify.
+In the Message field, you can make use of special variables to send yourself information about your character. You can use as many variables as you want in each Message and each variable starts with a '$' (e.g., $LOC gives your coordinates).
 
-1. Provide a timer interval (in minutes). e.g., a value of '1' means your webook will trigger every minute.
-2. Pick a Webhook
-3. Enter a message:
+Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). Example: 'Hello, $NAME' would print 'Hello, ' followed by your character's name.
 
-	In your Message, you can make use of special variables to send yourself information about your character. Each variable starts with a $. Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). 
-	
-	Example: "Hello, $NAME, your vitae is $VITAE".
+Event and Chat Triggers can also make use of a special variable, $EVENT, that lets you print the text of the event or chat message that triggered the webhook. For example, a Chat trigger with the Pattern 'You say' and a Message of '$EVENT' will send everything you say to your webhook. $EVENT does not work for TimedTriggers.
+            
