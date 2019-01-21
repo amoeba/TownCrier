@@ -131,9 +131,6 @@
     
     <page label="Debug">
       <control progid="DecalControls.FixedLayout" clipped="">
-        <control progid="DecalControls.PushButton" name="btnLoad" left="5" top="10" width="60" height="18" text="Load" />
-        <control progid="DecalControls.PushButton" name="btnSave" left="100" top="10" width="60" height="18" text="Save" />
-        <control progid="DecalControls.PushButton" name="btnFoo" left="5" top="30" width="60" height="18" text="Save" />
       </control>
     </page>
   </control>

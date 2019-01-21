@@ -204,45 +204,6 @@ namespace TownCrier
             }
         }
 
-        [MVControlEvent("btnLoad", "Click")]
-        void btnLoad_Click(object sender, MVControlEventArgs e)
-        {
-            try
-            {
-                LoadSettings();
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-            }
-        }
-
-        [MVControlEvent("btnSave", "Click")]
-        void btnSave_Click(object sender, MVControlEventArgs e)
-        {
-            try
-            {
-                SaveSettings();
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-            }
-        }
-
-        [MVControlEvent("btnFoo", "Click")]
-        void btnFoo_Click(object sender, MVControlEventArgs e)
-        {
-            try
-            {
-                Util.WriteToChat("btnFoo_Click()");
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-            }
-        }
-
         [MVControlEvent("lstEventTriggers", "Click")]
         private void lstEventTriggers_Click(object sender, int row, int col)
         {
