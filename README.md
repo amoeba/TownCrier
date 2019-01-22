@@ -1,3 +1,5 @@
+![](https://img.shields.io/github/downloads/amoeba/towncrier/total.svg)
+
 # TownCrier
 
 ![](docs/discord-webhook-example.png)
