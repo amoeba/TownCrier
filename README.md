@@ -1,4 +1,5 @@
 ![](https://img.shields.io/github/downloads/amoeba/towncrier/total.svg)
+![](https://img.shields.io/discord/283662381081427968.svg)
 
 # TownCrier
 
