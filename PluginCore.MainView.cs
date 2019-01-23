@@ -133,11 +133,6 @@ namespace TownCrier
                     throw new Exception("You have to enter a Pattern for your ChatTrigger.");
                 }
 
-                if (edtChatTriggerMessage.Text.Length <= 0)
-                {
-                    throw new Exception("You have to enter a Message for your ChatTrigger.");
-                }
-
                 ChatTrigger trigger = new ChatTrigger(
                     edtChatTriggerPattern.Text,
                     (Webhook)chcChatTriggerWebhook.Data[chcChatTriggerWebhook.Selected],
