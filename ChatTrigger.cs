@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace TownCrier
 {
     class ChatTrigger
     {
-        public string Pattern;
+        public Regex Pattern;
+        public int Color;
         public Webhook Webhook;
         public string MessageFormat;
         public bool Enabled;
 
         public ChatTrigger(string pattern, Webhook webhook, string message, bool enabled)
         {
-            Pattern = pattern;
+            Pattern = new Regex(pattern, RegexOptions.Compiled);
             Webhook = webhook;
             MessageFormat = message;
             Enabled = enabled;
+
+            // TODO
+            Color = -1;
         }
 
         public bool Match(Decal.Adapter.ChatTextInterceptEventArgs e)
         {
-            // Match the message and the color (but only match color if
-            // we set a Color to match)
-            if (e.Text.Contains(Pattern))
+            if (Pattern.IsMatch(e.Text) && (Color == -1 ? true : e.Color == Color))
             {
                 return true;
             }
@@ -37,7 +40,7 @@ namespace TownCrier
                 StringBuilder sb = new StringBuilder();
 
                 sb.Append("EventTrigger: On '");
-                sb.Append(Pattern);
+                sb.Append(Pattern.ToString());
                 sb.Append("', trigger webhook '");
                 sb.Append(Webhook.Name);
                 sb.Append("' with message: '");

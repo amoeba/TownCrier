@@ -26,31 +26,33 @@ namespace TownCrier
         {
             try
             {
-                if (ChatPatterns == null)
+                if (ChatPatterns != null)
                 {
-                    return;
+                    foreach (ChatPattern pattern in ChatPatterns)
+                    {
+                        if (!pattern.Match(e))
+                        {
+                            continue;
+                        }
+
+                        // Messages sometimes have newlines in them
+                        TriggerWebhooksForEvent(pattern.Event, e.Text.Replace("\n", ""));
+                    }
                 }
 
-                foreach (ChatPattern pattern in ChatPatterns)
+
+                if (ChatPatterns != null)
                 {
-                    if (!pattern.Match(e))
+                    foreach (ChatTrigger trigger in ChatTriggers)
                     {
-                        continue;
+                        if (!trigger.Match(e))
+                        {
+                            continue;
+                        }
+
+                        // Messages sometimes have newlines in them
+                        TriggerWebhooksForChatTrigger(trigger, e.Text.Replace("\n", ""));
                     }
-
-                    // Messages sometimes have newlines in them
-                    TriggerWebhooksForEvent(pattern.Event, e.Text.Replace("\n", ""));
-                }
-
-                foreach (ChatTrigger trigger in ChatTriggers)
-                {
-                    if (!trigger.Match(e))
-                    {
-                        continue;
-                    }
-
-                    // Messages sometimes have newlines in them
-                    TriggerWebhooksForChatTrigger(trigger, e.Text.Replace("\n", ""));
                 }
             }
             catch (Exception ex)

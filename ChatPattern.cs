@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace TownCrier
 {
     class ChatPattern
     {
         public string Event { get; }
-        public string Pattern { get;  }
+        public Regex Pattern { get;  }
         public int Color { get; }
 
         public ChatPattern(string evt, string pattern)
         {
             Event = evt;
-            Pattern = pattern;
+            Pattern = new Regex(pattern, RegexOptions.Compiled);
             Color = -1;
         }
 
         public ChatPattern(string evt, string pattern, int color)
         {
             Event = evt;
-            Pattern = pattern;
+            Pattern = new Regex(pattern, RegexOptions.Compiled);
             Color = color;
         }
 
@@ -28,7 +29,7 @@ namespace TownCrier
         {
             // Match the message and the color (but only match color if
             // we set a Color to match)
-            if( e.Text.Contains(Pattern) && (Color == -1 ? true : e.Color == Color))
+            if (Pattern.IsMatch(e.Text) && (Color == -1 ? true : e.Color == Color))
             {
                 return true;
             }

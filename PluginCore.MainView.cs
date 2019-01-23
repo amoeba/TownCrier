@@ -429,7 +429,7 @@ namespace TownCrier
                     IListRow row = lstChatTriggers.Add();
 
                     row[ChatTriggersList.Enabled][0] = trigger.Enabled;
-                    row[ChatTriggersList.Pattern][0] = trigger.Pattern;
+                    row[ChatTriggersList.Pattern][0] = trigger.Pattern.ToString();
                     row[ChatTriggersList.Webhook][0] = trigger.Webhook.Name;
                     row[ChatTriggersList.Message][0] = trigger.MessageFormat;
                     row[ChatTriggersList.Delete][1] = Icons.Delete;

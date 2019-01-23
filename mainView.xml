@@ -94,7 +94,7 @@
 
           <page label="Chat">
             <control progid="DecalControls.FixedLayout" clipped="">
-              <control progid="DecalControls.StaticText" name="txtChatTriggerPattern" left="5" top="10" width="515" height="18" text="Pattern" />
+              <control progid="DecalControls.StaticText" name="txtChatTriggerPattern" left="5" top="10" width="515" height="18" text="RegEx" />
               <control progid="DecalControls.Edit" name="edtChatTriggerPattern" left="80" top="10" width="515" height="18" />
               <control progid="DecalControls.StaticText" name="txtChatTriggerWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
               <control progid="DecalControls.Choice" name="chcChatTriggerWebhook" left="80" top="30" width="140" height="18" />
