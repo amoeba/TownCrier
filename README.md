@@ -52,7 +52,7 @@ There are three types of Triggers:
 
 1. Event: Send Webhooks when certain events happen ingame (e.g., you dying)
 2. Timer: Send Webhooks at timed intervals
-3. Chat: Send Webhooks when you see certain text in chat (doesn't have to be actual chat, just messages in the chat window)
+3. Chat: Send Webhooks when you see certain text in chat (doesn't have to be actual chat, just messages in the chat window). What you enter for the Pattern is treated as a Regular Expression by default.
 
 The trickiest part of setting up a trigger is using the Message field.
 
