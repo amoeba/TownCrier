@@ -15,13 +15,7 @@ A familiar example is hooking up a Discord channel to a service like GitHub/GitL
 
 ## Installation
 
-Until I release the first version, you'll have to build and install the plugin manually.
-
-- Build the plugin (or ask me on [Discord](https://discord.gg/6hUvBrx))
-- Open Decal
-- Click Add (updating if it asks you)
-- Click Browse
-- Find TownCrier.dll and click Save
+Download the latest [release](https://github.com/amoeba/TownCrier/releases).
 
 ## Getting started
 
