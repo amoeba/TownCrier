@@ -41,7 +41,7 @@ namespace TownCrier
                 }
 
 
-                if (ChatPatterns != null)
+                if (ChatTriggers != null)
                 {
                     foreach (ChatTrigger trigger in ChatTriggers)
                     {
