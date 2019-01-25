@@ -46,7 +46,7 @@ namespace TownCrier
                     return EventMessage;
                 }
 
-                if (modified.Contains("$EVENT") && EventMessage != null)
+                if (modified.Contains("$EVENT") && EventMessage != "")
                 {
                     modified = modified.Replace("$EVENT", MaybeEscape(EventMessage.ToString(), escape));
                 }
