@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace TownCrier
 {
@@ -10,7 +11,7 @@ namespace TownCrier
         public WebhookMessage(string message, string eventMessage)
         {
             MessageFormatString = message;
-            EventMessage = eventMessage;
+            EventMessage = RemoveTags(eventMessage); // Remove tags like <Tell>
         }
 
         public override string ToString()
@@ -114,6 +115,28 @@ namespace TownCrier
             else
             {
                 return str;
+            }
+        }
+
+        public string RemoveTags(string message) 
+        {
+            try
+            {
+                Regex e = new Regex("<.+>(.+)<.+>", RegexOptions.Compiled);
+                Match m = e.Match(message);
+
+                if (!m.Success || m.Captures.Count != 1 || m.Groups.Count != 2)
+                {
+                    return message;
+                }
+
+                return message.Replace(m.Groups[0].Value, m.Groups[1].Value);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+
+                return message;
             }
         }
     }
