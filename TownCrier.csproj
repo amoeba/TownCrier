@@ -63,6 +63,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="TimedTrigger.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="MessageUtil.cs" />
     <Compile Include="VirindiViews\ViewSystemSelector.cs" />
     <Compile Include="VirindiViews\Wrapper.cs" />
     <Compile Include="VirindiViews\Wrapper_Decal.cs" />

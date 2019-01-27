@@ -14,10 +14,18 @@ namespace TownCrier
 
         public ChatTrigger(string pattern, Webhook webhook, string message, bool enabled)
         {
-            Pattern = new Regex(pattern, RegexOptions.Compiled);
-            Webhook = webhook;
-            MessageFormat = message;
-            Enabled = enabled;
+            try
+            {
+                Pattern = new Regex(MessageUtil.SubstituteVariables(pattern), RegexOptions.Compiled);
+                Webhook = webhook;
+                MessageFormat = message;
+                Enabled = enabled;
+            }
+            catch (Exception ex)
+            {
+                Util.WriteToChat("Error creating new Chat Trigger: " + ex.Message);
+                Util.LogError(ex);
+            }
 
             // TODO
             Color = -1;
