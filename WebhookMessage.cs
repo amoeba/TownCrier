@@ -26,7 +26,7 @@ namespace TownCrier
 
         public string ToJSONStringValue()
         {
-            return MessageUtil.SubstituteVariables(MessageFormatString, EventMessage, false).Replace("\"", "'");
+            return MessageUtil.SubstituteVariables(MessageFormatString, EventMessage, false).Replace("\"", "\\\"");
         }
     }
 }
