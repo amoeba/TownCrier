@@ -120,7 +120,7 @@
           <page label="Variables">
             <control progid="DecalControls.FixedLayout" clipped="">
               <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="10" width="580" height="200" text="In the Message field, you can make use of special variables to send yourself information about your character. You can use as many variables as you want in each Message and each variable starts with a '$' (e.g., $LOC gives your coordinates)." />
-              <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="70" width="580" height="200" text="Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, and $LOC (Your location). Example: 'Hello, $NAME' would print 'Hello, ' followed by your character's name." />
+              <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="70" width="580" height="200" text="Available variables are $NAME, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, $LOC (Your location), $DATETIME, $DATE, and $TIME. Example: 'Hello, $NAME' would print 'Hello, ' followed by your character's name." />
               <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="130" width="580" height="200" text="Event and Chat Triggers can also make use of a special variable, $EVENT, that lets you print the text of the event or chat message that triggered the webhook. For example, a Chat trigger with the Pattern 'You say' and a Message of '$EVENT' will send everything you say to your webhook. $EVENT does not work for TimedTriggers." />
             </control>
           </page>

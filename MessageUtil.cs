@@ -101,6 +101,21 @@ namespace TownCrier
                     modified = modified.Replace("$LOC", MaybeEscape(new Location(Globals.Host.Actions.Landcell, Globals.Host.Actions.LocationX, Globals.Host.Actions.LocationY).ToString(), escape));
                 }
 
+                if (modified.Contains("$DATETIME"))
+                {
+                    modified = modified.Replace("$DATETIME", MaybeEscape(DateTime.UtcNow.Date.ToString("yyyy/MM/dd HH:mm:ss"), escape));
+                }
+
+                if (modified.Contains("$DATE"))
+                {
+                    modified = modified.Replace("$DATE", MaybeEscape(DateTime.UtcNow.Date.ToString("yyyy/MM/dd"), escape));
+                }
+
+                if (modified.Contains("$TIME"))
+                {
+                    modified = modified.Replace("$TIME", MaybeEscape(DateTime.UtcNow.Date.ToString("HH:mm:ss"), escape));
+                }
+
                 return modified;
             }
             catch (Exception ex)
