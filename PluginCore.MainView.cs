@@ -536,6 +536,7 @@ namespace TownCrier
                 chcEventTriggerEvent.Add(EVENTDESC.LEVEL, EVENTS.LEVEL);
                 chcEventTriggerEvent.Add(EVENTDESC.DEATH, EVENTS.DEATH);
                 chcEventTriggerEvent.Add(EVENTDESC.DROPONDEATH, EVENTS.DROPONDEATH);
+                chcEventTriggerEvent.Add(EVENTDESC.RARE, EVENTS.RARE);
             }
             catch (Exception ex)
             {
