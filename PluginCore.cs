@@ -31,6 +31,7 @@ namespace TownCrier
             public const string LEVEL = "LEVEL";
             public const string DEATH = "DEATH";
             public const string DROPONDEATH = "DROPONDEATH";
+            public const string RARE = "RARE";
         };
 
         public struct EVENTDESC
@@ -40,6 +41,7 @@ namespace TownCrier
             public const string LEVEL = "You level up";
             public const string DEATH = "You die";
             public const string DROPONDEATH = "You drop items on death";
+            public const string RARE = "You find a rare";
         }
 
         // Just GameEvent events the plugin handles
