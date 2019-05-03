@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Decal.Adapter;
 using Decal.Adapter.Wrappers;
@@ -110,6 +111,96 @@ namespace TownCrier
             {
                 Util.LogError(ex);
             }
+        }
+
+        [BaseEvent("CommandLineText")]
+        void Core_CommandLineText(object sender, ChatParserInterceptEventArgs e)
+        {
+            try
+            {
+                string text = e.Text;
+
+                if (text.Length <= 0)
+                {
+                    return;
+                }
+
+                // Split into tokens for easier processing
+                string[] tokens = text.Split(' ');
+                string command = tokens[0].ToLower();
+
+                if (command.StartsWith("@towncrier") ||
+                    command.StartsWith("@tc") ||
+                    command.StartsWith("/towncrier") ||
+                    command.StartsWith("/tc"))
+                {
+                    ProcessCommand(tokens);
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        void ProcessCommand(string[] tokens)
+        {
+            if (tokens.Length == 0)
+            {
+                return;
+            }
+
+            // Show help if no args are passed or help is passed
+            if (tokens.Length < 2 || tokens[1].ToLower() == "help")
+            {
+                PrintCommandLineHelp();
+
+                return;
+            }
+
+            if (tokens[1].ToLower() == "trigger")
+            {
+                if (tokens.Length < 4)
+                {
+                    PrintCommandLineHelp();
+                }
+
+                string name = tokens[2];
+
+                // Try to find the webhook first by name and warn if not found
+                List<Webhook> matched = Webhooks.FindAll(webhook => webhook.Name == name);
+
+                if (matched.Count == 0)
+                {
+                    Util.WriteToChat("Webhook with name '" + name + "' not found.");
+
+                    return;
+                }
+
+                // Slice the array so we can concatenate the message portion
+                string[] rest = new string[tokens.Length - 3];
+                Array.Copy(tokens, 3, rest, 0, tokens.Length - 3);
+                string message = string.Join(" ", rest);
+
+                if (message.Length == 0)
+                {
+                    Util.WriteToChat("Can't trigger webhook '" + name + "' with an empty message.");
+                    PrintCommandLineHelp();
+                }
+
+                Util.WriteToChat("Triggering webhook '" + name + "' with message '" + message + "'");
+
+                TriggerWebhook(name, message);
+            }
+            else
+            {
+                PrintCommandLineHelp();
+            }
+        }
+
+        void PrintCommandLineHelp()
+        {
+            Util.WriteToChat("Trigger webhooks via '@towncrier trigger ${webhookname} ${message}'. You can use Variables.");
         }
     }
 }

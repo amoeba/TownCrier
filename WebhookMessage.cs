@@ -8,6 +8,12 @@ namespace TownCrier
         public string MessageFormatString;
         public string EventMessage;
 
+        public WebhookMessage(string message)
+        {
+            MessageFormatString = message;
+            EventMessage = "";
+        }
+
         public WebhookMessage(string message, string eventMessage)
         {
             MessageFormatString = message;

@@ -300,6 +300,23 @@ namespace TownCrier
             }
         }
 
+        private void TriggerWebhook(string name, string message)
+        {
+            try
+            {
+                List<Webhook> matched = Webhooks.FindAll(webhook => webhook.Name == name);
+
+                foreach (Webhook webhook in matched)
+                {
+                    webhook.Send(new WebhookMessage(message));
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
         private void TriggerWebhooksForEvent(string evt, string eventMessage)
         {
             try
