@@ -75,6 +75,7 @@ namespace TownCrier
                 // TODO: Move to this to a static unless I really wanna make this customizable
                 ChatPatterns = new List<ChatPattern>();
                 ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You are now level ", 13));
+                ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You have reached the maximum level of 275!", 13));
                 ChatPatterns.Add(new ChatPattern(EVENTS.DROPONDEATH, "You've lost "));
 
                 // UI
