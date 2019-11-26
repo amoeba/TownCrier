@@ -103,17 +103,29 @@ namespace TownCrier
 
                 if (modified.Contains("$DATETIME"))
                 {
-                    modified = modified.Replace("$DATETIME", MaybeEscape(DateTime.UtcNow.Date.ToString("yyyy/MM/dd HH:mm:ss"), escape));
+                    DateTime now = DateTime.Now;
+
+                    modified = modified.Replace(
+                        "$DATETIME",
+                        MaybeEscape(
+                            String.Format("{0} {1}",
+                                now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern),
+                                now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)),
+                            escape));
                 }
 
                 if (modified.Contains("$DATE"))
                 {
-                    modified = modified.Replace("$DATE", MaybeEscape(DateTime.UtcNow.Date.ToString("yyyy/MM/dd"), escape));
+                    modified = modified.Replace(
+                        "$DATE", 
+                        MaybeEscape(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern), escape));
                 }
 
                 if (modified.Contains("$TIME"))
                 {
-                    modified = modified.Replace("$TIME", MaybeEscape(DateTime.UtcNow.Date.ToString("HH:mm:ss"), escape));
+                    modified = modified.Replace(
+                        "$TIME",
+                        MaybeEscape(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern), escape));
                 }
 
                 return modified;
