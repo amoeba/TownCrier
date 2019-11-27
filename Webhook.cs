@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace TownCrier
 {
-    class Webhook
+    public class Webhook
     {
         public string Name;
         public string Method;
@@ -63,6 +63,8 @@ namespace TownCrier
                 sb.Append("\t");
                 sb.Append(PayloadFormatString);
 
+                Util.LogMessage("Webhook as JSON is `" + ToJSON() + "`");
+
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -71,6 +73,11 @@ namespace TownCrier
 
                 return "";
             }
+        }
+
+        public string ToJSON()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
         public Uri URI(WebhookMessage message)

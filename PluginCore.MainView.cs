@@ -1,7 +1,8 @@
-﻿using Decal.Adapter;
-using MyClasses.MetaViewWrappers;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Decal.Adapter;
+using MyClasses.MetaViewWrappers;
 
 namespace TownCrier
 {
@@ -74,14 +75,14 @@ namespace TownCrier
             {
                 EventTrigger trigger = new EventTrigger(
                     (string)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
-                    (Webhook)chcEventsWebhook.Data[chcEventsWebhook.Selected],
+                    (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
                     edtEventsMessage.Text,
                     true);
 
-                EventTriggers.Add(trigger);
+                Globals.EventTriggers.Add(trigger);
 
                 RefreshEventTriggerList();
-                SaveSettings();
+                SaveProfile();
             }
             catch (Exception ex)
             {
@@ -107,14 +108,14 @@ namespace TownCrier
 
                 TimedTrigger trigger = new TimedTrigger(
                     int.Parse(edtTimedTriggerMinutes.Text),
-                    (Webhook)chcTimedTriggerWebhook.Data[chcTimedTriggerWebhook.Selected],
+                    (string)chcTimedTriggerWebhook.Data[chcTimedTriggerWebhook.Selected],
                     edtTimedTriggerMessage.Text,
                     true);
 
-                TimedTriggers.Add(trigger);
+                Globals.TimedTriggers.Add(trigger);
 
                 RefreshTimedTriggerList();
-                SaveSettings();
+                SaveProfile();
             }
             catch (Exception ex)
             {
@@ -135,14 +136,14 @@ namespace TownCrier
 
                 ChatTrigger trigger = new ChatTrigger(
                     edtChatTriggerPattern.Text,
-                    (Webhook)chcChatTriggerWebhook.Data[chcChatTriggerWebhook.Selected],
+                    (string)chcChatTriggerWebhook.Data[chcChatTriggerWebhook.Selected],
                     edtChatTriggerMessage.Text,
                     true);
 
-                ChatTriggers.Add(trigger);
+                Globals.ChatTriggers.Add(trigger);
 
                 RefreshChatTriggerList();
-                SaveSettings();
+                SaveProfile();
             }
             catch (Exception ex)
             {
@@ -169,9 +170,9 @@ namespace TownCrier
                 }
 
                 // Stop if the name isn't unique
-                if (Webhooks != null && Webhooks.Count > 0)
+                if (Globals.Webhooks != null && Globals.Webhooks.Count > 0)
                 {
-                    List<Webhook> found = Webhooks.FindAll(w => w.Name == edtName.Text);
+                    List<Webhook> found = Globals.Webhooks.FindAll(w => w.Name == edtName.Text);
 
                     if (found.Count > 0)
                     {
@@ -180,13 +181,13 @@ namespace TownCrier
                 }
 
                 Webhook webhook = new Webhook(edtName.Text, edtURL.Text, (string)chcMethod.Data[chcMethod.Selected], edtPayload.Text);
-                Webhooks.Add(webhook);
+                Globals.Webhooks.Add(webhook);
 
                 RefreshWebhooksList();
                 RefreshEventTriggerWebhookChoice();
                 RefreshTimedTriggerWebhookChoice();
                 RefreshChatTriggerWebhookChoice();
-                SaveSettings();
+                SaveProfile();
             }
             catch (Exception ex)
             {
@@ -207,25 +208,25 @@ namespace TownCrier
 
                         if (enabled)
                         {
-                            EventTriggers[row].Enable();
+                            Globals.EventTriggers[row].Enable();
                         }
                         else
                         {
-                            EventTriggers[row].Disable();
+                            Globals.EventTriggers[row].Disable();
                         }
 
-                        SaveSettings();
+                        SaveProfile();
 
                         break;
                     case EventTriggersList.Delete:
-                        EventTriggers.RemoveAt(row);
+                        Globals.EventTriggers.RemoveAt(row);
                         RefreshEventTriggerList();
 
-                        SaveSettings();
+                        SaveProfile();
 
                         break;
                     default:
-                        PrintEventTrigger(EventTriggers[row]);
+                        PrintEventTrigger(Globals.EventTriggers[row]);
 
                         break;
                 }
@@ -248,26 +249,26 @@ namespace TownCrier
 
                         if (enabled)
                         {
-                            TimedTriggers[row].Enable();
+                            Globals.TimedTriggers[row].Enable();
                         }
                         else
                         {
-                            TimedTriggers[row].Disable();
+                            Globals.TimedTriggers[row].Disable();
                         }
 
-                        SaveSettings();
+                        SaveProfile();
 
                         break;
                     case TimedTriggersList.Delete:
-                        TimedTriggers[row].Dispose();
-                        TimedTriggers.RemoveAt(row);
+                        Globals.TimedTriggers[row].Dispose();
+                        Globals.TimedTriggers.RemoveAt(row);
                         RefreshTimedTriggerList();
 
-                        SaveSettings();
+                        SaveProfile();
 
                         break;
                     default:
-                        PrintTimedTrigger(TimedTriggers[row]);
+                        PrintTimedTrigger(Globals.TimedTriggers[row]);
 
                         break;
                 };
@@ -290,25 +291,25 @@ namespace TownCrier
 
                         if (enabled)
                         {
-                            ChatTriggers[row].Enable();
+                            Globals.ChatTriggers[row].Enable();
                         }
                         else
                         {
-                            ChatTriggers[row].Disable();
+                            Globals.ChatTriggers[row].Disable();
                         }
 
-                        SaveSettings();
+                        SaveProfile();
 
                         break;
                     case ChatTriggersList.Delete:
-                        ChatTriggers.RemoveAt(row);
+                        Globals.ChatTriggers.RemoveAt(row);
                         RefreshChatTriggerList();
 
-                        SaveSettings();
+                        SaveProfile();
 
                         break;
                     default:
-                        PrintChatTrigger(ChatTriggers[row]);
+                        PrintChatTrigger(Globals.ChatTriggers[row]);
 
                         break;
                 };
@@ -328,21 +329,21 @@ namespace TownCrier
                 switch (col)
                 {
                     case WebhooksList.Test:
-                        Webhooks[row].Send(new WebhookMessage("", "Testing webhook."));
+                        Globals.Webhooks[row].Send(new WebhookMessage("", "Testing webhook."));
 
                         break;
                     case WebhooksList.Delete:
-                        Webhooks.RemoveAt(row);
+                        Globals.Webhooks.RemoveAt(row);
                         RefreshEventTriggerWebhookChoice();
                         RefreshTimedTriggerWebhookChoice();
                         RefreshChatTriggerWebhookChoice();
                         RefreshWebhooksList();
 
-                        SaveSettings();
+                        SaveProfile();
 
                         break;
                     default:
-                        PrintWebhook(Webhooks[row]);
+                        PrintWebhook(Globals.Webhooks[row]);
 
                         break;
                 };
@@ -378,13 +379,13 @@ namespace TownCrier
             {
                 lstEventTriggers.Clear();
 
-                foreach (var trigger in EventTriggers)
+                foreach (var trigger in Globals.EventTriggers)
                 {
                     IListRow row = lstEventTriggers.Add();
 
                     row[EventTriggersList.Enabled][0] = trigger.Enabled;
                     row[EventTriggersList.Event][0] = trigger.Event;
-                    row[EventTriggersList.Webhook][0] = trigger.Webhook.Name;
+                    row[EventTriggersList.Webhook][0] = trigger.WebhookName;
                     row[EventTriggersList.MessageFormat][0] = trigger.MessageFormat;
                     row[EventTriggersList.Delete][1] = Icons.Delete;
                 }
@@ -401,13 +402,13 @@ namespace TownCrier
             {
                 lstTimedTriggers.Clear();
 
-                foreach (var timer in TimedTriggers)
+                foreach (var timer in Globals.TimedTriggers)
                 {
                     IListRow row = lstTimedTriggers.Add();
 
                     row[TimedTriggersList.Enabled][0] = timer.Enabled;
                     row[TimedTriggersList.Minutes][0] = timer.Minute.ToString();
-                    row[TimedTriggersList.Webhook][0] = timer.Webhook.Name;
+                    row[TimedTriggersList.Webhook][0] = timer.WebhookName;
                     row[TimedTriggersList.Message][0] = timer.Message;
                     row[TimedTriggersList.Delete][1] = Icons.Delete;
                 }
@@ -424,13 +425,13 @@ namespace TownCrier
             {
                 lstChatTriggers.Clear();
 
-                foreach (var trigger in ChatTriggers)
+                foreach (var trigger in Globals.ChatTriggers)
                 {
                     IListRow row = lstChatTriggers.Add();
 
                     row[ChatTriggersList.Enabled][0] = trigger.Enabled;
                     row[ChatTriggersList.Pattern][0] = trigger.Pattern.ToString();
-                    row[ChatTriggersList.Webhook][0] = trigger.Webhook.Name;
+                    row[ChatTriggersList.Webhook][0] = trigger.WebhookName;
                     row[ChatTriggersList.Message][0] = trigger.MessageFormat;
                     row[ChatTriggersList.Delete][1] = Icons.Delete;
                 }
@@ -447,7 +448,7 @@ namespace TownCrier
             {
                 lstWebhooks.Clear();
 
-                foreach (var webhook in Webhooks)
+                foreach (var webhook in Globals.Webhooks)
                 {
                     IListRow row = lstWebhooks.Add();
 
@@ -471,9 +472,9 @@ namespace TownCrier
             {
                 chcEventsWebhook.Clear();
 
-                foreach (var webhook in Webhooks)
+                foreach (var webhook in Globals.Webhooks)
                 {
-                    chcEventsWebhook.Add(webhook.Name, webhook);
+                    chcEventsWebhook.Add(webhook.Name, webhook.Name);
                 }
 
                 chcEventsWebhook.Selected = 0;
@@ -490,9 +491,9 @@ namespace TownCrier
             {
                 chcTimedTriggerWebhook.Clear();
 
-                foreach (var webhook in Webhooks)
+                foreach (var webhook in Globals.Webhooks)
                 {
-                    chcTimedTriggerWebhook.Add(webhook.Name, webhook);
+                    chcTimedTriggerWebhook.Add(webhook.Name, webhook.Name);
                 }
 
                 chcTimedTriggerWebhook.Selected = 0;
@@ -509,9 +510,9 @@ namespace TownCrier
             {
                 chcChatTriggerWebhook.Clear();
 
-                foreach (var webhook in Webhooks)
+                foreach (var webhook in Globals.Webhooks)
                 {
-                    chcChatTriggerWebhook.Add(webhook.Name, webhook);
+                    chcChatTriggerWebhook.Add(webhook.Name, webhook.Name);
                 }
 
                 chcChatTriggerWebhook.Selected = 0;

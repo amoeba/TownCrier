@@ -3,17 +3,17 @@ using System.Text;
 
 namespace TownCrier
 {
-    class EventTrigger
+    public class EventTrigger
     {
         public string Event;
-        public Webhook Webhook;
+        public string WebhookName;
         public string MessageFormat;
         public bool Enabled;
 
-        public EventTrigger(string evt, Webhook webhook, string messageFormat, bool enabled)
+        public EventTrigger(string evt, string webhookName, string messageFormat, bool enabled)
         {
             Event = evt;
-            Webhook = webhook;
+            WebhookName = webhookName;
             MessageFormat = messageFormat;
             Enabled = enabled;
         }
@@ -27,7 +27,7 @@ namespace TownCrier
                 sb.Append("EventTrigger: On '");
                 sb.Append(Event);
                 sb.Append("', trigger webhook '");
-                sb.Append(Webhook.Name);
+                sb.Append(WebhookName);
                 sb.Append("' with message: '");
                 sb.Append(MessageFormat);
                 sb.Append("'. Currently ");
@@ -54,7 +54,7 @@ namespace TownCrier
                 sb.Append("eventtrigger\t");
                 sb.Append(Event);
                 sb.Append("\t");
-                sb.Append(Webhook.Name);
+                sb.Append(WebhookName);
                 sb.Append("\t");
                 sb.Append(MessageFormat);
                 sb.Append("\t");

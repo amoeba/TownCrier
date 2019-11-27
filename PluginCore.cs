@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+
 using Decal.Adapter;
 using MyClasses.MetaViewWrappers;
 
@@ -10,13 +10,6 @@ namespace TownCrier
     [FriendlyName("TownCrier")]
     public partial class PluginCore : PluginBase
     {
-        List<EventTrigger> EventTriggers;
-        List<TimedTrigger> TimedTriggers;
-        List<ChatTrigger> ChatTriggers;
-        List<Webhook> Webhooks;
-
-        private List<ChatPattern> ChatPatterns;
-
         // HTTP methods
         public struct METHOD
         {
@@ -61,31 +54,8 @@ namespace TownCrier
         {
             try
             {
-                Globals.Init("TownCrier", Host, Core);
-                Settings.Init(false);
+                // Global static class is created on LoginComplete
                 MVWireupHelper.WireupStart(this, Host);
-
-                // App state
-                EventTriggers = new List<EventTrigger>();
-                TimedTriggers = new List<TimedTrigger>();
-                ChatTriggers = new List<ChatTrigger>();
-                Webhooks = new List<Webhook>();
-
-                // Set up chat patterns
-                // TODO: Move to this to a static unless I really wanna make this customizable
-                ChatPatterns = new List<ChatPattern>();
-                ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You are now level ", 13));
-                ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You have reached the maximum level of 275!", 13));
-                ChatPatterns.Add(new ChatPattern(EVENTS.DROPONDEATH, "You've lost "));
-
-                // UI
-                RefreshUI();
-                PopulateEventChoices();
-                chcMethod.Add("GET", METHOD.GET);
-                chcMethod.Add("POST", METHOD.POST);
-
-                // Settings
-                LoadSettings();
             }
             catch (Exception ex)
             {
@@ -97,13 +67,7 @@ namespace TownCrier
         {
             try
             {
-                DisposeAllTimers();
-                ChatTriggers.Clear();
-                EventTriggers.Clear();
-                TimedTriggers.Clear();
-                Webhooks.Clear();
-                ChatPatterns.Clear();
-
+                Globals.Destroy();
                 MVWireupHelper.WireupEnd(this);
             }
             catch (Exception ex)
@@ -112,15 +76,68 @@ namespace TownCrier
             }
         }
 
-        public void LoadSettings()
+        /**
+         * Load Profile from disk.
+         */
+        public void LoadProfile()
         {
             try
             {
-                ChatTriggers.Clear();
-                EventTriggers.Clear();
-                DisposeAllTimers();
-                TimedTriggers.Clear();
-                Webhooks.Clear();
+                Util.LogMessage("LoadProfile()");
+
+                Globals.ChatTriggers.Clear();
+                Globals.EventTriggers.Clear();
+                Globals.TimedTriggers.Clear();
+                Globals.Webhooks.Clear();
+                Globals.DisposeAllTimers();
+
+                Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
+                string path = Util.GetPlayerSpecificFile("profile.txt");
+
+                if (!File.Exists(path))
+                {
+                    return;
+                }
+
+                // Load Profile from disk
+                string profileString = null;
+
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    profileString = reader.ReadToEnd();
+                }
+
+                Profile profile = Newtonsoft.Json.JsonConvert.DeserializeObject<Profile>(profileString);
+                Globals.Webhooks = profile.Webhooks;
+                Globals.EventTriggers = profile.EventTriggers;
+                Globals.TimedTriggers = profile.TimedTriggers;
+                Globals.ChatTriggers = profile.ChatTriggers;
+
+                // Refresh UI after
+                RefreshUI();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        /**
+         * Load legacy settings.txt from disk.
+         */
+        public void LoadLegacySettings()
+        {
+            try
+            {
+                Util.LogMessage("LoadLegacySettings()");
+
+                Util.WriteToChat("TownCrier now stores settings for each character. Your old settings are being migrated to this character.");
+
+                Globals.ChatTriggers.Clear();
+                Globals.EventTriggers.Clear();
+                Globals.DisposeAllTimers();
+                Globals.TimedTriggers.Clear();
+                Globals.Webhooks.Clear();
 
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) +
                     @"\Decal Plugins\" +
@@ -129,6 +146,8 @@ namespace TownCrier
 
                 if (!File.Exists(path))
                 {
+                    Util.LogMessage("Legacy settings file, settings.txt, not found. Stopping loading.");
+
                     return;
                 }
 
@@ -140,11 +159,12 @@ namespace TownCrier
                     {
                         line = reader.ReadLine();
 
-                        LoadSetting(line);
+                        LoadLegacySetting(line);
                     }
                 }
 
                 RefreshUI();
+                SaveProfile();
             }
             catch (Exception ex)
             {
@@ -152,7 +172,10 @@ namespace TownCrier
             }
         }
 
-        public void LoadSetting(string line)
+        /**
+         * Parse a single line from a legacy settings.txt file.
+         */
+        public void LoadLegacySetting(string line)
         {
             try
             {
@@ -175,11 +198,11 @@ namespace TownCrier
                     case "webhook":
                         if (tokens.Length == 4)
                         {
-                            Webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], null));
+                            Globals.Webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], null));
                         }
                         else if (tokens.Length == 5)
                         {
-                            Webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], tokens[4]));
+                            Globals.Webhooks.Add(new Webhook(tokens[1], tokens[2], tokens[3], tokens[4]));
                         }
 
                         break;
@@ -190,14 +213,14 @@ namespace TownCrier
                         }
 
                         // Look up webhook by name
-                        List<Webhook> foundEvent = Webhooks.FindAll(w => w.Name == tokens[2]);
+                        List<Webhook> foundEvent = Globals.Webhooks.FindAll(w => w.Name == tokens[2]);
 
                         if (foundEvent.Count <= 0)
                         {
                             break;
                         }
 
-                        EventTriggers.Add(new EventTrigger(tokens[1], foundEvent[0], tokens[3], bool.Parse(tokens[4])));
+                        Globals.EventTriggers.Add(new EventTrigger(tokens[1], foundEvent[0].Name, tokens[3], bool.Parse(tokens[4])));
 
                         break;
                     case "timedtrigger":
@@ -207,14 +230,14 @@ namespace TownCrier
                         }
 
                         // Look up webhook by name
-                        List<Webhook> foundTimed = Webhooks.FindAll(w => w.Name == tokens[2]);
+                        List<Webhook> foundTimed = Globals.Webhooks.FindAll(w => w.Name == tokens[2]);
 
                         if (foundTimed.Count <= 0)
                         {
                             break;
                         }
 
-                        TimedTriggers.Add(new TimedTrigger(int.Parse(tokens[1]), foundTimed[0], tokens[3], bool.Parse(tokens[4])));
+                        Globals.TimedTriggers.Add(new TimedTrigger(int.Parse(tokens[1]), foundTimed[0].Name, tokens[3], bool.Parse(tokens[4])));
 
                         break;
                     case "chattrigger":
@@ -224,14 +247,14 @@ namespace TownCrier
                         }
 
                         // Look up webhook by name
-                        List<Webhook> foundChat = Webhooks.FindAll(w => w.Name == tokens[2]);
+                        List<Webhook> foundChat = Globals.Webhooks.FindAll(w => w.Name == tokens[2]);
 
                         if (foundChat.Count <= 0)
                         {
                             break;
                         }
 
-                        ChatTriggers.Add(new ChatTrigger(tokens[1], foundChat[0], tokens[3], bool.Parse(tokens[4])));
+                        Globals.ChatTriggers.Add(new ChatTrigger(tokens[1], foundChat[0].Name, tokens[3], bool.Parse(tokens[4])));
 
                         break;
                     default:
@@ -244,71 +267,41 @@ namespace TownCrier
             }
         }
 
-        public void SaveSettings()
+        /**
+         * Save profile as JSON, on a per-character basis.
+         */
+        public void SaveProfile()
         {
             try
             {
-                Util.EnsurePluginFolder();
+                Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
+                string path = Util.GetPlayerSpecificFile("profile.txt");
 
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) +
-                    @"\Decal Plugins\" +
-                    Globals.PluginName +
-                    @"\settings.txt";
+                // Construct a temporary Dictionary so serialization is easy
+                Profile profile = new Profile();
+
+                profile.Settings = Globals.Settings;
+                profile.Webhooks = Globals.Webhooks;
+                profile.EventTriggers = Globals.EventTriggers;
+                profile.TimedTriggers = Globals.TimedTriggers;
+                profile.ChatTriggers = Globals.ChatTriggers;
 
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
-                    Settings.Write(writer);
-
-                    // Order matters here. Webhooks get serialized first
-                    // because they get serialized by name and need to
-                    // cross-reference to Event|Timed|ChatTriggers
-                    foreach (Webhook webhook in Webhooks)
-                    {
-                        writer.WriteLine(webhook.ToSetting());
-                    }
-
-                    foreach (EventTrigger trigger in EventTriggers)
-                    {
-                        writer.WriteLine(trigger.ToSetting());
-                    }
-
-                    foreach (TimedTrigger trigger in TimedTriggers)
-                    {
-                        writer.WriteLine(trigger.ToSetting());
-                    }
-
-                    foreach (ChatTrigger trigger in ChatTriggers)
-                    {
-                        writer.WriteLine(trigger.ToSetting());
-                    }
-
+                    writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(profile, Newtonsoft.Json.Formatting.Indented));
                     writer.Close();
                 }
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
 
-        private void DisposeAllTimers()
-        {
-            if (TimedTriggers == null)
-            {
-                return;
-            }
-
-            foreach (TimedTrigger timer in TimedTriggers)
-            {
-                timer.Dispose();
-            }
-        }
-
         private void TriggerWebhook(string name, string message)
         {
             try
             {
-                List<Webhook> matched = Webhooks.FindAll(webhook => webhook.Name == name);
+                Webhook webhook = Globals.Webhooks.Find(x => x.Name == name);
 
-                foreach (Webhook webhook in matched)
-                {
+                if (webhook != null) {
                     webhook.Send(new WebhookMessage(message));
                 }
             }
@@ -322,7 +315,7 @@ namespace TownCrier
         {
             try
             {
-                List<EventTrigger> matched = EventTriggers.FindAll(trigger => trigger.Enabled && trigger.Event == evt);
+                List<EventTrigger> matched = Globals.EventTriggers.FindAll(trigger => trigger.Enabled && trigger.Event == evt);
 
                 foreach (EventTrigger trigger in matched)
                 {
@@ -339,7 +332,12 @@ namespace TownCrier
         {
             try
             {
-                trigger.Webhook.Send(new WebhookMessage(trigger.MessageFormat, eventMessage));
+                Webhook webhook = Globals.Webhooks.Find(x => x.Name == trigger.WebhookName);
+
+                if (webhook != null)
+                {
+                    webhook.Send(new WebhookMessage(trigger.MessageFormat, eventMessage));
+                }
             }
             catch (Exception ex)
             {
@@ -351,7 +349,12 @@ namespace TownCrier
         {
             try
             {
-                trigger.Webhook.Send(new WebhookMessage(trigger.MessageFormat, eventMessage));
+                Webhook webhook = Globals.Webhooks.Find(x => x.Name == trigger.WebhookName);
+
+                if (webhook != null)
+                {
+                    webhook.Send(new WebhookMessage(trigger.MessageFormat, eventMessage));
+                }
             }
             catch (Exception ex)
             {

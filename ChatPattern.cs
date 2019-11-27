@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace TownCrier
 {
-    class ChatPattern
+    public class ChatPattern
     {
         public string Event { get; }
-        public Regex Pattern { get;  }
+        public Regex Pattern { get; }
         public int Color { get; }
 
         public ChatPattern(string evt, string pattern)

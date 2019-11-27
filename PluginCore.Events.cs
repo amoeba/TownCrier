@@ -1,6 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Text;
+
 using Decal.Adapter;
 using Decal.Adapter.Wrappers;
 
@@ -14,13 +15,51 @@ namespace TownCrier
         {
             try
             {
-                LoadSettings();
-                Core.CharacterFilter.Death += CharacterFilter_Death;
+                Util.LogMessage("CharacterFilter.LoginComplete()");
 
+                Globals.Init("TownCrier", Host, Core, Core.CharacterFilter.Server, Core.CharacterFilter.Name);
+
+                // TODO Move this somewhere
+                Globals.Settings.Add("Verbose", false);
+
+                // Set up chat patterns
+                // TODO: Move to this to a static unless I really wanna make this customizable
+                Globals.ChatPatterns = new List<ChatPattern>();
+                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You are now level ", 13));
+                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You have reached the maximum level of 275!", 13));
+                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.DROPONDEATH, "You've lost "));
+
+                // Migrate settings when we have an old settings file but no profile.txt
+                string oldSettingsPath = String.Format(
+                    @"{0}\Decal Plugins\{1}\settings.txt",
+                    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    Globals.PluginName);
+
+                // Settings, optionally migrating from v1
+                if (!Directory.Exists(Util.GetPlayerSpecificFolder()) && File.Exists(oldSettingsPath))
+                {
+                    LoadLegacySettings();
+                } 
+                else
+                {
+                    LoadProfile();
+                }
+
+                // UI
+                RefreshUI();
+                PopulateEventChoices();
+                chcMethod.Add("GET", METHOD.GET);
+                chcMethod.Add("POST", METHOD.POST);
+
+                // Events
+                Core.CharacterFilter.Death += CharacterFilter_Death;
                 TriggerWebhooksForEvent(EVENTS.LOGIN, Core.CharacterFilter.Name + " has logged in.");
-                ChatPatterns.Add(new ChatPattern(EVENTS.RARE, Core.CharacterFilter.Name + " has discovered "));
+                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.RARE, Core.CharacterFilter.Name + " has discovered "));
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex) 
+            {
+                Util.LogError(ex);
+            }
         }
 
         [BaseEvent("ChatBoxMessage")]
@@ -28,9 +67,9 @@ namespace TownCrier
         {
             try
             {
-                if (ChatPatterns != null)
+                if (Globals.ChatPatterns != null)
                 {
-                    foreach (ChatPattern pattern in ChatPatterns)
+                    foreach (ChatPattern pattern in Globals.ChatPatterns)
                     {
                         if (!pattern.Match(e))
                         {
@@ -42,10 +81,9 @@ namespace TownCrier
                     }
                 }
 
-
-                if (ChatTriggers != null)
+                if (Globals.ChatTriggers != null)
                 {
-                    foreach (ChatTrigger trigger in ChatTriggers)
+                    foreach (ChatTrigger trigger in Globals.ChatTriggers)
                     {
                         if (!trigger.Match(e))
                         {
@@ -68,9 +106,11 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("CharacterFilter.Logoff()");
+
                 TriggerWebhooksForEvent(EVENTS.LOGOFF, Core.CharacterFilter.Name + " has logged off.");
 
-                SaveSettings();
+                SaveProfile();
                 Core.CharacterFilter.Death -= CharacterFilter_Death;
             }
             catch (Exception ex)
@@ -82,7 +122,7 @@ namespace TownCrier
         [BaseEvent("ServerDispatch", "EchoFilter")]
         private void EchoFilter(object sender, NetworkMessageEventArgs e)
         {
-            if (EventTriggers == null)
+            if (Globals.EventTriggers == null)
             {
                 return;
             }
@@ -168,7 +208,7 @@ namespace TownCrier
                 string name = tokens[2];
 
                 // Try to find the webhook first by name and warn if not found
-                List<Webhook> matched = Webhooks.FindAll(webhook => webhook.Name == name);
+                List<Webhook> matched = Globals.Webhooks.FindAll(webhook => webhook.Name == name);
 
                 if (matched.Count == 0)
                 {

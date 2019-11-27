@@ -4,20 +4,20 @@ using System.Text.RegularExpressions;
 
 namespace TownCrier
 {
-    class ChatTrigger
+    public class ChatTrigger
     {
         public Regex Pattern;
         public int Color;
-        public Webhook Webhook;
+        public string WebhookName;
         public string MessageFormat;
         public bool Enabled;
 
-        public ChatTrigger(string pattern, Webhook webhook, string message, bool enabled)
+        public ChatTrigger(string pattern, string webhookName, string message, bool enabled)
         {
             try
             {
                 Pattern = new Regex(MessageUtil.SubstituteVariables(pattern), RegexOptions.Compiled);
-                Webhook = webhook;
+                WebhookName = webhookName;
                 MessageFormat = message;
                 Enabled = enabled;
             }
@@ -50,7 +50,7 @@ namespace TownCrier
                 sb.Append("EventTrigger: On '");
                 sb.Append(Pattern.ToString());
                 sb.Append("', trigger webhook '");
-                sb.Append(Webhook.Name);
+                sb.Append(WebhookName);
                 sb.Append("' with message: '");
                 sb.Append(MessageFormat);
                 sb.Append("'. Currently ");
@@ -77,7 +77,7 @@ namespace TownCrier
                 sb.Append("chattrigger\t");
                 sb.Append(Pattern);
                 sb.Append("\t");
-                sb.Append(Webhook.Name);
+                sb.Append(WebhookName);
                 sb.Append("\t");
                 sb.Append(MessageFormat);
                 sb.Append("\t");

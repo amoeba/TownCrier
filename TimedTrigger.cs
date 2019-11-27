@@ -3,10 +3,10 @@ using System.Text;
 
 namespace TownCrier
 {
-    class TimedTrigger
+    public class TimedTrigger
     {
         public int Minute;
-        public Webhook Webhook;
+        public string WebhookName;
         public string Message;
         public bool Enabled;
 
@@ -15,12 +15,12 @@ namespace TownCrier
         ulong LastFrameNum;
         ulong CurrentFrameNum;
 
-        public TimedTrigger(int evt, Webhook webhook, string message, bool enabled)
+        public TimedTrigger(int minute, string webhookName, string message, bool enabled)
         {
             try
             {
-                Minute = evt;
-                Webhook = webhook;
+                Minute = minute;
+                WebhookName = webhookName;
                 Message = message;
                 Enabled = enabled;
 
@@ -64,7 +64,11 @@ namespace TownCrier
             try
             {
                 Enabled = false;
-                Timer.Stop();
+
+                if (Timer != null) {
+                    Timer.Stop();
+                }
+
                 Globals.Host.Underlying.Hooks.RenderPreUI -= hooks_RenderPreUI;
             }
             catch (Exception ex)
@@ -78,7 +82,11 @@ namespace TownCrier
             try
             {
                 Disable();
-                Timer.Dispose();
+
+                if (Timer != null)
+                {
+                    Timer.Dispose();
+                }
 
             }
             catch (Exception ex)
@@ -101,7 +109,7 @@ namespace TownCrier
                 sb.Append("TimedTrigger: Every ");
                 sb.Append(Minute.ToString());
                 sb.Append(" minute(s), the '");
-                sb.Append(Webhook.Name);
+                sb.Append(WebhookName);
                 sb.Append("' webhook will trigger with format string '");
                 sb.Append(Message);
                 sb.Append("'. Currently ");
@@ -128,7 +136,7 @@ namespace TownCrier
                 sb.Append("timedtrigger\t");
                 sb.Append(Minute.ToString());
                 sb.Append("\t");
-                sb.Append(Webhook.Name);
+                sb.Append(WebhookName);
                 sb.Append("\t");
                 sb.Append(Message);
                 sb.Append("\t");
@@ -153,7 +161,13 @@ namespace TownCrier
                     return;
                 }
 
-                Webhook.Send(new WebhookMessage(Message, ""));
+                // Find the webhook
+                Webhook webhook = Globals.Webhooks.Find(x => x.Name == WebhookName);
+
+                if (webhook != null)
+                {
+                    webhook.Send(new WebhookMessage(Message, ""));
+                }
 
                 // Update frame counter so we'll know if we're behind next time
                 LastFrameNum = CurrentFrameNum;

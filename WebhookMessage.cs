@@ -1,9 +1,6 @@
-﻿using System;
-using System.Text.RegularExpressions;
-
-namespace TownCrier
+﻿namespace TownCrier
 {
-    class WebhookMessage
+    public class WebhookMessage
     {
         public string MessageFormatString;
         public string EventMessage;

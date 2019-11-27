@@ -1,25 +1,58 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace TownCrier
 {
 	public static class Util
 	{
-        public static void EnsurePluginFolder()
+        public static string GetPlayerSpecificFolder()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            try
+            {
+                sb.Append(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+                sb.Append(@"\");
+                sb.Append("Decal Plugins");
+                sb.Append(@"\");
+                sb.Append(Globals.PluginName);
+                sb.Append(@"\");
+                sb.Append(Globals.Server);
+                sb.Append(@"\");
+                sb.Append(Globals.Name);
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+
+            return sb.ToString();
+        }
+
+        public static string GetPlayerSpecificFile(string filename)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            try
+            {
+                sb.Append(GetPlayerSpecificFolder());
+                sb.Append(@"\");
+                sb.Append(filename);
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+
+            return sb.ToString();
+        }
+
+        public static void EnsurePathExists(string path)
         {
             try
             {
-                if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins"))
+                if (!Directory.Exists(path))
                 {
-                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins");
-                }
-
-                if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins\" + Globals.PluginName))
-                {
-                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins\" + Globals.PluginName);
+                    Directory.CreateDirectory(path);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 LogError(ex);
             }
         }
@@ -28,9 +61,8 @@ namespace TownCrier
 		{
 			try
 			{
-                EnsurePluginFolder();
-
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\Decal Plugins\" + Globals.PluginName + @"\errors.txt";
+                EnsurePathExists(Util.GetPlayerSpecificFolder());
+                String path = Util.GetPlayerSpecificFile("errors.txt");
 
                 using (StreamWriter writer = new StreamWriter(path, true))
 				{
@@ -52,17 +84,27 @@ namespace TownCrier
 			}
 			catch
 			{
+                // Nothing
 			}
 		}
 
-        public static void LogInfo(string message)
+        public static void LogMessage(string message)
         {
-            if (!Settings.Verbose)
+            try
             {
-                return;
-            }
+                EnsurePathExists(Util.GetPlayerSpecificFolder());
+                String path = Util.GetPlayerSpecificFile("messages.txt");
 
-            WriteToChat("[INFO] " + message);
+                using (StreamWriter writer = new StreamWriter(path, true))
+                {
+                    writer.WriteLine(String.Format("{0}: {1}", DateTime.Now.ToString(), message));
+                    writer.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogError(ex);
+            }
         }
 
 		public static void WriteToChat(string message)
