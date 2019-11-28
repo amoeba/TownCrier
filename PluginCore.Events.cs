@@ -109,8 +109,6 @@ namespace TownCrier
                 Util.LogMessage("CharacterFilter.Logoff()");
 
                 TriggerWebhooksForEvent(EVENTS.LOGOFF, Core.CharacterFilter.Name + " has logged off.");
-
-                SaveProfile();
                 Core.CharacterFilter.Death -= CharacterFilter_Death;
             }
             catch (Exception ex)
