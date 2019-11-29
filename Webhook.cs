@@ -150,7 +150,6 @@ namespace TownCrier
                             {
                                 streamWriter.Write(Payload(message));
                                 streamWriter.Flush();
-                                streamWriter.Close();
                             }
                         }
 

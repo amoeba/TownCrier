@@ -96,7 +96,6 @@ namespace TownCrier
 					}
 					writer.WriteLine("============================================================================");
 					writer.WriteLine("");
-					writer.Close();
 				}
 			}
 			catch
@@ -115,7 +114,6 @@ namespace TownCrier
                 using (StreamWriter writer = new StreamWriter(path, true))
                 {
                     writer.WriteLine(String.Format("{0}: {1}", DateTime.Now.ToString(), message));
-                    writer.Close();
                 }
             }
             catch (Exception ex)
