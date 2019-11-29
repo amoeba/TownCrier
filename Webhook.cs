@@ -80,6 +80,38 @@ namespace TownCrier
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
+        public void Save()
+        {
+            try
+            {
+                Util.WriteToChat("Plugin directory is " + Util.GetPluginDirectory());
+
+                Util.EnsurePathExists(Util.GetPluginDirectory());
+
+                // Stop if the path doesn't exist
+                if (!File.Exists(Util.GetPluginDirectory()))
+                {
+                    Util.WriteToChat("Couldn't create plugin directory.");
+
+                    //return;
+                }
+                
+                string path = string.Format(@"{0}\Webhooks.json", Util.GetPluginDirectory());
+                Util.WriteToChat("Webhook.json path is " + path);
+
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
+                }
+
+                Util.WriteToChat("Done saving webhook" + path);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
         public Uri URI(WebhookMessage message)
         {
             try

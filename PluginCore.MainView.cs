@@ -160,7 +160,8 @@ namespace TownCrier
                 // Webhooks need names
                 if (edtName.Text.Length <= 0)
                 {
-                    throw new Exception("Webhooks need to have names.");
+                    Util.WriteToChat("Webhooks must have names.");
+                    throw new Exception("Webhooks must have names");
                 }
 
                 // Either the URL or the PayloadFormatString should have an @ symbol, but just warn
@@ -181,13 +182,13 @@ namespace TownCrier
                 }
 
                 Webhook webhook = new Webhook(edtName.Text, edtURL.Text, (string)chcMethod.Data[chcMethod.Selected], edtPayload.Text);
+                webhook.Save();
                 Globals.Webhooks.Add(webhook);
 
                 RefreshWebhooksList();
                 RefreshEventTriggerWebhookChoice();
                 RefreshTimedTriggerWebhookChoice();
                 RefreshChatTriggerWebhookChoice();
-                SaveProfile();
             }
             catch (Exception ex)
             {

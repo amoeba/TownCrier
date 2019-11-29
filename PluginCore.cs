@@ -108,10 +108,51 @@ namespace TownCrier
                 }
 
                 Profile profile = Newtonsoft.Json.JsonConvert.DeserializeObject<Profile>(profileString);
-                Globals.Webhooks = profile.Webhooks;
                 Globals.EventTriggers = profile.EventTriggers;
                 Globals.TimedTriggers = profile.TimedTriggers;
                 Globals.ChatTriggers = profile.ChatTriggers;
+
+                // Refresh UI after
+                RefreshUI();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        /**
+         * Load Webhooks from disk.
+         */
+        public void LoadWebhooks()
+        {
+            try
+            {
+                Util.LogMessage("LoadWebhooks()");
+
+                Globals.Webhooks.Clear();
+
+                Util.EnsurePathExists(Util.GetPluginDirectory());
+                string path = Util.GetPluginDirectory() + @"\profile.txt";
+
+                if (!File.Exists(path))
+                {
+                    Util.LogMessage("Not loading webhooks from disk because there are none.");
+
+                    return;
+                }
+
+                // Load Webhooks from disk
+                Util.LogMessage("Loading webhooks from disk...");
+                string profileString = null;
+
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    profileString = reader.ReadToEnd();
+                }
+
+                Globals.Webhooks.Clear();
+                Globals.Webhooks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Webhook>>(profileString);
 
                 // Refresh UI after
                 RefreshUI();
@@ -165,6 +206,7 @@ namespace TownCrier
 
                 RefreshUI();
                 SaveProfile();
+                SaveWebhooks();
             }
             catch (Exception ex)
             {
@@ -281,7 +323,6 @@ namespace TownCrier
                 Profile profile = new Profile();
 
                 profile.Settings = Globals.Settings;
-                profile.Webhooks = Globals.Webhooks;
                 profile.EventTriggers = Globals.EventTriggers;
                 profile.TimedTriggers = Globals.TimedTriggers;
                 profile.ChatTriggers = Globals.ChatTriggers;
@@ -289,7 +330,25 @@ namespace TownCrier
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
                     writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(profile, Newtonsoft.Json.Formatting.Indented));
-                    writer.Close();
+                }
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+        }
+
+        /**
+         * Save webhooks as JSON
+         */
+        public void SaveWebhooks()
+        {
+            try
+            {
+                Util.WriteToChat("SaveWebhooks()");
+                Util.EnsurePathExists(Util.GetPluginDirectory());
+                string path = Util.GetPluginDirectory() + @"\Webhooks.json";
+
+                using (StreamWriter writer = new StreamWriter(path, false))
+                {
+                    writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(Globals.Webhooks, Newtonsoft.Json.Formatting.Indented));
                 }
             }
             catch (Exception ex) { Util.LogError(ex); }

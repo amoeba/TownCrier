@@ -6,6 +6,23 @@ namespace TownCrier
 {
 	public static class Util
 	{
+        internal static string GetPluginDirectory()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            try
+            {
+                sb.Append(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+                sb.Append(@"\");
+                sb.Append("Decal Plugins");
+                sb.Append(@"\");
+                sb.Append(Globals.PluginName);
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+
+            return sb.ToString();
+        }
+
         public static string GetPlayerSpecificFolder()
         {
             StringBuilder sb = new StringBuilder();
