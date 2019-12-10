@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 
 using Decal.Adapter;
 using MyClasses.MetaViewWrappers;
+using VirindiViewService;
 
 namespace TownCrier
 {
@@ -68,6 +71,18 @@ namespace TownCrier
             public const int Name = 0, URL = 1, Method = 2, Payload = 3, Test = 4, Delete = 5;
         }
 
+        // Profiles
+        string PROFILE_BYCHAR = "[By char]";
+
+        [MVControlReference("chcProfile")]
+        private ICombo chcProfile = null;
+
+        HudView copyProfileView;
+        VirindiViewService.Controls.HudFixedLayout copyProfileLayout;
+        VirindiViewService.Controls.HudStaticText copyProfileStaticText;
+        VirindiViewService.Controls.HudTextBox copyProfileNewName;
+        VirindiViewService.Controls.HudButton copyProfileButton;
+
         [MVControlEvent("btnEventTriggerAdd", "Click")]
         void btnEventTriggerAdd_Click(object sender, MVControlEventArgs e)
         {
@@ -87,6 +102,150 @@ namespace TownCrier
             catch (Exception ex)
             {
                 Util.WriteToChat("Error adding new EventTrigger: " + ex.Message);
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("btnProfileCopyTo", "Click")]
+        void btnProfileCopyTo_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                ShowProfileCopyTo();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        void ShowProfileCopyTo()
+        {
+            if (copyProfileView != null)
+            {
+                CleanUpCopyProfileHUD();
+            }
+
+            copyProfileView = new HudView("Copy Profile", 200, 70, new ACImage(0x1F69));
+            copyProfileView.Location = new Point(100, 100);
+            copyProfileView.Visible = true;
+
+            copyProfileLayout = new VirindiViewService.Controls.HudFixedLayout();
+            copyProfileView.Controls.HeadControl = copyProfileLayout;
+
+            copyProfileStaticText = new VirindiViewService.Controls.HudStaticText();
+            copyProfileLayout.AddControl(copyProfileStaticText, new Rectangle(10, 12, 75, 20));
+            copyProfileStaticText.Text = "New Name";
+            copyProfileNewName = new VirindiViewService.Controls.HudTextBox();
+            copyProfileLayout.AddControl(copyProfileNewName, new Rectangle(75, 10, 100, 20));
+
+            copyProfileButton = new VirindiViewService.Controls.HudButton();
+            copyProfileButton.Text = "Copy";
+            copyProfileLayout.AddControl(copyProfileButton, new Rectangle(10, 40, 50, 20));
+            copyProfileButton.Hit += CopyProfile;
+        }
+
+        private void CopyProfile(object sender, EventArgs e)
+        {
+            try
+            {
+                if (copyProfileNewName == null)
+                {
+                    Util.WriteToChat("copyToName is null.");
+
+                    return;
+                }
+
+                if (copyProfileNewName.Text.Length <= 0)
+                {
+                    Util.WriteToChat("New profile name must not be an empty string.");
+
+                    return;
+                }
+
+                System.Text.RegularExpressions.Regex x = new System.Text.RegularExpressions.Regex(@"[A-Za-z\d]+");
+
+                if (!x.IsMatch(copyProfileNewName.Text))
+                {
+                    Util.WriteToChat("New profile name must only use letters and numbers. (Regex [A-Za-z\\d]+).");
+
+                    return;
+                }
+
+                Globals.CurrentProfile = copyProfileNewName.Text;
+                SaveProfile();
+                Util.WriteToChat("Current profile is '" + Globals.CurrentProfile + "'");
+                RefreshProfileChoice();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+            finally
+            {
+                CleanUpCopyProfileHUD();
+            }
+        }
+
+        private void CleanUpCopyProfileHUD()
+        {
+            try
+            {
+                if (copyProfileStaticText != null)
+                {
+                    copyProfileStaticText.Dispose();
+                    copyProfileStaticText = null;
+                }
+
+                if (copyProfileButton != null)
+                {
+                    copyProfileButton.Hit -= CopyProfile;
+                    copyProfileButton.Dispose();
+                    copyProfileButton = null;
+                }
+
+                if (copyProfileLayout != null)
+                {
+                    copyProfileLayout.Dispose();
+                    copyProfileLayout = null;
+                }
+
+                if (copyProfileView != null)
+                {
+                    copyProfileView.Dispose();
+                    copyProfileView = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("btnProfileClear", "Click")]
+        void btnProfileClear_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                Util.WriteToChat("btnProfileClear_Click");
+                ClearProfile();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("btnProfileRefresh", "Click")]
+        void btnProfileRefresh_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                Util.WriteToChat("btnProfileRefresh_Click");
+                RefreshProfileChoice();
+            }
+            catch (Exception ex)
+            {
                 Util.LogError(ex);
             }
         }
@@ -334,13 +493,11 @@ namespace TownCrier
 
                         break;
                     case WebhooksList.Delete:
-                        Globals.Webhooks.RemoveAt(row);
+                        DeleteWebhook(Globals.Webhooks[row].Name);
                         RefreshEventTriggerWebhookChoice();
                         RefreshTimedTriggerWebhookChoice();
                         RefreshChatTriggerWebhookChoice();
                         RefreshWebhooksList();
-
-                        SaveProfile();
 
                         break;
                     default:
@@ -367,6 +524,7 @@ namespace TownCrier
                 RefreshEventTriggerList();
                 RefreshChatTriggerList();
                 RefreshSettings();
+                RefreshProfileChoice();
             }
             catch (Exception ex)
             {
@@ -517,6 +675,80 @@ namespace TownCrier
                 }
 
                 chcChatTriggerWebhook.Selected = 0;
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        // Profile tab
+        [MVControlEvent("chcProfile", "Change")]
+        private void chcProfile_Change(object sender, MVIndexChangeEventArgs args)
+        {
+            try
+            {
+                Globals.CurrentProfile = (string)chcProfile.Data[chcProfile.Selected];
+                LoadProfile();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        private void RefreshProfileChoice()
+        {
+            try
+            {
+                string path = string.Format(@"{0}\Profiles", Globals.PluginDirectory);
+
+                if (!Directory.Exists(path))
+                {
+                    Util.LogMessage("In RefreshProfiles(), profiles directory doesn't exist so stopping early");
+
+                    return;
+                }
+
+                string[] profiles = Directory.GetFiles(path);
+
+                // Return now if no profiles
+                if (profiles.Length <= 0)
+                {
+                    return;
+                }
+
+                // Rebuild UI state from the profile directory's contents
+                chcProfile.Clear();
+                chcProfile.Add(PROFILE_BYCHAR, PROFILE_BYCHAR);
+
+                // Set selected to 0 if we know it is
+                if (Globals.CurrentProfile == null)
+                {
+                    chcProfile.Selected = 0;
+                }
+
+                FileInfo fi;
+                string file;
+                string profileName;
+
+                for (int i = 0; i < profiles.Length; i++)
+                {
+                    file = profiles[i];
+                    fi = new FileInfo(file);
+                    profileName = fi.Name.Replace(".json", "");
+                    chcProfile.Add(profileName, profileName);
+
+                    // Update selected item if we can
+                    if (profileName == Globals.CurrentProfile)
+                    {
+                        chcProfile.Selected = i + 1; // + 1 because [By char] is 0
+                    }
+                }
+
+                profileName = null;
+                file = null;
+                fi = null;
             }
             catch (Exception ex)
             {

@@ -117,6 +117,16 @@
               </control>
             </control>
           </page>
+          <page label="Profiles">
+            <control progid="DecalControls.FixedLayout" clipped="">
+              <control progid="DecalControls.StaticText" name="txtProfile" left="5" top="10" width="50" height="18" text="Profile" />
+              <control progid="DecalControls.Choice" name="chcProfile" left="50" top="10" width="120" height="18" />
+              <control progid="DecalControls.PushButton" name="btnProfileRefresh" left="175" top="10" width="60" height="18" text="Refresh" />
+
+              <control progid="DecalControls.PushButton" name="btnProfileCopyTo" left="50" top="30" width="70" height="18" text="Copy To" />
+              <control progid="DecalControls.PushButton" name="btnProfileClear" left="50" top="50" width="70" height="18" text="Clear" />
+            </control>
+          </page>
           <page label="Variables">
             <control progid="DecalControls.FixedLayout" clipped="">
               <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="10" width="580" height="200" text="In the Message field, you can make use of special variables to send yourself information about your character. You can use as many variables as you want in each Message and each variable starts with a '$' (e.g., $LOC gives your coordinates)." />

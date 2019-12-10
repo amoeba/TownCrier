@@ -6,57 +6,30 @@ namespace TownCrier
 {
 	public static class Util
 	{
-        internal static string GetPluginDirectory()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            try
-            {
-                sb.Append(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
-                sb.Append(@"\");
-                sb.Append("Decal Plugins");
-                sb.Append(@"\");
-                sb.Append(Globals.PluginName);
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-
-            return sb.ToString();
-        }
-
         public static string GetPlayerSpecificFolder()
         {
-            StringBuilder sb = new StringBuilder();
-
+            string path = null;
             try
             {
-                sb.Append(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
-                sb.Append(@"\");
-                sb.Append("Decal Plugins");
-                sb.Append(@"\");
-                sb.Append(Globals.PluginName);
-                sb.Append(@"\");
-                sb.Append(Globals.Server);
-                sb.Append(@"\");
-                sb.Append(Globals.Name);
+                path = String.Format(@"{0}\{1}\{2}", Globals.PluginDirectory, Globals.Server, Globals.Name);
             }
             catch (Exception ex) { Util.LogError(ex); }
 
-            return sb.ToString();
+            return path;
         }
 
         public static string GetPlayerSpecificFile(string filename)
         {
-            StringBuilder sb = new StringBuilder();
+            string path = null;
 
             try
             {
-                sb.Append(GetPlayerSpecificFolder());
-                sb.Append(@"\");
-                sb.Append(filename);
+                path = String.Format(@"{0}\{1}", GetPlayerSpecificFolder(), filename);
+
             }
             catch (Exception ex) { Util.LogError(ex); }
 
-            return sb.ToString();
+            return path;
         }
 
         public static void EnsurePathExists(string path)
@@ -74,12 +47,36 @@ namespace TownCrier
             }
         }
 
+        public static string GetProfilePath()
+        {
+            if (Globals.CurrentProfile != null && Globals.CurrentProfile.Length > 0)
+            {
+                Util.EnsurePathExists(string.Format(@"{0}\{1}", Globals.PluginDirectory, "Profiles"));
+                return string.Format(@"{0}\{1}\{2}.json", Globals.PluginDirectory, "Profiles", Globals.CurrentProfile);
+            }
+            else
+            {
+                Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
+                return Util.GetPlayerSpecificFile("Profile.json");
+            }
+        }
+
         public static void LogError(Exception ex)
 		{
 			try
 			{
-                EnsurePathExists(Util.GetPlayerSpecificFolder());
-                String path = Util.GetPlayerSpecificFile("errors.txt");
+                string path = null;
+
+                // Fall back to saving in a global errors.txt when not logged in
+                if (!Globals.IsLoggedIn)
+                {
+                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, "errors.txt");
+                }
+                else
+                {
+                    EnsurePathExists(Util.GetPlayerSpecificFolder());
+                    path = Util.GetPlayerSpecificFile("errors.txt");
+                }
 
                 using (StreamWriter writer = new StreamWriter(path, true))
 				{
@@ -108,8 +105,18 @@ namespace TownCrier
         {
             try
             {
-                EnsurePathExists(Util.GetPlayerSpecificFolder());
-                String path = Util.GetPlayerSpecificFile("messages.txt");
+                string path = null;
+
+                // Fall back to saving in a global errors.txt when not logged in
+                if (!Globals.IsLoggedIn)
+                {
+                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, "messages.txt");
+                }
+                else
+                {
+                    EnsurePathExists(Util.GetPlayerSpecificFolder());
+                    path = Util.GetPlayerSpecificFile("messages.txt");
+                }
 
                 using (StreamWriter writer = new StreamWriter(path, true))
                 {
@@ -125,7 +132,7 @@ namespace TownCrier
 		public static void WriteToChat(string message)
 		{
 			try
-			{
+            {
 				Globals.Host.Actions.AddChatText("[" + Globals.PluginName + "] " + message, 1);
 			}
 			catch (Exception ex)

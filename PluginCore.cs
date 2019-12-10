@@ -54,7 +54,8 @@ namespace TownCrier
         {
             try
             {
-                // Global static class is created on LoginComplete
+                Globals.SetPluginDirectory();
+                Util.LogMessage("Startup()");
                 MVWireupHelper.WireupStart(this, Host);
             }
             catch (Exception ex)
@@ -67,6 +68,7 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("Shutdown()");
                 Globals.Destroy();
                 MVWireupHelper.WireupEnd(this);
             }
@@ -91,8 +93,9 @@ namespace TownCrier
                 Globals.Webhooks.Clear();
                 Globals.DisposeAllTimers();
 
-                Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
-                string path = Util.GetPlayerSpecificFile("profile.txt");
+                string path = Util.GetProfilePath();
+
+                Util.WriteToChat("Loading profile " + path);
 
                 if (!File.Exists(path))
                 {
@@ -128,34 +131,7 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("LoadWebhooks()");
-
-                Globals.Webhooks.Clear();
-
-                Util.EnsurePathExists(Util.GetPluginDirectory());
-                string path = Util.GetPluginDirectory() + @"\profile.txt";
-
-                if (!File.Exists(path))
-                {
-                    Util.LogMessage("Not loading webhooks from disk because there are none.");
-
-                    return;
-                }
-
-                // Load Webhooks from disk
-                Util.LogMessage("Loading webhooks from disk...");
-                string profileString = null;
-
-                using (StreamReader reader = new StreamReader(path))
-                {
-                    profileString = reader.ReadToEnd();
-                }
-
-                Globals.Webhooks.Clear();
-                Globals.Webhooks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Webhook>>(profileString);
-
-                // Refresh UI after
-                RefreshUI();
+               //TODO
             }
             catch (Exception ex)
             {
@@ -206,7 +182,11 @@ namespace TownCrier
 
                 RefreshUI();
                 SaveProfile();
-                SaveWebhooks();
+                
+                foreach (Webhook webhook in Globals.Webhooks)
+                {
+                    SaveWebhook(webhook);
+                }
             }
             catch (Exception ex)
             {
@@ -316,8 +296,7 @@ namespace TownCrier
         {
             try
             {
-                Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
-                string path = Util.GetPlayerSpecificFile("profile.txt");
+                string path = Util.GetProfilePath();
 
                 // Construct a temporary Dictionary so serialization is easy
                 Profile profile = new Profile();
@@ -335,23 +314,78 @@ namespace TownCrier
             catch (Exception ex) { Util.LogError(ex); }
         }
 
+        public void ClearProfile()
+        {
+            Globals.ChatTriggers.Clear();
+            Globals.EventTriggers.Clear();
+            Globals.TimedTriggers.Clear();
+
+            SaveProfile();
+
+            RefreshTimedTriggerList();
+            RefreshEventTriggerList();
+            RefreshChatTriggerList();
+        }
+
         /**
-         * Save webhooks as JSON
+         * Save a single webhook to disk
          */
-        public void SaveWebhooks()
+        public void SaveWebhook(Webhook webhook)
         {
             try
             {
-                Util.WriteToChat("SaveWebhooks()");
-                Util.EnsurePathExists(Util.GetPluginDirectory());
-                string path = Util.GetPluginDirectory() + @"\Webhooks.json";
+                Util.EnsurePathExists(String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks"));
+                string path = String.Format(@"{0}\{1}\{2}.json", Globals.PluginDirectory, "Webhooks", webhook.Name);
+
+                // Delete if it exists. Windows saves files case-insensitive so saving Test.json will save to test.json
+                // if test.json exists when we go to save Test.json
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
 
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
-                    writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(Globals.Webhooks, Newtonsoft.Json.Formatting.Indented));
+                    writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(webhook, Newtonsoft.Json.Formatting.Indented));
                 }
             }
             catch (Exception ex) { Util.LogError(ex); }
+        }
+
+        /**
+         * Delete a single webhook from the plugin's state and disk
+         */
+        public void DeleteWebhook(string name)
+        {
+            try
+            {
+                // Find the webhook first
+                List<Webhook> matches = Globals.Webhooks.FindAll(x => x.Name == name);
+
+                if (matches.Count != 1)
+                {
+                    Util.WriteToChat("Couldn't find webhook to delete. Stopping without deleting anything.");
+
+                    return;
+                }
+
+                // Delete from plugin state
+                Globals.Webhooks.Remove(matches[0]);
+
+                // Then from disk
+                string path = string.Format(@"{0}\Webhooks\{1}.json", Globals.PluginDirectory, name);
+
+                if (!File.Exists(path))
+                {
+                    Util.WriteToChat(string.Format("Couldn't find {0} on disk. Stopping without deleting anything.", path));
+                }
+
+                File.Delete(path);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
 
         private void TriggerWebhook(string name, string message)

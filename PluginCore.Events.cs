@@ -16,9 +16,10 @@ namespace TownCrier
             try
             {
                 Util.LogMessage("CharacterFilter.LoginComplete()");
-
                 Globals.Init("TownCrier", Host, Core, Core.CharacterFilter.Server, Core.CharacterFilter.Name);
 
+                Util.WriteToChat(String.Format(@"{0}\{1}", Globals.PluginDirectory, "messages.txt"));
+                
                 // TODO Move this somewhere
                 Globals.Settings.Add("Verbose", false);
 
@@ -29,14 +30,14 @@ namespace TownCrier
                 Globals.ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You have reached the maximum level of 275!", 13));
                 Globals.ChatPatterns.Add(new ChatPattern(EVENTS.DROPONDEATH, "You've lost "));
 
-                // Migrate settings when we have an old settings file but no profile.txt
+                // Migrate settings when we have an old settings file but no Profile.json
                 string oldSettingsPath = String.Format(
                     @"{0}\Decal Plugins\{1}\settings.txt",
                     Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                     Globals.PluginName);
 
                 // Settings, optionally migrating from v1
-                if (File.Exists(oldSettingsPath) && !Directory.Exists(Util.GetPlayerSpecificFile("profile.txt")))
+                if (File.Exists(oldSettingsPath) && !Directory.Exists(Util.GetPlayerSpecificFile("Profile.json")))
                 {
                     LoadLegacySettings();
                 } 
