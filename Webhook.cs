@@ -170,6 +170,10 @@ namespace TownCrier
                                 {
                                     string error = reader.ReadToEnd();
 
+                                    Util.WriteToChat("Error encountered when sending webhook:");
+                                    Util.WriteToChat(error);
+                                    Util.WriteToChat("Double-check your URL, Method, and Payload values.");
+
                                     Util.LogError(new Exception(error));
                                 }
                             }
