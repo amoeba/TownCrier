@@ -21,7 +21,7 @@ namespace TownCrier
         public static string ErrorsPath { get; set; }
 
         // App state
-        public static string CurrentProfile { get; set; }
+        public static string CurrentProfile { get; set; } // null means "[By char]"
         public static Dictionary<string, object> Settings;
         public static List<EventTrigger> EventTriggers;
         public static List<TimedTrigger> TimedTriggers;

@@ -79,6 +79,38 @@ namespace TownCrier
         }
 
         /**
+         * Load CurrentProfile setting from disk
+         */
+        public void LoadCurrentProfileSetting()
+        {
+            try
+            {
+                string path = Util.GetPlayerSpecificFile("CurrentProfile.txt");
+
+                if (!File.Exists(path))
+                {
+                    return;
+                }
+
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    string value = reader.ReadToEnd();
+
+                    if (value.Length < 0)
+                    {
+                        return;
+                    }
+
+                    Globals.CurrentProfile = value.Trim();
+                }
+            } 
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        /**
          * Load Profile from disk.
          */
         public void LoadProfile()
@@ -94,8 +126,6 @@ namespace TownCrier
                 Globals.DisposeAllTimers();
 
                 string path = Util.GetProfilePath();
-
-                Util.WriteToChat("Loading profile " + path);
 
                 if (!File.Exists(path))
                 {
@@ -135,8 +165,6 @@ namespace TownCrier
 
                 foreach (string path in Directory.GetFiles(Util.GetWebhookDirectory(), "*.json"))
                 {
-                    Util.WriteToChat(path);
-
                     using (StreamReader reader = new StreamReader(path))
                     {
                         string webhookJSONString = reader.ReadToEnd();
@@ -182,8 +210,6 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("LoadLegacySettings()");
-
                 Util.WriteToChat("TownCrier now stores settings for each character. Your old settings are being migrated to this character.");
 
                 Globals.ChatTriggers.Clear();
@@ -348,6 +374,30 @@ namespace TownCrier
                 }
             }
             catch (Exception ex) { Util.LogError(ex); }
+        }
+
+        public void SaveCurrentProfileSetting()
+        {
+            try
+            {
+                Util.LogMessage("Saving current profile setting");
+                Util.LogMessage("Current profile is '" + Globals.CurrentProfile + "'");
+
+                Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
+                string path = Util.GetPlayerSpecificFile("CurrentProfile.txt");
+
+                Util.LogMessage("Path I will write to is " + path);
+                using (StreamWriter writer = new StreamWriter(path, false))
+                {
+                    Util.LogMessage("Writing '" + Globals.CurrentProfile + "'");
+
+                    writer.Write(Globals.CurrentProfile);
+                }
+            } 
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
 
         public void ClearProfile()

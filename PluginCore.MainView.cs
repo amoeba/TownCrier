@@ -72,8 +72,6 @@ namespace TownCrier
         }
 
         // Profiles
-        string PROFILE_BYCHAR = "[By char]";
-
         [MVControlReference("chcProfile")]
         private ICombo chcProfile = null;
 
@@ -173,6 +171,7 @@ namespace TownCrier
                 }
 
                 Globals.CurrentProfile = copyProfileNewName.Text;
+                SaveCurrentProfileSetting();
                 SaveProfile();
                 Util.WriteToChat("Current profile is '" + Globals.CurrentProfile + "'");
                 RefreshProfileChoice();
@@ -689,6 +688,7 @@ namespace TownCrier
             try
             {
                 Globals.CurrentProfile = (string)chcProfile.Data[chcProfile.Selected];
+                SaveCurrentProfileSetting();
                 LoadProfile();
             }
             catch (Exception ex)
@@ -720,7 +720,7 @@ namespace TownCrier
 
                 // Rebuild UI state from the profile directory's contents
                 chcProfile.Clear();
-                chcProfile.Add(PROFILE_BYCHAR, PROFILE_BYCHAR);
+                chcProfile.Add("[By char]", null); // Null means "[By char]"
 
                 // Set selected to 0 if we know it is
                 if (Globals.CurrentProfile == null)

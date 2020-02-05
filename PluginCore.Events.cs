@@ -41,6 +41,7 @@ namespace TownCrier
                 } 
                 else
                 {
+                    LoadCurrentProfileSetting();
                     LoadProfile();
                 }
 
