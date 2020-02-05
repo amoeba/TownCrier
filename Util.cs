@@ -37,6 +37,7 @@ namespace TownCrier
         public static string GetPlayerSpecificFolder()
         {
             string path = null;
+
             try
             {
                 path = String.Format(@"{0}\{1}\{2}", Globals.PluginDirectory, Globals.Server, Globals.Name);
