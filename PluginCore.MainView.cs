@@ -91,7 +91,7 @@ namespace TownCrier
                 EventTrigger trigger = new EventTrigger(
                     (string)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
                     (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
-                    edtEventsMessage.Text,
+                    edtEventsMessage.Text.Trim(),
                     true);
 
                 Globals.EventTriggers.Add(trigger);
@@ -268,7 +268,7 @@ namespace TownCrier
                 TimedTrigger trigger = new TimedTrigger(
                     int.Parse(edtTimedTriggerMinutes.Text),
                     (string)chcTimedTriggerWebhook.Data[chcTimedTriggerWebhook.Selected],
-                    edtTimedTriggerMessage.Text,
+                    edtTimedTriggerMessage.Text.Trim(),
                     true);
 
                 Globals.TimedTriggers.Add(trigger);
@@ -296,7 +296,7 @@ namespace TownCrier
                 ChatTrigger trigger = new ChatTrigger(
                     edtChatTriggerPattern.Text,
                     (string)chcChatTriggerWebhook.Data[chcChatTriggerWebhook.Selected],
-                    edtChatTriggerMessage.Text,
+                    edtChatTriggerMessage.Text.Trim(),
                     true);
 
                 Globals.ChatTriggers.Add(trigger);
@@ -340,7 +340,7 @@ namespace TownCrier
                     }
                 }
 
-                Webhook webhook = new Webhook(edtName.Text, edtURL.Text, (string)chcMethod.Data[chcMethod.Selected], edtPayload.Text);
+                Webhook webhook = new Webhook(edtName.Text.Trim(), edtURL.Text.Trim(), (string)chcMethod.Data[chcMethod.Selected], edtPayload.Text.Trim());
                 webhook.Save();
                 Globals.Webhooks.Add(webhook);
 
