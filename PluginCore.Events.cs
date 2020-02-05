@@ -18,9 +18,6 @@ namespace TownCrier
                 Util.LogMessage("CharacterFilter.LoginComplete()");
                 Globals.Init("TownCrier", Host, Core, Core.CharacterFilter.Server, Core.CharacterFilter.Name);
 
-                // TODO Move this somewhere
-                Globals.Settings.Add("Verbose", false);
-
                 // Set up chat patterns
                 // TODO: Move to this to a static unless I really wanna make this customizable
                 Globals.ChatPatterns = new List<ChatPattern>();

@@ -48,33 +48,6 @@ namespace TownCrier
             }
         }
 
-        public string ToSetting()
-        {
-            try
-            {
-                StringBuilder sb = new StringBuilder();
-
-                sb.Append("webhook\t");
-                sb.Append(Name);
-                sb.Append("\t");
-                sb.Append(URLFormatString);
-                sb.Append("\t");
-                sb.Append(Method);
-                sb.Append("\t");
-                sb.Append(PayloadFormatString);
-
-                Util.LogMessage("Webhook as JSON is `" + ToJSON() + "`");
-
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-
-                return "";
-            }
-        }
-
         public string ToJSON()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);

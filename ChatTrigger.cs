@@ -68,31 +68,6 @@ namespace TownCrier
             }
         }
 
-        public string ToSetting()
-        {
-            try
-            {
-                StringBuilder sb = new StringBuilder();
-
-                sb.Append("chattrigger\t");
-                sb.Append(Pattern);
-                sb.Append("\t");
-                sb.Append(WebhookName);
-                sb.Append("\t");
-                sb.Append(MessageFormat);
-                sb.Append("\t");
-                sb.Append(Enabled);
-
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-
-                return "Failed to print ChatTrigger.";
-            }
-        }
-
         public void Enable()
         {
             Enabled = true;

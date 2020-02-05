@@ -519,7 +519,6 @@ namespace TownCrier
                 RefreshTimedTriggerList();
                 RefreshEventTriggerList();
                 RefreshChatTriggerList();
-                RefreshSettings();
                 RefreshProfileChoice();
             }
             catch (Exception ex)
@@ -751,11 +750,6 @@ namespace TownCrier
             {
                 Util.LogError(ex);
             }
-        }
-
-        private void RefreshSettings()
-        {
-            // TODO
         }
 
         private void PopulateEventChoices()

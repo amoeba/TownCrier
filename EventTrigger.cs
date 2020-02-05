@@ -45,31 +45,6 @@ namespace TownCrier
             }
         }
 
-        public string ToSetting()
-        {
-            try
-            {
-                StringBuilder sb = new StringBuilder();
-
-                sb.Append("eventtrigger\t");
-                sb.Append(Event);
-                sb.Append("\t");
-                sb.Append(WebhookName);
-                sb.Append("\t");
-                sb.Append(MessageFormat);
-                sb.Append("\t");
-                sb.Append(Enabled);
-
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-
-                return "Failed to print EventTrigger.";
-            }
-        }
-
         public void Enable()
         {
             Enabled = true;

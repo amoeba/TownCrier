@@ -271,7 +271,7 @@ namespace TownCrier
                         switch (tokens[1])
                         {
                             case "verbose":
-                                Settings.Verbose = bool.Parse(tokens[2]);
+                                Util.LogMessage("Verbosity setting ignored when importing from legacy settings because it is no longer supported.");
 
                                 break;
                             default:
@@ -363,7 +363,6 @@ namespace TownCrier
                 // Construct a temporary Dictionary so serialization is easy
                 Profile profile = new Profile();
 
-                profile.Settings = Globals.Settings;
                 profile.EventTriggers = Globals.EventTriggers;
                 profile.TimedTriggers = Globals.TimedTriggers;
                 profile.ChatTriggers = Globals.ChatTriggers;

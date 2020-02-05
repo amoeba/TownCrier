@@ -127,31 +127,6 @@ namespace TownCrier
             }
         }
 
-        public string ToSetting()
-        {
-            try
-            {
-                StringBuilder sb = new StringBuilder();
-
-                sb.Append("timedtrigger\t");
-                sb.Append(Minute.ToString());
-                sb.Append("\t");
-                sb.Append(WebhookName);
-                sb.Append("\t");
-                sb.Append(Message);
-                sb.Append("\t");
-                sb.Append(Enabled);
-
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-
-                return "Failed to print TimedTrigger.";
-            }
-        }
-
         private void Timer_Tick(object sender, EventArgs e)
         {
             try

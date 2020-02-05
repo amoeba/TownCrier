@@ -22,7 +22,6 @@ namespace TownCrier
 
         // App state
         public static string CurrentProfile { get; set; } // null means "[By char]"
-        public static Dictionary<string, object> Settings;
         public static List<EventTrigger> EventTriggers;
         public static List<TimedTrigger> TimedTriggers;
         public static List<ChatTrigger> ChatTriggers;
@@ -43,7 +42,6 @@ namespace TownCrier
 
             // App state
             CurrentProfile = null;
-            Settings = new Dictionary<string, object>();
             EventTriggers = new List<EventTrigger>();
             TimedTriggers = new List<TimedTrigger>();
             ChatTriggers = new List<ChatTrigger>();
@@ -78,11 +76,6 @@ namespace TownCrier
             {
                 ChatPatterns.Clear();
             }
-
-            if (Settings != null)
-            {
-                Settings.Clear();
-            };
         }
 
         public static void SetPluginDirectory()
