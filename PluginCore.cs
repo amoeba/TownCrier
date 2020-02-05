@@ -448,6 +448,11 @@ namespace TownCrier
 
                 foreach (EventTrigger trigger in matched)
                 {
+                    if (!trigger.Enabled)
+                    {
+                        continue;
+                    }
+
                     TriggerWebhooksForEventTrigger(trigger, eventMessage);
                 }
             }
@@ -461,6 +466,11 @@ namespace TownCrier
         {
             try
             {
+                if (!trigger.Enabled)
+                {
+                    return;
+                }
+
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == trigger.WebhookName);
 
                 if (webhook != null)
@@ -478,6 +488,11 @@ namespace TownCrier
         {
             try
             {
+                if (!trigger.Enabled)
+                {
+                    return;
+                }
+
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == trigger.WebhookName);
 
                 if (webhook != null)

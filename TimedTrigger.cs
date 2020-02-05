@@ -156,6 +156,11 @@ namespace TownCrier
         {
             try
             {
+                if (!Enabled)
+                {
+                    return;
+                }
+
                 if (CurrentFrameNum == LastFrameNum)
                 {
                     return;
