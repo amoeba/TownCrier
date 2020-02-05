@@ -21,8 +21,8 @@ namespace TownCrier
                 // Set up chat patterns
                 // TODO: Move to this to a static unless I really wanna make this customizable
                 Globals.ChatPatterns = new List<ChatPattern>();
-                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You are now level ", 13));
-                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You have reached the maximum level of 275!", 13));
+                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You are now level "));
+                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.LEVEL, "You have reached the maximum level of 275!"));
                 Globals.ChatPatterns.Add(new ChatPattern(EVENTS.DROPONDEATH, "You've lost "));
 
                 // Migrate settings when we have an old settings file but no Profile.json

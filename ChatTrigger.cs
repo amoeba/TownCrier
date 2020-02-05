@@ -7,7 +7,6 @@ namespace TownCrier
     public class ChatTrigger
     {
         public Regex Pattern;
-        public int Color;
         public string WebhookName;
         public string MessageFormat;
         public bool Enabled;
@@ -26,14 +25,11 @@ namespace TownCrier
                 Util.WriteToChat("Error creating new Chat Trigger: " + ex.Message);
                 Util.LogError(ex);
             }
-
-            // TODO
-            Color = -1;
         }
 
         public bool Match(Decal.Adapter.ChatTextInterceptEventArgs e)
         {
-            if (Pattern.IsMatch(e.Text) && (Color == -1 ? true : e.Color == Color))
+            if (Regex.IsMatch(e.Text))
             {
                 return true;
             }
