@@ -6,6 +6,18 @@ namespace TownCrier
 {
 	public static class Util
 	{
+        internal static string GetWebhookDirectory()
+        {
+            string path = null;
+            try
+            {
+                path = String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks");
+            }
+            catch (Exception ex) { Util.LogError(ex); }
+
+            return path;
+        }
+
         public static string GetPlayerSpecificFolder()
         {
             string path = null;

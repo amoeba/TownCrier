@@ -18,8 +18,6 @@ namespace TownCrier
                 Util.LogMessage("CharacterFilter.LoginComplete()");
                 Globals.Init("TownCrier", Host, Core, Core.CharacterFilter.Server, Core.CharacterFilter.Name);
 
-                Util.WriteToChat(String.Format(@"{0}\{1}", Globals.PluginDirectory, "messages.txt"));
-                
                 // TODO Move this somewhere
                 Globals.Settings.Add("Verbose", false);
 
@@ -45,6 +43,9 @@ namespace TownCrier
                 {
                     LoadProfile();
                 }
+
+                // Load webhooks
+                LoadWebhooks();
 
                 // UI
                 RefreshUI();

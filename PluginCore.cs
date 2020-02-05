@@ -131,7 +131,43 @@ namespace TownCrier
         {
             try
             {
-               //TODO
+                Globals.Webhooks.Clear();
+
+                foreach (string path in Directory.GetFiles(Util.GetWebhookDirectory(), "*.json"))
+                {
+                    Util.WriteToChat(path);
+
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        string webhookJSONString = reader.ReadToEnd();
+
+                        try
+                        {
+                            Webhook webhook = Newtonsoft.Json.JsonConvert.DeserializeObject<Webhook>(webhookJSONString);
+
+                            // Don't add if one with this name already exists
+                            if (Globals.Webhooks.FindAll(w => w.Name == webhook.Name).Count != 0)
+                            {
+                                Util.WriteToChat(String.Format("Duplicate webhook found while loading webhooks from disk and was skipped. The webhook named '{0}' has already been used and webhooks must use unique names.", webhook.Name));
+                            } else
+                            {
+                                Globals.Webhooks.Add(webhook);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Util.WriteToChat("Failed to load webhook at path '" + path + "' because it was malformed.");
+                            Util.WriteToChat(ex.Message);
+                            Util.LogError(ex);
+                        }
+                    }
+                }
+
+                // Refresh UI
+                RefreshWebhooksList();
+                RefreshEventTriggerWebhookChoice();
+                RefreshTimedTriggerWebhookChoice();
+                RefreshChatTriggerWebhookChoice();
             }
             catch (Exception ex)
             {

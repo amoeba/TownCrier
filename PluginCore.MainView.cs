@@ -777,5 +777,57 @@ namespace TownCrier
                 Util.LogError(ex);
             }
         }
+
+        [MVControlEvent("btnWebhookRefresh", "Click")]
+        void btnWebhookRefresh_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                LoadWebhooks();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("btnEventsWebhookRefresh", "Click")]
+        void btnEventsWebhookRefresh_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                LoadWebhooks();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("btnTimedTriggerWebhookRefresh", "Click")]
+        void btnTimedTriggerWebhookRefresh_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                LoadWebhooks();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("chcChatTriggerWebhookRefresh", "Click")]
+        void chcChatTriggerWebhookRefresh_Click(object sender, MVControlEventArgs e)
+        {
+            try
+            {
+                LoadWebhooks();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
     }
 }

@@ -7,6 +7,8 @@
         <control progid="DecalControls.StaticText" name="txtName" left="5" top="10" width="60" height="18" text="Name" />
         <control progid="DecalControls.Edit" name="edtName" left="80" top="10" width="100" height="18" />
 
+        <control progid="DecalControls.PushButton" name="btnWebhookRefresh" left="540" top="10" width="60" height="18" text="Refresh" />
+
         <control progid="DecalControls.StaticText" name="txtURL" left="5" top="30" width="60" height="18" text="URL" />
         <control progid="DecalControls.Edit" name="edtURL" left="80" top="30" width="515" height="18" />
         
@@ -45,6 +47,7 @@
               <control progid="DecalControls.Choice" name="chcEventTriggerEvent" left="80" top="10" width="200" height="18" />
               <control progid="DecalControls.StaticText" name="txtEventsWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
               <control progid="DecalControls.Choice" name="chcEventsWebhook" left="80" top="30" width="140" height="18" />
+              <control progid="DecalControls.PushButton" name="btnEventsWebhookRefresh" left="230" top="30" width="60" height="18" text="Refresh" />
               <control progid="DecalControls.StaticText" name="txtEventsMessage" left="5" top="50" width="160" height="18" text="Message" />
               <control progid="DecalControls.Edit" name="edtEventsMessage" left="80" top="50" width="515" height="18" />
               <control progid="DecalControls.PushButton" name="btnEventTriggerAdd" left="5" top="80" width="120" height="18" text="Add Event Trigger" />
@@ -72,6 +75,7 @@
               <control progid="DecalControls.StaticText" name="txtTimersMinutes" left="130" top="10" width="60" height="18" text="minute(s)" />
               <control progid="DecalControls.StaticText" name="txtTimersWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
               <control progid="DecalControls.Choice" name="chcTimedTriggerWebhook" left="80" top="30" width="140" height="18" />
+              <control progid="DecalControls.PushButton" name="btnTimedTriggerWebhookRefresh" left="230" top="30" width="60" height="18" text="Refresh" />
               <control progid="DecalControls.StaticText" name="txtTimersMessage" left="5" top="50" width="100" height="18" text="Message" />
               <control progid="DecalControls.Edit" name="edtTimedTriggerMessage" left="80" top="50" width="515" height="18" />
               <control progid="DecalControls.PushButton" name="btnTimedTriggerAdd" left="5" top="80" width="120" height="18" text="Add Timer" />
@@ -98,6 +102,7 @@
               <control progid="DecalControls.Edit" name="edtChatTriggerPattern" left="80" top="10" width="515" height="18" />
               <control progid="DecalControls.StaticText" name="txtChatTriggerWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
               <control progid="DecalControls.Choice" name="chcChatTriggerWebhook" left="80" top="30" width="140" height="18" />
+              <control progid="DecalControls.PushButton" name="chcChatTriggerWebhookRefresh" left="230" top="30" width="60" height="18" text="Refresh" />
               <control progid="DecalControls.StaticText" name="txtChatTriggerMessage" left="5" top="50" width="160" height="18" text="Message" />
               <control progid="DecalControls.Edit" name="edtChatTriggerMessage" left="80" top="50" width="515" height="18" />
               <control progid="DecalControls.PushButton" name="btnChatTriggerAdd" left="5" top="80" width="120" height="18" text="Add Chat Trigger" />
