@@ -6,7 +6,7 @@ namespace TownCrier
 {
 	public static class Util
 	{
-        internal static string GetWebhookDirectory()
+        public static string GetWebhookDirectory()
         {
             string path = null;
             try
