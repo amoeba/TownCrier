@@ -6,6 +6,22 @@ namespace TownCrier
 {
 	public static class Util
 	{
+        public static string GetSharedProfilesDirectory()
+        {
+            string path = null;
+
+            try
+            {
+                path = string.Format(@"{0}\SharedProfiles", Globals.PluginDirectory);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+
+            return path;
+        }
+
         public static string GetWebhookDirectory()
         {
             string path = null;
@@ -63,8 +79,8 @@ namespace TownCrier
         {
             if (Globals.CurrentProfile != null && Globals.CurrentProfile.Length > 0)
             {
-                Util.EnsurePathExists(string.Format(@"{0}\{1}", Globals.PluginDirectory, "Profiles"));
-                return string.Format(@"{0}\{1}\{2}.json", Globals.PluginDirectory, "Profiles", Globals.CurrentProfile);
+                Util.EnsurePathExists(GetSharedProfilesDirectory());
+                return string.Format(@"{0}\{1}.json", GetSharedProfilesDirectory(), Globals.CurrentProfile);
             }
             else
             {

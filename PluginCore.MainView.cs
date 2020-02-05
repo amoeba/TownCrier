@@ -698,7 +698,7 @@ namespace TownCrier
         {
             try
             {
-                string path = string.Format(@"{0}\Profiles", Globals.PluginDirectory);
+                string path = Util.GetSharedProfilesDirectory();
 
                 if (!Directory.Exists(path))
                 {
