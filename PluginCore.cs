@@ -209,7 +209,7 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("TownCrier now stores settings for each character. Your old settings are being migrated to this character.");
+                Util.WriteToChat("TownCrier can now uses character-specific profiles by default and also supports sharing profiles across characters. See the Triggers > Profile tab. Your old settings have been migrated.");
 
                 Globals.DisposeAllTimers();
                 Globals.ChatTriggers.Clear();
