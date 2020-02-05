@@ -332,7 +332,7 @@ namespace TownCrier
                 // Stop if the name isn't unique
                 if (Globals.Webhooks != null && Globals.Webhooks.Count > 0)
                 {
-                    List<Webhook> found = Globals.Webhooks.FindAll(w => w.Name == edtName.Text);
+                    List<Webhook> found = Globals.Webhooks.FindAll(w => w.Name == edtName.Text.Trim());
 
                     if (found.Count > 0)
                     {
