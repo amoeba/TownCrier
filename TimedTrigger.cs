@@ -69,6 +69,8 @@ namespace TownCrier
                     Timer.Stop();
                 }
 
+                Timer = null;
+
                 Globals.Host.Underlying.Hooks.RenderPreUI -= hooks_RenderPreUI;
             }
             catch (Exception ex)
@@ -85,9 +87,11 @@ namespace TownCrier
 
                 if (Timer != null)
                 {
+                    Timer.Stop();
                     Timer.Dispose();
                 }
 
+                Timer = null;
             }
             catch (Exception ex)
             {

@@ -118,12 +118,11 @@ namespace TownCrier
             try
             {
                 Util.LogMessage("LoadProfile()");
-
+                
+                Globals.DisposeAllTimers();
                 Globals.ChatTriggers.Clear();
                 Globals.EventTriggers.Clear();
                 Globals.TimedTriggers.Clear();
-                Globals.Webhooks.Clear();
-                Globals.DisposeAllTimers();
 
                 string path = Util.GetProfilePath();
 
@@ -212,9 +211,9 @@ namespace TownCrier
             {
                 Util.WriteToChat("TownCrier now stores settings for each character. Your old settings are being migrated to this character.");
 
+                Globals.DisposeAllTimers();
                 Globals.ChatTriggers.Clear();
                 Globals.EventTriggers.Clear();
-                Globals.DisposeAllTimers();
                 Globals.TimedTriggers.Clear();
                 Globals.Webhooks.Clear();
 

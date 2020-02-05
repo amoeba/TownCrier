@@ -102,8 +102,12 @@ namespace TownCrier
 
             foreach (TimedTrigger timer in TimedTriggers)
             {
+                Util.LogMessage("Disposing of " + timer.ToString());
+
                 timer.Dispose();
             }
+
+            TimedTriggers.Clear();
         }
     }
 }
