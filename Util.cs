@@ -141,7 +141,7 @@ namespace TownCrier
             }
         }
 
-		public static void WriteToChat(string message)
+        public static void WriteToChat(string message)
 		{
 			try
             {
