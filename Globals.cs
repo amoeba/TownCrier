@@ -54,13 +54,35 @@ namespace TownCrier
         {
             DisposeAllTimers();
 
-            ChatTriggers.Clear();
-            EventTriggers.Clear();
-            TimedTriggers.Clear();
-            Webhooks.Clear();
-            ChatPatterns.Clear();
-            Settings.Clear();
+            if (ChatTriggers != null)
+            {
+                ChatTriggers.Clear();
+            }
 
+            if (EventTriggers != null)
+            {
+                EventTriggers.Clear();
+            }
+
+            if (TimedTriggers != null)
+            {
+                TimedTriggers.Clear();
+            }
+
+            if (Webhooks != null)
+            {
+                Webhooks.Clear();
+            }
+
+            if (ChatPatterns != null)
+            {
+                ChatPatterns.Clear();
+            }
+
+            if (Settings != null)
+            {
+                Settings.Clear();
+            };
         }
 
         public static void SetPluginDirectory()
