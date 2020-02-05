@@ -697,40 +697,28 @@ namespace TownCrier
         {
             try
             {
+                // Rebuild UI state from the profile directory's contents
+                chcProfile.Clear();
+                chcProfile.Add("[By char]", null); // Null means "[By char]"
+                chcProfile.Selected = 0;
+
+                // Stop now if there are no shared profiles
                 string path = Util.GetSharedProfilesDirectory();
 
                 if (!Directory.Exists(path))
                 {
-                    Util.LogMessage("In RefreshProfiles(), profiles directory doesn't exist so stopping early");
-
                     return;
                 }
 
-                string[] profiles = Directory.GetFiles(path);
-
-                // Return now if no profiles
-                if (profiles.Length <= 0)
-                {
-                    return;
-                }
-
-                // Rebuild UI state from the profile directory's contents
-                chcProfile.Clear();
-                chcProfile.Add("[By char]", null); // Null means "[By char]"
-
-                // Set selected to 0 if we know it is
-                if (Globals.CurrentProfile == null)
-                {
-                    chcProfile.Selected = 0;
-                }
+                string[] sharedProfiles = Directory.GetFiles(path);
 
                 FileInfo fi;
                 string file;
                 string profileName;
 
-                for (int i = 0; i < profiles.Length; i++)
+                for (int i = 0; i < sharedProfiles.Length; i++)
                 {
-                    file = profiles[i];
+                    file = sharedProfiles[i];
                     fi = new FileInfo(file);
                     profileName = fi.Name.Replace(".json", "");
                     chcProfile.Add(profileName, profileName);
