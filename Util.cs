@@ -96,15 +96,15 @@ namespace TownCrier
 			{
                 string path = null;
 
-                // Fall back to saving in a global errors.txt when not logged in
+                // Fall back to saving in a global Errors.txt when not logged in
                 if (!Globals.IsLoggedIn)
                 {
-                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, "errors.txt");
+                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, "Errors.txt");
                 }
                 else
                 {
                     EnsurePathExists(Util.GetPlayerSpecificFolder());
-                    path = Util.GetPlayerSpecificFile("errors.txt");
+                    path = Util.GetPlayerSpecificFile("Errors.txt");
                 }
 
                 using (StreamWriter writer = new StreamWriter(path, true))
@@ -136,15 +136,15 @@ namespace TownCrier
             {
                 string path = null;
 
-                // Fall back to saving in a global errors.txt when not logged in
+                // Fall back to saving in a global Messages.txt when not logged in
                 if (!Globals.IsLoggedIn)
                 {
-                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, "messages.txt");
+                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, "Messages.txt");
                 }
                 else
                 {
                     EnsurePathExists(Util.GetPlayerSpecificFolder());
-                    path = Util.GetPlayerSpecificFile("messages.txt");
+                    path = Util.GetPlayerSpecificFile("Messages.txt");
                 }
 
                 using (StreamWriter writer = new StreamWriter(path, true))
