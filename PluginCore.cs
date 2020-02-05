@@ -128,6 +128,8 @@ namespace TownCrier
 
                 if (!File.Exists(path))
                 {
+                    Util.WriteToChat("Tried to load profile at " + path + "but it didn't exist. Stopping.");
+
                     return;
                 }
 
