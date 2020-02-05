@@ -84,7 +84,6 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("SaveWebhook()" + Name);
                 Util.EnsurePathExists(String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks"));
                 string path = String.Format(@"{0}\{1}\{2}.json", Globals.PluginDirectory, "Webhooks", Name);
 

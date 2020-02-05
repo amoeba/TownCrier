@@ -149,14 +149,14 @@ namespace TownCrier
             {
                 if (copyProfileNewName == null)
                 {
-                    Util.WriteToChat("copyToName is null.");
+                    Util.WriteToChat("You must enter a new name. Profile not copied.");
 
                     return;
                 }
 
                 if (copyProfileNewName.Text.Length <= 0)
                 {
-                    Util.WriteToChat("New profile name must not be an empty string.");
+                    Util.WriteToChat("New profile name must not be an empty string. Profile not copied.");
 
                     return;
                 }
@@ -173,7 +173,6 @@ namespace TownCrier
                 Globals.CurrentProfile = copyProfileNewName.Text;
                 SaveCurrentProfileSetting();
                 SaveProfile();
-                Util.WriteToChat("Current profile is '" + Globals.CurrentProfile + "'");
                 RefreshProfileChoice();
             }
             catch (Exception ex)
@@ -226,7 +225,6 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("btnProfileClear_Click");
                 ClearProfile();
             }
             catch (Exception ex)
@@ -240,7 +238,6 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat("btnProfileRefresh_Click");
                 RefreshProfileChoice();
             }
             catch (Exception ex)
