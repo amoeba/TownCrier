@@ -66,7 +66,6 @@ namespace TownCrier
                 if (modified.Contains("$UXP"))
                 {
                     modified = modified.Replace("$UXP", MaybeEscape(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.UnassignedXP), escape));
-
                 }
 
                 if (modified.Contains("$TXP"))

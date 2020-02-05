@@ -142,6 +142,7 @@ namespace TownCrier
                 }
 
                 Profile profile = Newtonsoft.Json.JsonConvert.DeserializeObject<Profile>(profileString);
+
                 Globals.EventTriggers = profile.EventTriggers;
                 Globals.TimedTriggers = profile.TimedTriggers;
                 Globals.ChatTriggers = profile.ChatTriggers;

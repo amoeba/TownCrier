@@ -684,6 +684,7 @@ namespace TownCrier
             try
             {
                 Globals.CurrentProfile = (string)chcProfile.Data[chcProfile.Selected];
+
                 SaveCurrentProfileSetting();
                 LoadProfile();
             }
