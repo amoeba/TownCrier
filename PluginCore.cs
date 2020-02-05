@@ -546,7 +546,11 @@ namespace TownCrier
 
                 if (webhook != null)
                 {
-                    webhook.Send(new WebhookMessage(trigger.MessageFormat, eventMessage));
+                    webhook.Send(
+                        new WebhookMessage(
+                            trigger.Regex.Replace(eventMessage, trigger.MessageFormat), // Substitute backreferences
+                            eventMessage
+                    ));
                 }
             }
             catch (Exception ex)
