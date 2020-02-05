@@ -144,7 +144,7 @@
     
     <page label="Help">
       <control progid="DecalControls.FixedLayout" clipped="">
-        <control progid="DecalControls.StaticText" name="txtAbout" left="10" top="10" width="400" height="200" text="TownCrier was created by Kolth. For detailed information about how to use this plugin, visit https://github.com/amoeba/TownCrier. I'm also on most of the AC Discord servers as petridish and also on the TreeStats (https://treestats.net/) Discord." />
+        <control progid="DecalControls.StaticText" name="txtAbout" left="10" top="10" width="400" height="200" text="TownCrier was created by Kolth. For detailed information about how to use this plugin, visit https://github.com/amoeba/TownCrier. I'm also on most of the AC Discord servers as petridish and also on the TreeStats (https://treestats.net/) Discord. For settings and logs, navigate to C:\Users\{you}\Documents\Decal Plugins\TownCrier." />
       </control>
     </page>
   </control>
