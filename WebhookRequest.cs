@@ -17,6 +17,7 @@ namespace TownCrier
         {
             Hook = webhook;
             MessageTemplate = message;
+            EventMessage = null;
             Pattern = null;
         }
 
@@ -31,6 +32,7 @@ namespace TownCrier
         public WebhookRequest(Webhook webhook, string eventMessage, Regex pattern)
         {
             Hook = webhook;
+            MessageTemplate = null;
             EventMessage = StripTags(eventMessage);
             Pattern = pattern;
         }
@@ -68,13 +70,9 @@ namespace TownCrier
             Util.WriteToChat("WebhookRequest.SendGET");
 
             string url = Hook.URLFormatString;
-            url = SubstituteAt(url, MessageTemplate, true);
-            url = SubstituteVariables(url, MessageTemplate, true);
-
-            if (EventMessage != null && Pattern != null)
-            {
-                url = SubstituteBackreferences(EventMessage, url);
-            }
+            url = SubstituteAt(url, true);
+            url = SubstituteVariables(url, true);
+            url = SubstituteBackreferences(url, true);
 
             Util.WriteToChat("Url is " + url);
 
@@ -138,24 +136,21 @@ namespace TownCrier
             Util.WriteToChat("WebhookRequest.SendPOST");
             
             string url = Hook.URLFormatString;
-            url = SubstituteAt(url, MessageTemplate, true);
-            url = SubstituteVariables(url, MessageTemplate, true);
+            url = SubstituteAt(url, true);
+            url = SubstituteVariables(url, true);
+            url = SubstituteBackreferences(url, true);
 
-            if (EventMessage != null && Pattern != null)
-            {
-                url = SubstituteBackreferences(EventMessage, url);
-            }
 
             Util.WriteToChat("Url is " + url);
 
             string payload = Hook.PayloadFormatString;
-            payload = SubstituteAt(payload, MessageTemplate, false);
-            payload = SubstituteVariables(payload, MessageTemplate, false);
+            payload = SubstituteAt(payload, false);
+            payload = SubstituteVariables(payload, false);
 
             if (EventMessage != null && Pattern != null)
             {
                 Util.WriteToChat("Substituting backreferences...");
-                payload = SubstituteBackreferences(EventMessage, payload);
+                payload = SubstituteBackreferences(payload, false);
             } else
             {
                 Util.WriteToChat("Not substituting backreferences.");
@@ -225,36 +220,20 @@ namespace TownCrier
             }
         }
 
-        public string SubstituteAt(string template, string message, bool escape)
+        public string SubstituteAt(string target, bool escape)
         {
-            if (escape)
-            {
-                message = Uri.EscapeUriString(message);
-            }
-
-            return template.Replace("@", message);
+            return target.Replace("@", MaybeEscape(MessageTemplate, escape));
         }
 
-        public string SubstituteVariables(string message, string eventMessage, bool escape)
+        public string SubstituteVariables(string target, bool escape)
         {
-            string modified = message;
+            string modified = target;
 
             try
             {
-                if (message == "" && eventMessage == "")
+                if (modified.Contains("$EVENT") && (EventMessage != null || EventMessage.Length > 0))
                 {
-                    return "Empty webhook.";
-                }
-
-                // Short circuit to support EventTriggers with no format string
-                if (message == "")
-                {
-                    return eventMessage;
-                }
-
-                if (modified.Contains("$EVENT") && eventMessage != "")
-                {
-                    modified = modified.Replace("$EVENT", MaybeEscape(eventMessage, escape));
+                    modified = modified.Replace("$EVENT", MaybeEscape(EventMessage, escape));
                 }
 
                 if (modified.Contains("$NAME"))
@@ -339,35 +318,35 @@ namespace TownCrier
             }
         }
 
-        public string SubstituteBackreferences(string input, string destination)
+        public string SubstituteBackreferences(string target, bool escape)
         {
             if (Pattern == null)
             {
-                return input;
+                Util.WriteToChat("Pattern is null, returning");
+                return target;
             }
 
-            Match m = Pattern.Match(input);
+            Match m = Pattern.Match(EventMessage);
 
-            Util.WriteToChat("Success? " + m.Success.ToString());
             if (!m.Success)
             {
-                return input;
+                Util.WriteToChat("Is not a success");
+
+                return target;
             }
 
             GroupCollection groups = m.Groups;
 
-            Util.WriteToChat("groups.Count: " + groups.Count.ToString());
-
             if (groups == null || groups.Count <= 1)
             {
-                return input;
+                return target;
             }
 
-            string result = destination;
+            string result = target;
 
             for (int i = 1; i < groups.Count; i++)
             {
-                result = result.Replace("$" + i.ToString(), groups[i].Value);
+                result = result.Replace("$" + i.ToString(), MaybeEscape(groups[i].Value, true));
             }
 
             return result;

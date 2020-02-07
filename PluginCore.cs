@@ -539,11 +539,25 @@ namespace TownCrier
 
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == trigger.WebhookName);
 
-                if (webhook != null)
+                if (webhook == null)
                 {
-                    WebhookRequest req = new WebhookRequest(webhook, trigger.MessageFormat, eventMessage);
-                    req.Send();
+                    return;
                 }
+
+                // Handle case where messageformat is empty and default to $EVENT
+                string message = null;
+
+                if (trigger.MessageFormat.Length <= 0)
+                {
+                    message = "$EVENT";
+                } 
+                else
+                {
+                    message = trigger.MessageFormat;
+                }
+
+                WebhookRequest req = new WebhookRequest(webhook, message, eventMessage);
+                req.Send();
             }
             catch (Exception ex)
             {
