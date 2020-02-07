@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Text.RegularExpressions;
 using Decal.Adapter;
 using MyClasses.MetaViewWrappers;
 
@@ -64,6 +64,7 @@ namespace TownCrier
         {
             try
             {
+                isLoggedIn = false;
                 Globals.SetPluginDirectory();
                 Util.LogMessage("Startup()");
                 MVWireupHelper.WireupStart(this, Host);
@@ -392,16 +393,12 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("Saving current profile setting");
-                Util.LogMessage("Current profile is '" + Globals.CurrentProfile + "'");
-
                 Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
                 string path = Util.GetPlayerSpecificFile("CurrentProfile.txt");
 
-                Util.LogMessage("Path I will write to is " + path);
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
-                    Util.LogMessage("Writing '" + Globals.CurrentProfile + "'");
+                    Util.LogMessage("Writing profile '" + Globals.CurrentProfile + "'");
 
                     writer.Write(Globals.CurrentProfile);
                 }
@@ -416,6 +413,7 @@ namespace TownCrier
         {
             Globals.ChatTriggers.Clear();
             Globals.EventTriggers.Clear();
+            Globals.DisposeAllTimers();
             Globals.TimedTriggers.Clear();
 
             SaveProfile();
@@ -476,6 +474,8 @@ namespace TownCrier
                 if (!File.Exists(path))
                 {
                     Util.WriteToChat(string.Format("Couldn't find {0} on disk. Stopping without deleting anything.", path));
+
+                    return;
                 }
 
                 File.Delete(path);

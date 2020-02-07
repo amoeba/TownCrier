@@ -31,6 +31,7 @@ namespace TownCrier
         public static void Init(string pluginName, PluginHost host, CoreManager core, string server, string name)
         {
             // General globals
+            PluginName = pluginName;
             Host = host;
             Core = core;
             IsLoggedIn = true;
@@ -82,10 +83,10 @@ namespace TownCrier
         {
             try
             {
-                PluginDirectory = String.Format(@"{0}\{1}\{2}",
+                PluginDirectory = string.Format(@"{0}\{1}\{2}",
                     Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                     "Decal Plugins",
-                    Globals.PluginName);
+                    PluginName);
             }
             catch (Exception ex)
             {
