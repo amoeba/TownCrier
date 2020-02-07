@@ -10,6 +10,8 @@ namespace TownCrier
     [FriendlyName("TownCrier")]
     public partial class PluginCore : PluginBase
     {
+        private bool isLoggedIn;
+
         // HTTP methods
         private struct METHOD
         {
@@ -48,6 +50,14 @@ namespace TownCrier
         private struct Icons
         {
             public const int Delete = 0x060011F8;
+        }
+
+
+        private struct COMMAND
+        {
+            public const string TRIGGER = "trigger";
+            public const string PROFILE = "profile";
+            public const string HELP = "help";
         }
 
         protected override void Startup()
@@ -118,11 +128,6 @@ namespace TownCrier
             try
             {
                 Util.LogMessage("LoadProfile()");
-                
-                Globals.DisposeAllTimers();
-                Globals.ChatTriggers.Clear();
-                Globals.EventTriggers.Clear();
-                Globals.TimedTriggers.Clear();
 
                 string path = Util.GetProfilePath();
 
@@ -142,6 +147,12 @@ namespace TownCrier
                 }
 
                 Profile profile = Newtonsoft.Json.JsonConvert.DeserializeObject<Profile>(profileString);
+
+                // Clean up state and then reset state from the loaded profile
+                Globals.DisposeAllTimers();
+                Globals.ChatTriggers.Clear();
+                Globals.EventTriggers.Clear();
+                Globals.TimedTriggers.Clear();
 
                 Globals.EventTriggers = profile.EventTriggers;
                 Globals.TimedTriggers = profile.TimedTriggers;

@@ -15,6 +15,8 @@ namespace TownCrier
         {
             try
             {
+                isLoggedIn = true;
+
                 Util.LogMessage("CharacterFilter.LoginComplete()");
                 Globals.Init("TownCrier", Host, Core, Core.CharacterFilter.Server, Core.CharacterFilter.Name);
 
@@ -172,6 +174,8 @@ namespace TownCrier
                     command.StartsWith("/towncrier") ||
                     command.StartsWith("/tc"))
                 {
+                    e.Eat = true;
+
                     ProcessCommand(tokens);
                 }
             }
@@ -183,62 +187,122 @@ namespace TownCrier
 
         void ProcessCommand(string[] tokens)
         {
+            if (!isLoggedIn)
+            {
+                Util.WriteToChat("Please wait until you are logged in to issue commands.");
+
+                return;
+            }
+
             if (tokens.Length == 0)
             {
                 return;
             }
 
             // Show help if no args are passed or help is passed
-            if (tokens.Length < 2 || tokens[1].ToLower() == "help")
+            if (tokens.Length < 2 || tokens[1].ToLower() == COMMAND.HELP)
             {
                 PrintCommandLineHelp();
 
                 return;
             }
 
-            if (tokens[1].ToLower() == "trigger")
+            switch (tokens[1].ToLower())
             {
-                if (tokens.Length < 4)
-                {
+                case COMMAND.TRIGGER:
+                    ProcessTriggerCommand(tokens);
+                    break;
+                case COMMAND.PROFILE:
+                    ProcessProfileCommand(tokens);
+                    break;
+                default:
                     PrintCommandLineHelp();
-                }
+                    break;
+            };
 
-                string name = tokens[2];
+        }
 
-                // Try to find the webhook first by name and warn if not found
-                List<Webhook> matched = Globals.Webhooks.FindAll(webhook => webhook.Name == name);
-
-                if (matched.Count == 0)
-                {
-                    Util.WriteToChat("Webhook with name '" + name + "' not found.");
-
-                    return;
-                }
-
-                // Slice the array so we can concatenate the message portion
-                string[] rest = new string[tokens.Length - 3];
-                Array.Copy(tokens, 3, rest, 0, tokens.Length - 3);
-                string message = string.Join(" ", rest);
-
-                if (message.Length == 0)
-                {
-                    Util.WriteToChat("Can't trigger webhook '" + name + "' with an empty message.");
-                    PrintCommandLineHelp();
-                }
-
-                Util.WriteToChat("Triggering webhook '" + name + "' with message '" + message + "'");
-
-                TriggerWebhook(name, message);
-            }
-            else
+        void ProcessTriggerCommand(string[] tokens)
+        {
+            if (tokens.Length < 4)
             {
                 PrintCommandLineHelp();
+            }
+
+            string name = tokens[2];
+
+            // Try to find the webhook first by name and warn if not found
+            List<Webhook> matched = Globals.Webhooks.FindAll(webhook => webhook.Name == name);
+
+            if (matched.Count == 0)
+            {
+                Util.WriteToChat("Webhook with name '" + name + "' not found.");
+
+                return;
+            }
+
+            // Slice the array so we can concatenate the message portion
+            string[] rest = new string[tokens.Length - 3];
+            Array.Copy(tokens, 3, rest, 0, tokens.Length - 3);
+            string message = string.Join(" ", rest);
+
+            if (message.Length == 0)
+            {
+                Util.WriteToChat("Can't trigger webhook '" + name + "' with an empty message.");
+                PrintCommandLineHelp();
+            }
+
+            Util.WriteToChat("Triggering webhook '" + name + "' with message '" + message + "'");
+
+            TriggerWebhook(name, message);
+        }
+
+        void ProcessProfileCommand(string[] tokens)
+        {
+            if (tokens.Length < 4 || tokens[2] != "load")
+            {
+                PrintCommandLineHelp();
+            }
+
+            string name = tokens[3];
+            string profilePath = string.Format(@"{0}\{1}.json", Util.GetSharedProfilesDirectory(), name);
+
+            if (!File.Exists(profilePath))
+            {
+                Util.WriteToChat(string.Format("Profile '{0}' doesn't exist at '{1}'.", name, profilePath));
+
+                return;
+            }
+
+            Util.WriteToChat(String.Format("Loading profile '{0}'", name));
+
+            // Try to load the profile, gracefully handled a failure case like IO failure
+            string oldProfile = Globals.CurrentProfile;
+
+            try
+            {
+                Globals.CurrentProfile = name;
+                LoadProfile();
+            }
+            catch (Exception ex)
+            {
+                Globals.CurrentProfile = oldProfile;
+
+                Util.LogError(ex);
             }
         }
 
         void PrintCommandLineHelp()
         {
-            Util.WriteToChat("Trigger webhooks via '@towncrier trigger ${webhookname} ${message}'. You can use Variables.");
+            Util.WriteToChat("Trigger TownCrier's command line options with @tc, @towncrier, /tc, or /towncrier.");
+            Util.WriteToChat("");
+            Util.WriteToChat("  Available commands: trigger, profile\n\n");
+            Util.WriteToChat("");
+            Util.WriteToChat("  trigger:");
+            Util.WriteToChat("    Trigger webhooks with '@tc trigger ${webhookname} ${message}'. You can use Variables.");
+            Util.WriteToChat("");
+            Util.WriteToChat("  profile:");
+            Util.WriteToChat("    Load a profile with '@tc profile load ${profilename}'");
         }
     }
 }
