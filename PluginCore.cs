@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
+
 using Decal.Adapter;
 using MyClasses.MetaViewWrappers;
 
