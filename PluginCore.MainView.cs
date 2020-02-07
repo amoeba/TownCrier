@@ -485,7 +485,8 @@ namespace TownCrier
                 switch (col)
                 {
                     case WebhooksList.Test:
-                        Globals.Webhooks[row].Send(new WebhookMessage("", "Testing webhook."));
+                        WebhookRequest req = new WebhookRequest(Globals.Webhooks[row], "Test");
+                        req.Send();
 
                         break;
                     case WebhooksList.Delete:

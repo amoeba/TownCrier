@@ -150,7 +150,8 @@ namespace TownCrier
 
                 if (webhook != null)
                 {
-                    webhook.Send(new WebhookMessage(Message, ""));
+                    WebhookRequest req = new WebhookRequest(webhook, Message);
+                    req.Send();
                 }
 
                 // Update frame counter so we'll know if we're behind next time

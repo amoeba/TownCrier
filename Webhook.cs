@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Text;
-using System.Threading;
 
 namespace TownCrier
 {
@@ -10,8 +8,8 @@ namespace TownCrier
     {
         public string Name;
         public string Method;
-        public string URLFormatString; // Contains an @ somewhere
-        public string PayloadFormatString; // Or contains an @ somewhere
+        public string URLFormatString;
+        public string PayloadFormatString;
 
         public Webhook(string name, string url, string method, string payload)
         {
@@ -66,87 +64,6 @@ namespace TownCrier
                 }
             }
             catch (Exception ex) { Util.LogError(ex); }
-        }
-
-        public Uri URI(WebhookMessage message)
-        {
-            try
-            {
-                return new Uri(URLFormatString.Replace("@", message.ToQueryStringValue()));
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-
-                return new Uri(URLFormatString);
-            }
-        }
-
-        private string Payload(WebhookMessage message)
-        {
-            return PayloadFormatString.Replace("@", message.ToJSONStringValue());
-        }
-
-        public void Send(WebhookMessage message)
-        {
-            try
-            {
-                Thread t = new Thread(() =>
-                {
-                    try
-                    {
-                        HttpWebRequest req = (HttpWebRequest)WebRequest.Create(URI(message));
-                        req.Method = Method;
-
-                        if (Method == "POST" && PayloadFormatString != "")
-                        {
-                            req.ContentType = "application/json";
-
-                            using (var streamWriter = new StreamWriter(req.GetRequestStream()))
-                            {
-                                streamWriter.Write(Payload(message));
-                                streamWriter.Flush();
-                            }
-                        }
-
-                        var httpResponse = (HttpWebResponse)req.GetResponse();
-
-                        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                        {
-                            var responseText = streamReader.ReadToEnd();
-                        }
-                    }
-                    catch (WebException wex)
-                    {
-                        if (wex.Response != null)
-                        {
-                            using (var errorResponse = (HttpWebResponse)wex.Response)
-                            {
-                                using (var reader = new StreamReader(errorResponse.GetResponseStream()))
-                                {
-                                    string error = reader.ReadToEnd();
-
-                                    Util.WriteToChat("Error encountered when sending webhook:");
-                                    Util.WriteToChat(error);
-                                    Util.WriteToChat("Double-check your URL, Method, and Payload values.");
-
-                                    Util.LogError(new Exception(error));
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Util.LogError(ex);
-                    }
-                });
-
-                t.Start();
-            }
-            catch (Exception ex)
-            {
-                Util.LogError(ex);
-            }
         }
     }
 }

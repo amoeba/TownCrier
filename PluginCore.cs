@@ -492,9 +492,13 @@ namespace TownCrier
             {
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == name);
 
-                if (webhook != null) {
-                    webhook.Send(new WebhookMessage(message));
+                if (webhook == null) {
+
+                    return;
                 }
+
+                WebhookRequest req = new WebhookRequest(webhook, message);
+                req.Send();
             }
             catch (Exception ex)
             {
@@ -537,7 +541,8 @@ namespace TownCrier
 
                 if (webhook != null)
                 {
-                    webhook.Send(new WebhookMessage(trigger.MessageFormat, eventMessage));
+                    WebhookRequest req = new WebhookRequest(webhook, trigger.MessageFormat, eventMessage);
+                    req.Send();
                 }
             }
             catch (Exception ex)
@@ -557,14 +562,15 @@ namespace TownCrier
 
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == trigger.WebhookName);
 
-                if (webhook != null)
+                if (webhook == null)
                 {
-                    webhook.Send(
-                        new WebhookMessage(
-                            trigger.Regex.Replace(eventMessage, trigger.MessageFormat), // Substitute backreferences
-                            eventMessage
-                    ));
+                    Util.WriteToChat(string.Format("Couldn't find webhook '{0}'." + trigger.WebhookName));
+
+                    return;
                 }
+
+                WebhookRequest req = new WebhookRequest(webhook, trigger.MessageFormat, eventMessage, trigger.Regex);
+                req.Send();
             }
             catch (Exception ex)
             {
