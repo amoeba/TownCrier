@@ -86,6 +86,20 @@ namespace TownCrier
         {
             try
             {
+                if (chcEventsWebhook.Count <= 0)
+                {
+                    Util.WriteToChat("Please add a webhook first.");
+
+                    return;
+                }
+
+                if (chcEventsWebhook.Selected >= chcEventsWebhook.Count)
+                {
+                    Util.WriteToChat("Invalid webhook selected.");
+
+                    return;
+                }
+
                 EventTrigger trigger = new EventTrigger(
                     (string)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
                     (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
@@ -251,6 +265,20 @@ namespace TownCrier
         {
             try
             {
+                if (chcTimedTriggerWebhook.Count <= 0)
+                {
+                    Util.WriteToChat("Please add a webhook first.");
+
+                    return;
+                }
+
+                if (chcTimedTriggerWebhook.Selected >= chcTimedTriggerWebhook.Count)
+                {
+                    Util.WriteToChat("Invalid webhook selected.");
+
+                    return;
+                }
+
                 if (int.Parse(edtTimedTriggerMinutes.Text) <= 0)
                 {
                     throw new Exception("Value for Minutes must be a whole number greater than 0.");
@@ -284,6 +312,20 @@ namespace TownCrier
         {
             try
             {
+                if (chcChatTriggerWebhook.Count <= 0)
+                {
+                    Util.WriteToChat("Please add a webhook first.");
+
+                    return;
+                }
+
+                if (chcChatTriggerWebhook.Selected >= chcChatTriggerWebhook.Count)
+                {
+                    Util.WriteToChat("Invalid webhook selected.");
+
+                    return;
+                }
+
                 if (edtChatTriggerPattern.Text.Length <= 0)
                 {
                     throw new Exception("You have to enter a Pattern for your ChatTrigger.");
