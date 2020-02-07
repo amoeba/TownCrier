@@ -11,14 +11,14 @@ namespace TownCrier
     public partial class PluginCore : PluginBase
     {
         // HTTP methods
-        public struct METHOD
+        private struct METHOD
         {
             public const string GET = "GET";
             public const string POST = "POST";
         }
 
         // Events the plugin handles, superset of GameEvent
-        public struct EVENTS {
+        private struct EVENTS {
             public const string LOGIN = "LOGIN";
             public const string LOGOFF = "LOGOFF";
             public const string LEVEL = "LEVEL";
@@ -27,7 +27,7 @@ namespace TownCrier
             public const string RARE = "RARE";
         };
 
-        public struct EVENTDESC
+        private struct EVENTDESC
         {
             public const string LOGIN = "You log in";
             public const string LOGOFF = "You log off";
