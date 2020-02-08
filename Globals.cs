@@ -9,12 +9,12 @@ namespace TownCrier
     public static class Globals
     {
         // General globals
-        public static string PluginName = "TownCrier";
-        public static PluginHost Host;
-        public static CoreManager Core;
-        public static bool IsLoggedIn = false;
-        public static string Server;
-        public static string Name;
+        public static string PluginName { get; set; }
+        public static PluginHost Host { get; set; }
+        public static CoreManager Core { get; set; }
+        public static bool IsLoggedIn { get; set; } = false;
+        public static string Server { get; set; }
+        public static string Name { get; set; }
 
         public static string PluginDirectory { get; set; }
         public static string MessagesPath { get; set; }
@@ -22,11 +22,11 @@ namespace TownCrier
 
         // App state
         public static string CurrentProfile { get; set; } // null means "[By char]"
-        public static List<EventTrigger> EventTriggers;
-        public static List<TimedTrigger> TimedTriggers;
-        public static List<ChatTrigger> ChatTriggers;
-        public static List<Webhook> Webhooks;
-        public static List<ChatPattern> ChatPatterns;
+        public static List<EventTrigger> EventTriggers { get; set; }
+        public static List<TimedTrigger> TimedTriggers { get; set; }
+        public static List<ChatTrigger> ChatTriggers { get; set; }
+        public static List<Webhook> Webhooks { get; set; }
+        public static List<ChatPattern> ChatPatterns { get; set; }
 
         public static void Init(string pluginName, PluginHost host, CoreManager core, string server, string name)
         {

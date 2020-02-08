@@ -61,8 +61,6 @@ namespace TownCrier
         {
             try
             {
-                Globals.SetPluginDirectory();
-                Util.LogMessage("Startup()");
                 MVWireupHelper.WireupStart(this, Host);
             }
             catch (Exception ex)
@@ -75,7 +73,6 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("Shutdown()");
                 Globals.Destroy();
                 MVWireupHelper.WireupEnd(this);
             }
@@ -88,7 +85,7 @@ namespace TownCrier
         /**
          * Load CurrentProfile setting from disk
          */
-        public void LoadCurrentProfileSetting()
+        public static void LoadCurrentProfileSetting()
         {
             try
             {
@@ -226,7 +223,7 @@ namespace TownCrier
         /**
          * Load legacy settings.txt from disk.
          */
-        public void LoadLegacySettings()
+        private void LoadLegacySettings()
         {
             try
             {
@@ -280,7 +277,7 @@ namespace TownCrier
         /**
          * Parse a single line from a legacy settings.txt file.
          */
-        public void LoadLegacySetting(string line)
+        private static void LoadLegacySetting(string line)
         {
             try
             {
@@ -375,7 +372,7 @@ namespace TownCrier
         /**
          * Save profile as JSON, on a per-character basis.
          */
-        public void SaveProfile()
+        public static void SaveProfile()
         {
             try
             {
@@ -402,7 +399,7 @@ namespace TownCrier
             catch (Exception ex) { Util.LogError(ex); }
         }
 
-        public void SaveCurrentProfileSetting()
+        public static void SaveCurrentProfileSetting()
         {
             try
             {
@@ -450,10 +447,17 @@ namespace TownCrier
         /**
          * Save a single webhook to disk
          */
-        public void SaveWebhook(Webhook webhook)
+        public static void SaveWebhook(Webhook webhook)
         {
             try
             {
+                if (webhook == null)
+                {
+                    Util.LogMessage("A call to SaveWebhook was called with a null webhook. Webhook not saved.");
+                    
+                    return;
+                }
+
                 Util.EnsurePathExists(String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks"));
                 string path = String.Format(@"{0}\{1}\{2}.json", Globals.PluginDirectory, "Webhooks", webhook.Name);
 
@@ -468,7 +472,7 @@ namespace TownCrier
         /**
          * Delete a single webhook from the plugin's state and disk
          */
-        public void DeleteWebhook(string name)
+        public static void DeleteWebhook(string name)
         {
             try
             {
@@ -507,7 +511,7 @@ namespace TownCrier
             }
         }
 
-        private void TriggerWebhook(string name, string message)
+        private static void TriggerWebhook(string name, string message)
         {
             try
             {
@@ -551,7 +555,7 @@ namespace TownCrier
             }
         }
 
-        private void TriggerWebhooksForEventTrigger(EventTrigger trigger, string eventMessage)
+        private static void TriggerWebhooksForEventTrigger(EventTrigger trigger, string eventMessage)
         {
             try
             {
@@ -631,7 +635,7 @@ namespace TownCrier
             }
         }
 
-        void PrintEventTrigger(EventTrigger trigger)
+        private static void PrintEventTrigger(EventTrigger trigger)
         {
             try
             {
@@ -643,7 +647,7 @@ namespace TownCrier
             }
         }
 
-        void PrintTimedTrigger(TimedTrigger trigger)
+        private static void PrintTimedTrigger(TimedTrigger trigger)
         {
             try
             {
@@ -655,7 +659,7 @@ namespace TownCrier
             }
         }
 
-        void PrintChatTrigger(ChatTrigger trigger)
+        private static void PrintChatTrigger(ChatTrigger trigger)
         {
             try
             {
@@ -667,7 +671,7 @@ namespace TownCrier
             }
         }
 
-        void PrintWebhook(Webhook webhook)
+        private static void PrintWebhook(Webhook webhook)
         {
             try
             {

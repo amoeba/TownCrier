@@ -101,6 +101,11 @@ namespace TownCrier
 		{
 			try
 			{
+                if (ex == null)
+                {
+                    ex = new Exception("ex was null on LogError, replaced with this message");
+                }
+
                 string path = null;
                 bool append = true;
 

@@ -5,10 +5,10 @@ namespace TownCrier
 {
     public class TimedTrigger
     {
-        public int Minute;
-        public string WebhookName;
-        public string Message;
-        public bool Enabled;
+        public int Minute { get; set; }
+        public string WebhookName { get; set; }
+        public string Message { get; set; }
+        public bool Enabled { get; set; }
 
         // Timer-specific stuff
         System.Windows.Forms.Timer Timer;

@@ -6,10 +6,10 @@ namespace TownCrier
 {
     public class Webhook
     {
-        public string Name;
-        public string Method;
-        public string URLFormatString;
-        public string PayloadFormatString;
+        public string Name { get; set; }
+        public string Method { get; set; }
+        public string URLFormatString { get; set; }
+        public string PayloadFormatString { get; set; }
 
         public Webhook(string name, string url, string method, string payload)
         {
@@ -28,7 +28,7 @@ namespace TownCrier
                 sb.Append("Webhook: Name: '");
                 sb.Append(Name);
                 sb.Append("', URL: '");
-                sb.Append(URLFormatString.ToString());
+                sb.Append(URLFormatString);
                 sb.Append(" (");
                 sb.Append(Method);
                 sb.Append(") with payload '");

@@ -370,7 +370,7 @@ namespace TownCrier
         // bool escape handles HTTP URI and JSON escaping
         // false -> JSON string escaping is done
         // true -> HTTP URI is done
-        public string MaybeEscape(string message, bool escape)
+        private static string MaybeEscape(string message, bool escape)
         {
             try
             {

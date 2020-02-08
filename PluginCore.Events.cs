@@ -189,7 +189,7 @@ namespace TownCrier
             }
         }
 
-        void ProcessCommand(string[] tokens)
+        private void ProcessCommand(string[] tokens)
         {
             if (!Globals.IsLoggedIn)
             {
@@ -226,7 +226,7 @@ namespace TownCrier
 
         }
 
-        void ProcessTriggerCommand(string[] tokens)
+        private static void ProcessTriggerCommand(string[] tokens)
         {
             if (tokens.Length < 4)
             {
@@ -261,7 +261,7 @@ namespace TownCrier
             TriggerWebhook(name, message);
         }
 
-        void ProcessProfileCommand(string[] tokens)
+        private void ProcessProfileCommand(string[] tokens)
         {
             if (tokens.Length < 4 || tokens[2] != "load")
             {
@@ -296,7 +296,7 @@ namespace TownCrier
             }
         }
 
-        void PrintCommandLineHelp()
+        private static void PrintCommandLineHelp()
         {
             Util.WriteToChat("Trigger TownCrier's command line options with @tc, @towncrier, /tc, or /towncrier.");
             Util.WriteToChat("");

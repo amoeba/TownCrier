@@ -6,11 +6,11 @@ namespace TownCrier
 {
     public class ChatTrigger
     {
-        public string Pattern;
-        public Regex Regex;
-        public string WebhookName;
-        public string MessageFormat;
-        public bool Enabled;
+        public string Pattern { get; set; }
+        public Regex Regex { get; set; }
+        public string WebhookName { get; set; }
+        public string MessageFormat { get; set; }
+        public bool Enabled { get; set; }
 
         public ChatTrigger(string pattern, string webhookName, string message, bool enabled)
         {
@@ -33,6 +33,11 @@ namespace TownCrier
 
         public bool Match(Decal.Adapter.ChatTextInterceptEventArgs e)
         {
+            if (e == null)
+            {
+                return false;
+            }
+
             if (Regex.IsMatch(e.Text))
             {
                 return true;

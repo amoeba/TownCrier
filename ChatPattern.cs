@@ -15,6 +15,11 @@ namespace TownCrier
 
         public bool Match(Decal.Adapter.ChatTextInterceptEventArgs e)
         {
+            if (e == null)
+            {
+                return false;
+            }
+
             if (Pattern.IsMatch(e.Text))
             {
                 return true;

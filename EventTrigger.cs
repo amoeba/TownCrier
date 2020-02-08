@@ -5,10 +5,10 @@ namespace TownCrier
 {
     public class EventTrigger
     {
-        public string Event;
-        public string WebhookName;
-        public string MessageFormat;
-        public bool Enabled;
+        public string Event { get; set; }
+        public string WebhookName { get; set; }
+        public string MessageFormat { get; set; }
+        public bool Enabled { get; set; }
 
         public EventTrigger(string evt, string webhookName, string messageFormat, bool enabled)
         {
