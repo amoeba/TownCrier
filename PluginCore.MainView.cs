@@ -141,6 +141,7 @@ namespace TownCrier
             copyProfileView = new HudView("Copy Profile", 200, 70, new ACImage(0x1F69));
             copyProfileView.Location = new Point(100, 100);
             copyProfileView.Visible = true;
+            copyProfileView.VisibleChanged += CopyProfileView_VisibleChanged;
 
             copyProfileLayout = new VirindiViewService.Controls.HudFixedLayout();
             copyProfileView.Controls.HeadControl = copyProfileLayout;
@@ -155,6 +156,19 @@ namespace TownCrier
             copyProfileButton.Text = "Copy";
             copyProfileLayout.AddControl(copyProfileButton, new Rectangle(10, 40, 50, 20));
             copyProfileButton.Hit += CopyProfile;
+        }
+
+        private void CopyProfileView_VisibleChanged(object sender, EventArgs e)
+        {
+            if (copyProfileView == null)
+            {
+                return;
+            }
+
+            if (!copyProfileView.Visible)
+            {
+                CleanUpCopyProfileHUD();
+            }
         }
 
         private void CopyProfile(object sender, EventArgs e)
@@ -224,6 +238,7 @@ namespace TownCrier
 
                 if (copyProfileView != null)
                 {
+                    copyProfileView.VisibleChanged -= CopyProfileView_VisibleChanged;
                     copyProfileView.Dispose();
                     copyProfileView = null;
                 }
