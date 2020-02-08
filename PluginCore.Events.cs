@@ -55,7 +55,9 @@ namespace TownCrier
                 // Events
                 Core.CharacterFilter.Death += CharacterFilter_Death;
                 TriggerWebhooksForEvent(EVENTS.LOGIN, Core.CharacterFilter.Name + " has logged in.");
-                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.RARE, Core.CharacterFilter.Name + " has discovered "));
+
+                // Note: Replacement of leading + symbol with an escaped form
+                Globals.ChatPatterns.Add(new ChatPattern(EVENTS.RARE, Core.CharacterFilter.Name.Replace("+", @"\+") + " has discovered "));
             }
             catch (Exception ex) 
             {
