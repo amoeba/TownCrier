@@ -48,7 +48,7 @@ namespace TownCrier
         public void Send()
         {
 
-            Util.WriteToChat("WebhookRequest.Send()");
+            Util.LogMessage("WebhookRequest.Send()");
 
             switch (Hook.Method)
             {
@@ -67,14 +67,14 @@ namespace TownCrier
 
         private void SendGET()
         {
-            Util.WriteToChat("WebhookRequest.SendGET");
+            Util.LogMessage("WebhookRequest.SendGET");
 
             string url = Hook.URLFormatString;
             url = SubstituteAt(url, true);
             url = SubstituteVariables(url, true);
             url = SubstituteBackreferences(url, true);
 
-            Util.WriteToChat("Url is " + url);
+            Util.LogMessage("  Url is " + url);
 
             try
             {
@@ -133,7 +133,7 @@ namespace TownCrier
 
         private void SendPOST()
         {
-            Util.WriteToChat("WebhookRequest.SendPOST");
+            Util.LogMessage("WebhookRequest.SendPOST");
             
             string url = Hook.URLFormatString;
             url = SubstituteAt(url, true);
@@ -141,7 +141,7 @@ namespace TownCrier
             url = SubstituteBackreferences(url, true);
 
 
-            Util.WriteToChat("Url is " + url);
+            Util.LogMessage("  Url is " + url);
 
             string payload = Hook.PayloadFormatString;
             payload = SubstituteAt(payload, false);
@@ -156,7 +156,7 @@ namespace TownCrier
                 Util.WriteToChat("Not substituting backreferences.");
             }
 
-            Util.WriteToChat("Payload is " + payload);
+            Util.LogMessage("  Payload is " + payload);
 
             try
             {
