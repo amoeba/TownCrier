@@ -604,6 +604,18 @@ namespace TownCrier
                     return;
                 }
 
+                // Handle case where messageformat is empty and default to $EVENT
+                string message = null;
+
+                if (trigger.MessageFormat.Length <= 0)
+                {
+                    message = "$EVENT";
+                }
+                else
+                {
+                    message = trigger.MessageFormat;
+                }
+
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == trigger.WebhookName);
 
                 if (webhook == null)
