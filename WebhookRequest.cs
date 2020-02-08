@@ -346,7 +346,7 @@ namespace TownCrier
 
             for (int i = 1; i < groups.Count; i++)
             {
-                result = result.Replace("$" + i.ToString(), MaybeEscape(groups[i].Value, true));
+                result = result.Replace("$" + i.ToString(), MaybeEscape(groups[i].Value, escape));
             }
 
             return result;
