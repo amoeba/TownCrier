@@ -379,7 +379,7 @@ namespace TownCrier
                 }
 
                 Webhook webhook = new Webhook(edtName.Text.Trim(), edtURL.Text.Trim(), (string)chcMethod.Data[chcMethod.Selected], edtPayload.Text.Trim());
-                webhook.Save();
+                SaveWebhook(webhook);
                 Globals.Webhooks.Add(webhook);
 
                 RefreshWebhooksList();

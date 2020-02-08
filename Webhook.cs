@@ -50,20 +50,5 @@ namespace TownCrier
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
-
-        public void Save()
-        {
-            try
-            {
-                Util.EnsurePathExists(String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks"));
-                string path = String.Format(@"{0}\{1}\{2}.json", Globals.PluginDirectory, "Webhooks", Name);
-
-                using (StreamWriter writer = new StreamWriter(path, false))
-                {
-                    writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
-                }
-            }
-            catch (Exception ex) { Util.LogError(ex); }
-        }
     }
 }

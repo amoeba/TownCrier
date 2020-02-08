@@ -432,13 +432,6 @@ namespace TownCrier
                 Util.EnsurePathExists(String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks"));
                 string path = String.Format(@"{0}\{1}\{2}.json", Globals.PluginDirectory, "Webhooks", webhook.Name);
 
-                // Delete if it exists. Windows saves files case-insensitive so saving Test.json will save to test.json
-                // if test.json exists when we go to save Test.json
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
                     writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(webhook, Newtonsoft.Json.Formatting.Indented));
