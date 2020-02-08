@@ -136,8 +136,8 @@ namespace TownCrier
 
                 if (!File.Exists(path))
                 {
-                    Util.WriteToChat("LoadProfile(): Tried to load profile at " + path + "but it didn't exist. Stopping.");
-
+                    // Can just stop here. profile JSON will get created eventually when
+                    // something in the profile gets edited
                     return;
                 }
 
