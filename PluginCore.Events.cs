@@ -15,8 +15,6 @@ namespace TownCrier
         {
             try
             {
-                isLoggedIn = true;
-
                 Util.LogMessage("CharacterFilter.LoginComplete()");
                 Globals.Init("TownCrier", Host, Core, Core.CharacterFilter.Server, Core.CharacterFilter.Name);
 
@@ -187,7 +185,7 @@ namespace TownCrier
 
         void ProcessCommand(string[] tokens)
         {
-            if (!isLoggedIn)
+            if (!Globals.IsLoggedIn)
             {
                 Util.WriteToChat("Please wait until you are logged in to issue commands.");
 

@@ -64,7 +64,6 @@ namespace TownCrier
         {
             try
             {
-                isLoggedIn = false;
                 Globals.SetPluginDirectory();
                 Util.LogMessage("Startup()");
                 MVWireupHelper.WireupStart(this, Host);
