@@ -166,7 +166,7 @@ namespace TownCrier
                 else
                 {
                     EnsurePathExists(Util.GetPlayerSpecificFolder());
-                    path = Util.GetPlayerSpecificFile(LOGFILE.ERROR);
+                    path = Util.GetPlayerSpecificFile(LOGFILE.MESSAGE);
                 }
 
                 // Determine whether we should cut the log file off
