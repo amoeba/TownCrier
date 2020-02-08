@@ -626,7 +626,7 @@ namespace TownCrier
                     return;
                 }
 
-                WebhookRequest req = new WebhookRequest(webhook, trigger.MessageFormat, eventMessage, trigger.Regex);
+                WebhookRequest req = new WebhookRequest(webhook, message, eventMessage, trigger.Regex);
                 req.Send();
             }
             catch (Exception ex)
