@@ -337,9 +337,10 @@ namespace TownCrier
 
             string result = target;
 
-            for (int i = 1; i < groups.Count; i++)
+            // Replace groups by name
+            foreach (var name in Pattern.GetGroupNames())
             {
-                result = result.Replace("$" + i.ToString(), MaybeEscape(groups[i].Value, escape));
+                result = result.Replace("$" + name, MaybeEscape(groups[name].Value, escape));
             }
 
             return result;
