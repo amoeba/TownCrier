@@ -10,8 +10,6 @@ namespace TownCrier
     [FriendlyName("TownCrier")]
     public partial class PluginCore : PluginBase
     {
-        private bool isLoggedIn;
-
         // HTTP methods
         private struct METHOD
         {
