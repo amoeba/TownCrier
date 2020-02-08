@@ -32,9 +32,10 @@ namespace TownCrier
                     Globals.PluginName);
 
                 // Settings, optionally migrating from v1
-                if (File.Exists(oldSettingsPath) && !File.Exists(Util.GetPlayerSpecificFile("Profile.json")))
+                if (File.Exists(oldSettingsPath) && !Directory.Exists(Util.GetSharedProfilesDirectory()))
                 {
                     LoadLegacySettings();
+                    Util.EnsurePathExists(Util.GetSharedProfilesDirectory());
                 } 
                 else
                 {
