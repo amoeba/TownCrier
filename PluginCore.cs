@@ -50,7 +50,6 @@ namespace TownCrier
             public const int Delete = 0x060011F8;
         }
 
-
         private struct COMMAND
         {
             public const string TRIGGER = "trigger";
