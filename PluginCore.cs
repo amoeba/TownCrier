@@ -383,11 +383,12 @@ namespace TownCrier
                 Util.LogMessage("SaveProfile(): Saving profile at path " + path);
 
                 // Construct a temporary Dictionary so serialization is easy
-                Profile profile = new Profile();
-
-                profile.EventTriggers = Globals.EventTriggers;
-                profile.TimedTriggers = Globals.TimedTriggers;
-                profile.ChatTriggers = Globals.ChatTriggers;
+                Profile profile = new Profile
+                {
+                    EventTriggers = Globals.EventTriggers,
+                    TimedTriggers = Globals.TimedTriggers,
+                    ChatTriggers = Globals.ChatTriggers
+                };
 
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
