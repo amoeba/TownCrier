@@ -7,6 +7,12 @@ namespace TownCrier
 	{
         private static int logFileSizeLimit = 1048576; // 1MiB 
 
+        private struct LOGFILE
+        {
+            public const string MESSAGE = "Messages.txt";
+            public const string ERROR = "Errors.txt";
+        }
+
         public static string GetSharedProfilesDirectory()
         {
             string path = null;
@@ -101,12 +107,12 @@ namespace TownCrier
                 // Fall back to saving in a global Errors.txt when not logged in
                 if (!Globals.IsLoggedIn)
                 {
-                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, "Errors.txt");
+                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, LOGFILE.ERROR);
                 }
                 else
                 {
                     EnsurePathExists(Util.GetPlayerSpecificFolder());
-                    path = Util.GetPlayerSpecificFile("Errors.txt");
+                    path = Util.GetPlayerSpecificFile(LOGFILE.ERROR);
                 }
 
                 // Determine whether we should cut the log file off
@@ -150,12 +156,12 @@ namespace TownCrier
                 // Fall back to saving in a global Messages.txt when not logged in
                 if (!Globals.IsLoggedIn)
                 {
-                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, "Messages.txt");
+                    path = string.Format(@"{0}\{1}", Globals.PluginDirectory, LOGFILE.MESSAGE);
                 }
                 else
                 {
                     EnsurePathExists(Util.GetPlayerSpecificFolder());
-                    path = Util.GetPlayerSpecificFile("Messages.txt");
+                    path = Util.GetPlayerSpecificFile(LOGFILE.ERROR);
                 }
 
                 // Determine whether we should cut the log file off
