@@ -26,10 +26,10 @@ namespace TownCrier
                 Globals.ChatPatterns.Add(new ChatPattern(EVENTS.DROPONDEATH, "You've lost "));
 
                 // Migrate settings when we have an old settings file but no Profile.json
-                string oldSettingsPath = String.Format(
-                    @"{0}\Decal Plugins\{1}\settings.txt",
-                    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    Globals.PluginName);
+                string oldSettingsPath = string.Format(
+                    @"{0}\settings.txt",
+                    Globals.PluginDirectory);
+
                 Util.LogMessage(Util.GetSharedProfilesDirectory() + " -> " + Directory.Exists(Util.GetSharedProfilesDirectory()).ToString());
 
                 // Settings, optionally migrating from v1
