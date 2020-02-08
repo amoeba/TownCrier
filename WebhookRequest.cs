@@ -149,11 +149,7 @@ namespace TownCrier
 
             if (EventMessage != null && Pattern != null)
             {
-                Util.WriteToChat("Substituting backreferences...");
                 payload = SubstituteBackreferences(payload, false);
-            } else
-            {
-                Util.WriteToChat("Not substituting backreferences.");
             }
 
             Util.LogMessage("  Payload is " + payload);
@@ -322,7 +318,6 @@ namespace TownCrier
         {
             if (Pattern == null)
             {
-                Util.WriteToChat("Pattern is null, returning");
                 return target;
             }
 
@@ -330,8 +325,6 @@ namespace TownCrier
 
             if (!m.Success)
             {
-                Util.WriteToChat("Is not a success");
-
                 return target;
             }
 
