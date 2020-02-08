@@ -475,6 +475,8 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("DeleteWebhook(" + name + ")");
+
                 // Find the webhook first
                 List<Webhook> matches = Globals.Webhooks.FindAll(x => x.Name == name);
 
@@ -499,6 +501,8 @@ namespace TownCrier
                 }
 
                 File.Delete(path);
+
+                Util.LogMessage("DeleteWebhook(" + name + ") done.");
             }
             catch (Exception ex)
             {
@@ -510,6 +514,7 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage(string.Format("TriggerWebhook({0}, {1})", name, message));
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == name);
 
                 if (webhook == null) {
@@ -530,6 +535,7 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage(string.Format("TriggerWebhooksForEvent({0}, {1})", evt, eventMessage));
                 List<EventTrigger> matched = Globals.EventTriggers.FindAll(trigger => trigger.Enabled && trigger.Event == evt);
 
                 foreach (EventTrigger trigger in matched)
@@ -552,6 +558,8 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage(string.Format("TriggerWebhooksForEventTrigger({0}, {1})", trigger.ToString(), eventMessage));
+
                 if (!trigger.Enabled)
                 {
                     return;
@@ -589,6 +597,8 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage(string.Format("TriggerWebhooksForChatTrigger({0}, {1})", trigger.ToString(), eventMessage));
+
                 if (!trigger.Enabled)
                 {
                     return;
