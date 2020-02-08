@@ -5,6 +5,8 @@ namespace TownCrier
 {
 	public static class Util
 	{
+        private static int logFileSizeLimit = 102400; // 100KB
+
         public static string GetSharedProfilesDirectory()
         {
             string path = null;
@@ -94,6 +96,7 @@ namespace TownCrier
 			try
 			{
                 string path = null;
+                bool append = true;
 
                 // Fall back to saving in a global Errors.txt when not logged in
                 if (!Globals.IsLoggedIn)
@@ -106,7 +109,15 @@ namespace TownCrier
                     path = Util.GetPlayerSpecificFile("Errors.txt");
                 }
 
-                using (StreamWriter writer = new StreamWriter(path, true))
+                // Determine whether we should cut the log file off
+                FileInfo fi = new FileInfo(path);
+
+                if (fi.Length > logFileSizeLimit)
+                {
+                    append = false;
+                }
+
+                using (StreamWriter writer = new StreamWriter(path, append))
 				{
 					writer.WriteLine("==" +
                         "==========================================================================");
@@ -134,6 +145,7 @@ namespace TownCrier
             try
             {
                 string path = null;
+                bool append = true;
 
                 // Fall back to saving in a global Messages.txt when not logged in
                 if (!Globals.IsLoggedIn)
@@ -146,7 +158,15 @@ namespace TownCrier
                     path = Util.GetPlayerSpecificFile("Messages.txt");
                 }
 
-                using (StreamWriter writer = new StreamWriter(path, true))
+                // Determine whether we should cut the log file off
+                FileInfo fi = new FileInfo(path);
+
+                if (fi.Length > logFileSizeLimit)
+                {
+                    append = false;
+                }
+
+                using (StreamWriter writer = new StreamWriter(path, append))
                 {
                     writer.WriteLine(String.Format("{0}: {1}", DateTime.Now.ToString(), message));
                 }

@@ -95,10 +95,12 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("LoadCurrentProfileSetting()");
                 string path = Util.GetPlayerSpecificFile("CurrentProfile.txt");
 
                 if (!File.Exists(path))
                 {
+                    Util.LogMessage("LoadCurrentProfileSetting(): CurrentProfile.txt not found, assuming [By char] profile.");
                     return;
                 }
 
@@ -112,6 +114,7 @@ namespace TownCrier
                     }
 
                     Globals.CurrentProfile = value.Trim();
+                    Util.LogMessage("LoadCurrentProfileSetting(): Current profile is now " + Globals.CurrentProfile);
                 }
             } 
             catch (Exception ex)
@@ -133,7 +136,7 @@ namespace TownCrier
 
                 if (!File.Exists(path))
                 {
-                    Util.WriteToChat("Tried to load profile at " + path + "but it didn't exist. Stopping.");
+                    Util.WriteToChat("LoadProfile(): Tried to load profile at " + path + "but it didn't exist. Stopping.");
 
                     return;
                 }
@@ -163,6 +166,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
+                Util.LogMessage("LoadProfile(): Failed to load profile due to " + ex.Message);
                 Util.LogError(ex);
             }
         }
@@ -174,10 +178,14 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("LoadWebhooks()");
+
                 Globals.Webhooks.Clear();
 
                 foreach (string path in Directory.GetFiles(Util.GetWebhookDirectory(), "*.json"))
                 {
+                    Util.LogMessage("LoadWebhooks(): Attempting to load " + path);
+
                     using (StreamReader reader = new StreamReader(path))
                     {
                         string webhookJSONString = reader.ReadToEnd();
@@ -202,6 +210,8 @@ namespace TownCrier
                             Util.LogError(ex);
                         }
                     }
+
+                    Util.LogMessage("LoadWebhooks(): Done loading webhook " + path + " refreshing UI, etc.");
                 }
 
                 // Refresh UI
@@ -223,6 +233,7 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("Loading legacy settings.");
                 Util.WriteToChat("TownCrier can now uses character-specific profiles by default and also supports sharing profiles across characters. See the Triggers > Profile tab. Your old settings have been migrated.");
 
                 Globals.DisposeAllTimers();
@@ -371,7 +382,11 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("SaveProfile()");
+
                 string path = Util.GetProfilePath();
+
+                Util.LogMessage("SaveProfile(): Saving profile at path " + path);
 
                 // Construct a temporary Dictionary so serialization is easy
                 Profile profile = new Profile();
@@ -384,6 +399,8 @@ namespace TownCrier
                 {
                     writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(profile, Newtonsoft.Json.Formatting.Indented));
                 }
+
+                Util.LogMessage("SaveProfile(): Done saving.");
             }
             catch (Exception ex) { Util.LogError(ex); }
         }
@@ -392,12 +409,14 @@ namespace TownCrier
         {
             try
             {
+                Util.LogMessage("SaveCurrentProfileSetting()");
+
                 Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
                 string path = Util.GetPlayerSpecificFile("CurrentProfile.txt");
 
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
-                    Util.LogMessage("Writing profile '" + Globals.CurrentProfile + "'");
+                    Util.LogMessage("SaveCurrentProfileSetting(): Writing current profile setting of '" + Globals.CurrentProfile + "'");
 
                     writer.Write(Globals.CurrentProfile);
                 }
@@ -410,16 +429,25 @@ namespace TownCrier
 
         public void ClearProfile()
         {
-            Globals.ChatTriggers.Clear();
-            Globals.EventTriggers.Clear();
-            Globals.DisposeAllTimers();
-            Globals.TimedTriggers.Clear();
+            try
+            {
+                Util.LogMessage("ClearProfile()");
 
-            SaveProfile();
+                Globals.ChatTriggers.Clear();
+                Globals.EventTriggers.Clear();
+                Globals.DisposeAllTimers();
+                Globals.TimedTriggers.Clear();
 
-            RefreshTimedTriggerList();
-            RefreshEventTriggerList();
-            RefreshChatTriggerList();
+                SaveProfile();
+
+                RefreshTimedTriggerList();
+                RefreshEventTriggerList();
+                RefreshChatTriggerList();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
         }
 
         /**
