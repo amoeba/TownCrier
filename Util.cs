@@ -5,7 +5,7 @@ namespace TownCrier
 {
 	public static class Util
 	{
-        private static int logFileSizeLimit = 102400; // 100KB
+        private static int logFileSizeLimit = 1048576; // 1MiB 
 
         public static string GetSharedProfilesDirectory()
         {
@@ -112,7 +112,7 @@ namespace TownCrier
                 // Determine whether we should cut the log file off
                 FileInfo fi = new FileInfo(path);
 
-                if (fi.Length > logFileSizeLimit)
+                if (fi.Exists && fi.Length > logFileSizeLimit)
                 {
                     append = false;
                 }
@@ -161,7 +161,7 @@ namespace TownCrier
                 // Determine whether we should cut the log file off
                 FileInfo fi = new FileInfo(path);
 
-                if (fi.Length > logFileSizeLimit)
+                if (fi.Exists && fi.Length > logFileSizeLimit)
                 {
                     append = false;
                 }
