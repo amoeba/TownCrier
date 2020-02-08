@@ -374,6 +374,9 @@ namespace TownCrier
             }
         }
 
+        // bool escape handles HTTP URI and JSON escaping
+        // false -> JSON string escaping is done
+        // true -> HTTP URI is done
         public string MaybeEscape(string message, bool escape)
         {
             try
@@ -384,7 +387,7 @@ namespace TownCrier
                 }
                 else
                 {
-                    return message;
+                    return message.Replace("\"", "\\\"");
                 }
             }
             catch (Exception ex)
