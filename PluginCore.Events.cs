@@ -30,12 +30,15 @@ namespace TownCrier
                     @"{0}\Decal Plugins\{1}\settings.txt",
                     Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                     Globals.PluginName);
+                Util.LogMessage(Util.GetSharedProfilesDirectory() + " -> " + Directory.Exists(Util.GetSharedProfilesDirectory()).ToString());
 
                 // Settings, optionally migrating from v1
                 if (File.Exists(oldSettingsPath) && !Directory.Exists(Util.GetSharedProfilesDirectory()))
                 {
+                    Util.LogMessage("Loading legacy settings...");
                     LoadLegacySettings();
                     Util.EnsurePathExists(Util.GetSharedProfilesDirectory());
+                    Util.LogMessage(Util.GetSharedProfilesDirectory() + " -> " + Directory.Exists(Util.GetSharedProfilesDirectory()).ToString());
                 } 
                 else
                 {
