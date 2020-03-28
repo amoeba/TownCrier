@@ -237,6 +237,11 @@ namespace TownCrier
                     modified = modified.Replace("$NAME", MaybeEscape(Globals.Core.CharacterFilter.Name, escape));
                 }
 
+                if (modified.Contains("$SERVER"))
+                {
+                    modified = modified.Replace("$SERVER", MaybeEscape(Globals.Core.CharacterFilter.Server, escape));
+                }
+
                 if (modified.Contains("$LEVEL"))
                 {
                     modified = modified.Replace("$LEVEL", MaybeEscape(Globals.Core.CharacterFilter.Level.ToString(), escape));
