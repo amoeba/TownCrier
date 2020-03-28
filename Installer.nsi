@@ -45,6 +45,7 @@ Section "un.Uninstall"
  
 delete $INSTDIR\Uninstall.exe
 delete "$INSTDIR\${DLL}"
+delete "$INSTDIR\${NewtonsoftJSON}"
 rmDir $INSTDIR
 DeleteRegKey HKLM "SOFTWARE\Decal\Plugins\${GUID}"
 
