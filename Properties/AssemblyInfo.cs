@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("KolthSoft")]
 [assembly: AssemblyProduct("TownCrier")]
-[assembly: AssemblyCopyright("Copyright © KolthSoft 2018")]
+[assembly: AssemblyCopyright("Copyright © KolthSoft 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
