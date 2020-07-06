@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -143,16 +145,27 @@ namespace TownCrier
 
             Util.LogMessage("  Url is " + url);
 
-            string payload = Hook.PayloadFormatString;
-            payload = SubstituteAt(payload, false);
-            payload = SubstituteVariables(payload, false);
+            // Non-cleverly parse the payload string, do substitutions on all values, and serialize that
+            Dictionary<string, string> deserialized = JsonConvert.DeserializeObject<Dictionary<string, string>>(Hook.PayloadFormatString);
+            Dictionary<string, string> payload_out = new Dictionary<string, string>();
 
-            if (EventMessage != null && Pattern != null)
+            string valuetmp;
+
+            foreach (KeyValuePair<string, string> pair in deserialized)
             {
-                payload = SubstituteBackreferences(payload, false);
+                valuetmp = pair.Value;
+                valuetmp = SubstituteAt(valuetmp, false);
+                valuetmp = SubstituteVariables(valuetmp, false);
+
+                if (EventMessage != null && Pattern != null)
+                {
+                    valuetmp = SubstituteBackreferences(valuetmp, false);
+                }
+
+                payload_out.Add(pair.Key, valuetmp);
             }
 
-            Util.LogMessage("  Payload is " + payload);
+            Util.LogMessage("  Payload is " + JsonConvert.SerializeObject(payload_out));
 
             try
             {
@@ -167,7 +180,7 @@ namespace TownCrier
 
                         using (var streamWriter = new StreamWriter(req.GetRequestStream()))
                         {
-                            streamWriter.Write(payload);
+                            streamWriter.Write(JsonConvert.SerializeObject(payload_out));
                             streamWriter.Flush();
                         }
 
@@ -194,7 +207,7 @@ namespace TownCrier
 
                                 Util.WriteToChat("Error encountered when sending webhook:");
                                 Util.WriteToChat(string.Format("URL: '{0}'", url));
-                                Util.WriteToChat(string.Format("Payload: '{0}'", payload));
+                                Util.WriteToChat(string.Format("Payload: '{0}'", JsonConvert.SerializeObject(payload_out)));
                                 Util.WriteToChat(string.Format("Error: '{0}'", error));
                                 Util.WriteToChat("Double-check your URL, Method, and Payload values.");
 
@@ -218,7 +231,7 @@ namespace TownCrier
 
         public string SubstituteAt(string target, bool escape)
         {
-            return target.Replace("@", MaybeEscape(MessageTemplate, escape));
+            return target.Replace("@", MaybeURLEncode(MessageTemplate, escape));
         }
 
         public string SubstituteVariables(string target, bool escape)
@@ -229,57 +242,57 @@ namespace TownCrier
             {
                 if (modified.Contains("$EVENT") && (EventMessage != null || EventMessage.Length > 0))
                 {
-                    modified = modified.Replace("$EVENT", MaybeEscape(EventMessage, escape));
+                    modified = modified.Replace("$EVENT", MaybeURLEncode(EventMessage, escape));
                 }
 
                 if (modified.Contains("$NAME"))
                 {
-                    modified = modified.Replace("$NAME", MaybeEscape(Globals.Core.CharacterFilter.Name, escape));
+                    modified = modified.Replace("$NAME", MaybeURLEncode(Globals.Core.CharacterFilter.Name, escape));
                 }
 
                 if (modified.Contains("$SERVER"))
                 {
-                    modified = modified.Replace("$SERVER", MaybeEscape(Globals.Core.CharacterFilter.Server, escape));
+                    modified = modified.Replace("$SERVER", MaybeURLEncode(Globals.Core.CharacterFilter.Server, escape));
                 }
 
                 if (modified.Contains("$LEVEL"))
                 {
-                    modified = modified.Replace("$LEVEL", MaybeEscape(Globals.Core.CharacterFilter.Level.ToString(), escape));
+                    modified = modified.Replace("$LEVEL", MaybeURLEncode(Globals.Core.CharacterFilter.Level.ToString(), escape));
                 }
 
                 if (modified.Contains("$UXP"))
                 {
-                    modified = modified.Replace("$UXP", MaybeEscape(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.UnassignedXP), escape));
+                    modified = modified.Replace("$UXP", MaybeURLEncode(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.UnassignedXP), escape));
                 }
 
                 if (modified.Contains("$TXP"))
                 {
-                    modified = modified.Replace("$TXP", MaybeEscape(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.TotalXP), escape));
+                    modified = modified.Replace("$TXP", MaybeURLEncode(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.TotalXP), escape));
                 }
 
                 if (modified.Contains("$HEALTH"))
                 {
-                    modified = modified.Replace("$HEALTH", MaybeEscape(Globals.Core.CharacterFilter.Health.ToString(), escape));
+                    modified = modified.Replace("$HEALTH", MaybeURLEncode(Globals.Core.CharacterFilter.Health.ToString(), escape));
                 }
 
                 if (modified.Contains("$STAMINA"))
                 {
-                    modified = modified.Replace("$STAMINA", MaybeEscape(Globals.Core.CharacterFilter.Stamina.ToString(), escape));
+                    modified = modified.Replace("$STAMINA", MaybeURLEncode(Globals.Core.CharacterFilter.Stamina.ToString(), escape));
                 }
 
                 if (modified.Contains("$MANA"))
                 {
-                    modified = modified.Replace("$MANA", MaybeEscape(Globals.Core.CharacterFilter.Mana.ToString(), escape));
+                    modified = modified.Replace("$MANA", MaybeURLEncode(Globals.Core.CharacterFilter.Mana.ToString(), escape));
                 }
 
                 if (modified.Contains("$VITAE"))
                 {
-                    modified = modified.Replace("$VITAE", MaybeEscape(Globals.Core.CharacterFilter.Vitae.ToString() + "%", escape));
+                    modified = modified.Replace("$VITAE", MaybeURLEncode(Globals.Core.CharacterFilter.Vitae.ToString() + "%", escape));
                 }
 
                 if (modified.Contains("$LOC"))
                 {
-                    modified = modified.Replace("$LOC", MaybeEscape(new Location(Globals.Host.Actions.Landcell, Globals.Host.Actions.LocationX, Globals.Host.Actions.LocationY).ToString(), escape));
+                    modified = modified.Replace("$LOC", MaybeURLEncode(new Location(Globals.Host.Actions.Landcell, Globals.Host.Actions.LocationX, Globals.Host.Actions.LocationY).ToString(), escape));
                 }
 
                 if (modified.Contains("$DATETIME"))
@@ -288,7 +301,7 @@ namespace TownCrier
 
                     modified = modified.Replace(
                         "$DATETIME",
-                        MaybeEscape(
+                        MaybeURLEncode(
                             String.Format("{0} {1}",
                                 now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern),
                                 now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)),
@@ -299,14 +312,14 @@ namespace TownCrier
                 {
                     modified = modified.Replace(
                         "$DATE",
-                        MaybeEscape(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern), escape));
+                        MaybeURLEncode(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern), escape));
                 }
 
                 if (modified.Contains("$TIME"))
                 {
                     modified = modified.Replace(
                         "$TIME",
-                        MaybeEscape(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern), escape));
+                        MaybeURLEncode(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern), escape));
                 }
 
                 return modified;
@@ -345,7 +358,7 @@ namespace TownCrier
             // Replace groups by name
             foreach (var name in Pattern.GetGroupNames())
             {
-                result = result.Replace("$" + name, MaybeEscape(groups[name].Value, escape));
+                result = result.Replace("$" + name, MaybeURLEncode(groups[name].Value, escape));
             }
 
             return result;
@@ -373,10 +386,7 @@ namespace TownCrier
             }
         }
 
-        // bool escape handles HTTP URI and JSON escaping
-        // false -> JSON string escaping is done
-        // true -> HTTP URI is done
-        private static string MaybeEscape(string message, bool escape)
+        private static string MaybeURLEncode(string message, bool escape)
         {
             try
             {
@@ -385,8 +395,8 @@ namespace TownCrier
                     return Uri.EscapeUriString(message);
                 }
                 else
-                {
-                    return message.Replace("\"", "\\\"");
+                { 
+                    return message;
                 }
             }
             catch (Exception ex)
