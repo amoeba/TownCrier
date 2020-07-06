@@ -145,34 +145,34 @@ namespace TownCrier
 
             Util.LogMessage("  Url is " + url);
 
-            // Non-cleverly parse the payload string, do substitutions on all values, and serialize that
-            Dictionary<string, string> deserialized = JsonConvert.DeserializeObject<Dictionary<string, string>>(Hook.PayloadFormatString);
-            Dictionary<string, string> payload_out = new Dictionary<string, string>();
-
-            string valuetmp;
-
-            foreach (KeyValuePair<string, string> pair in deserialized)
-            {
-                valuetmp = pair.Value;
-                valuetmp = SubstituteAt(valuetmp, false);
-                valuetmp = SubstituteVariables(valuetmp, false);
-
-                if (EventMessage != null && Pattern != null)
-                {
-                    valuetmp = SubstituteBackreferences(valuetmp, false);
-                }
-
-                payload_out.Add(pair.Key, valuetmp);
-            }
-
-            Util.LogMessage("  Payload is " + JsonConvert.SerializeObject(payload_out));
-
             try
             {
                 Thread t = new Thread(() =>
                 {
                     try
                     {
+                        // Non-cleverly parse the payload string, do substitutions on all values, and serialize that
+                        Dictionary<string, string> deserialized = JsonConvert.DeserializeObject<Dictionary<string, string>>(Hook.PayloadFormatString);
+                        Dictionary<string, string> payload_out = new Dictionary<string, string>();
+
+                        string valuetmp;
+
+                        foreach (KeyValuePair<string, string> pair in deserialized)
+                        {
+                            valuetmp = pair.Value;
+                            valuetmp = SubstituteAt(valuetmp, false);
+                            valuetmp = SubstituteVariables(valuetmp, false);
+
+                            if (EventMessage != null && Pattern != null)
+                            {
+                                valuetmp = SubstituteBackreferences(valuetmp, false);
+                            }
+
+                            payload_out.Add(pair.Key, valuetmp);
+                        }
+
+                        Util.LogMessage("  Payload is " + JsonConvert.SerializeObject(payload_out));
+
                         Uri uri = new Uri(url);
                         HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);
                         req.Method = Hook.Method;
@@ -207,7 +207,7 @@ namespace TownCrier
 
                                 Util.WriteToChat("Error encountered when sending webhook:");
                                 Util.WriteToChat(string.Format("URL: '{0}'", url));
-                                Util.WriteToChat(string.Format("Payload: '{0}'", JsonConvert.SerializeObject(payload_out)));
+                                Util.WriteToChat(string.Format("Payload: '{0}'", Hook.PayloadFormatString));
                                 Util.WriteToChat(string.Format("Error: '{0}'", error));
                                 Util.WriteToChat("Double-check your URL, Method, and Payload values.");
 
