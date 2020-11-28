@@ -51,8 +51,8 @@ namespace TownCrier
                 LoadWebhooks();
 
                 // UI
-                RefreshUI();
                 PopulateEventChoices();
+                RefreshUI();
                 chcMethod.Add("GET", METHOD.GET);
                 chcMethod.Add("POST", METHOD.POST);
 
@@ -134,10 +134,20 @@ namespace TownCrier
 
             try
             {
-                if (e.Message.Type == 0xF7B0) // Game Event
+                if (e.Message.Type == 0xF7B0 && (int)e.Message["event"] == 0x0022)
                 {
-                    int eventId = (int)e.Message["event"];
-                    // TODO
+
+                    int item = (int)e.Message["item"];
+                    int container = (int)e.Message["container"];
+
+                    string item_name = Core.WorldFilter[item].Name;
+
+                    if (container != Core.CharacterFilter.Id)
+                    {
+                        return;
+                    }
+
+                    TriggerWebhooksForEvent(EVENTS.ITEMPICKUP, item_name);
                 }
             }
             catch (Exception ex)

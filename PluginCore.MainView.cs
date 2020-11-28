@@ -30,6 +30,10 @@ namespace TownCrier
         // Events
         [MVControlReference("edtEventsMessage")]
         private ITextBox edtEventsMessage = null;
+        [MVControlReference("txtEventsFilter")]
+        private IStaticText txtEventsFilter = null;
+        [MVControlReference("edtEventsFilter")]
+        private ITextBox edtEventsFilter = null;
         [MVControlReference("chcEventsWebhook")]
         private ICombo chcEventsWebhook = null;
         [MVControlReference("chcEventTriggerEvent")]
@@ -102,6 +106,7 @@ namespace TownCrier
 
                 EventTrigger trigger = new EventTrigger(
                     (string)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected],
+                    edtEventsFilter.Text.Trim(),
                     (string)chcEventsWebhook.Data[chcEventsWebhook.Selected],
                     edtEventsMessage.Text.Trim(),
                     true);
@@ -579,6 +584,7 @@ namespace TownCrier
                 RefreshWebhooksList();
                 RefreshTimedTriggerList();
                 RefreshEventTriggerList();
+                RefreshEventTriggerFilterVisibility();
                 RefreshChatTriggerList();
                 RefreshProfileChoice();
             }
@@ -813,6 +819,27 @@ namespace TownCrier
                 chcEventTriggerEvent.Add(EVENTDESC.DROPONDEATH, EVENTS.DROPONDEATH);
                 chcEventTriggerEvent.Add(EVENTDESC.RARE, EVENTS.RARE);
                 chcEventTriggerEvent.Add(EVENTDESC.RARELEVEL, EVENTS.RARELEVEL);
+                chcEventTriggerEvent.Add(EVENTDESC.ITEMPICKUP, EVENTS.ITEMPICKUP);
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+        void RefreshEventTriggerFilterVisibility()
+        {
+            try
+            {
+                if (chcEventTriggerEvent.Count <= 0)
+                {
+                    return;
+                }
+                
+                string evt = (string)chcEventTriggerEvent.Data[chcEventTriggerEvent.Selected];
+
+                bool filterable = EVENTFILTERABLE[evt];
+                txtEventsFilter.Visible = filterable;
+                edtEventsFilter.Visible = filterable;
             }
             catch (Exception ex)
             {
@@ -865,6 +892,19 @@ namespace TownCrier
             try
             {
                 LoadWebhooks();
+            }
+            catch (Exception ex)
+            {
+                Util.LogError(ex);
+            }
+        }
+
+        [MVControlEvent("chcEventTriggerEvent", "Change")]
+        void chcEventTriggerEvent_Change(object sender, MVIndexChangeEventArgs e)
+        {
+            try
+            {
+                RefreshEventTriggerFilterVisibility();
             }
             catch (Exception ex)
             {

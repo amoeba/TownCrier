@@ -45,6 +45,8 @@
             <control progid="DecalControls.FixedLayout" clipped="">
               <control progid="DecalControls.StaticText" name="txtEventsEvent" left="5" top="10" width="60" height="18" text="Event" />
               <control progid="DecalControls.Choice" name="chcEventTriggerEvent" left="80" top="10" width="200" height="18" />
+              <control progid="DecalControls.StaticText" name="txtEventsFilter" left="300" top="10" width="60" height="18" text="Filter" />
+              <control progid="DecalControls.Edit" name="edtEventsFilter" left="360" top="10" width="220" height="18" />
               <control progid="DecalControls.StaticText" name="txtEventsWebhook" left="5" top="30" width="60" height="18" text="Webhook" />
               <control progid="DecalControls.Choice" name="chcEventsWebhook" left="80" top="30" width="140" height="18" />
               <control progid="DecalControls.PushButton" name="btnEventsWebhookRefresh" left="230" top="30" width="60" height="18" text="Refresh" />

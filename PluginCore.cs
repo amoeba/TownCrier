@@ -26,6 +26,7 @@ namespace TownCrier
             public const string DROPONDEATH = "DROPONDEATH";
             public const string RARE = "RARE";
             public const string RARELEVEL = "RARELEVEL";
+            public const string ITEMPICKUP = "ITEMPICKUP";
         };
 
         private struct EVENTDESC
@@ -37,7 +38,19 @@ namespace TownCrier
             public const string DROPONDEATH = "You drop items on death";
             public const string RARE = "You find a rare";
             public const string RARELEVEL = "One of your rares levels up";
+            public const string ITEMPICKUP = "You pick up an item";
         }
+
+        private Dictionary<string, bool> EVENTFILTERABLE = new Dictionary<string, bool>() {
+            {EVENTS.LOGIN, false},
+            {EVENTS.LOGOFF, false},
+            {EVENTS.LEVEL, false},
+            {EVENTS.DEATH, false},
+            {EVENTS.DROPONDEATH, false},
+            {EVENTS.RARE, false},
+            {EVENTS.RARELEVEL, false},
+            {EVENTS.ITEMPICKUP, true}
+        };
 
         // Just GameEvent events the plugin handles
         private struct GAMEEVENT
@@ -324,7 +337,7 @@ namespace TownCrier
                             break;
                         }
 
-                        Globals.EventTriggers.Add(new EventTrigger(tokens[1], foundEvent[0].Name, tokens[3], bool.Parse(tokens[4])));
+                        Globals.EventTriggers.Add(new EventTrigger(tokens[1], "", foundEvent[0].Name, tokens[3], bool.Parse(tokens[4])));
 
                         break;
                     case "timedtrigger":
@@ -544,11 +557,6 @@ namespace TownCrier
 
                 foreach (EventTrigger trigger in matched)
                 {
-                    if (!trigger.Enabled)
-                    {
-                        continue;
-                    }
-
                     TriggerWebhooksForEventTrigger(trigger, eventMessage);
                 }
             }
@@ -557,6 +565,7 @@ namespace TownCrier
                 Util.LogError(ex);
             }
         }
+
 
         private static void TriggerWebhooksForEventTrigger(EventTrigger trigger, string eventMessage)
         {
@@ -567,6 +576,14 @@ namespace TownCrier
                 if (!trigger.Enabled)
                 {
                     return;
+                }
+
+                if (trigger.Filter != null)
+                {
+                    if (trigger.Filter.Length >= 0 && !eventMessage.Contains(trigger.Filter))
+                    {
+                        return;
+                    }
                 }
 
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == trigger.WebhookName);
