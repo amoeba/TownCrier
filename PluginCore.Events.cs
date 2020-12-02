@@ -15,7 +15,7 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("CharacterFilter.LoginComplete()");
+                Utilities.LogMessage("CharacterFilter.LoginComplete()");
                 Globals.Init("TownCrier", Host, Core, Core.CharacterFilter.Server, Core.CharacterFilter.Name);
 
                 // Set up chat patterns
@@ -31,15 +31,15 @@ namespace TownCrier
                     @"{0}\settings.txt",
                     Globals.PluginDirectory);
 
-                Util.LogMessage(Util.GetSharedProfilesDirectory() + " -> " + Directory.Exists(Util.GetSharedProfilesDirectory()).ToString());
+                Utilities.LogMessage(Utilities.GetSharedProfilesDirectory() + " -> " + Directory.Exists(Utilities.GetSharedProfilesDirectory()).ToString());
 
                 // Settings, optionally migrating from v1
-                if (File.Exists(oldSettingsPath) && !Directory.Exists(Util.GetSharedProfilesDirectory()))
+                if (File.Exists(oldSettingsPath) && !Directory.Exists(Utilities.GetSharedProfilesDirectory()))
                 {
-                    Util.LogMessage("Loading legacy settings...");
+                    Utilities.LogMessage("Loading legacy settings...");
                     LoadLegacySettings();
-                    Util.EnsurePathExists(Util.GetSharedProfilesDirectory());
-                    Util.LogMessage(Util.GetSharedProfilesDirectory() + " -> " + Directory.Exists(Util.GetSharedProfilesDirectory()).ToString());
+                    Utilities.EnsurePathExists(Utilities.GetSharedProfilesDirectory());
+                    Utilities.LogMessage(Utilities.GetSharedProfilesDirectory() + " -> " + Directory.Exists(Utilities.GetSharedProfilesDirectory()).ToString());
                 } 
                 else
                 {
@@ -65,7 +65,7 @@ namespace TownCrier
             }
             catch (Exception ex) 
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -104,7 +104,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -113,14 +113,14 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("CharacterFilter.Logoff()");
+                Utilities.LogMessage("CharacterFilter.Logoff()");
 
                 TriggerWebhooksForEvent(EVENTS.LOGOFF, Core.CharacterFilter.Name + " has logged off.");
                 Core.CharacterFilter.Death -= CharacterFilter_Death;
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -140,7 +140,7 @@ namespace TownCrier
                     int item = (int)e.Message["item"];
                     int container = (int)e.Message["container"];
 
-                    int item_old_container = Util.GetObjectOldContainer(item);
+                    int item_old_container = Utilities.GetObjectOldContainer(item);
 
                     // Stop now if the item was already in our main pack
                     if (item_old_container == Core.CharacterFilter.Id)
@@ -150,7 +150,7 @@ namespace TownCrier
 
                     // Check for the item being in in another pack (a container which is contained by
                     // our character
-                    int item_old_container_container = Util.GetObjectOldContainer(item_old_container);
+                    int item_old_container_container = Utilities.GetObjectOldContainer(item_old_container);
 
                     // Return if item was in one of our other packs
                     if (item_old_container_container == Core.CharacterFilter.Id)
@@ -160,7 +160,7 @@ namespace TownCrier
 
                     
                     // Check if item was equipped and has entered our pack(s) that way
-                    int item_old_wielder = Util.GetObjectOldWeilder(item);
+                    int item_old_wielder = Utilities.GetObjectOldWeilder(item);
 
                     if (item_old_wielder == Core.CharacterFilter.Id)
                     {
@@ -172,7 +172,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -184,7 +184,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -216,7 +216,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -224,7 +224,7 @@ namespace TownCrier
         {
             if (!Globals.IsLoggedIn)
             {
-                Util.WriteToChat("Please wait until you are logged in to issue commands.");
+                Utilities.WriteToChat("Please wait until you are logged in to issue commands.");
 
                 return;
             }
@@ -271,7 +271,7 @@ namespace TownCrier
 
             if (matched.Count == 0)
             {
-                Util.WriteToChat("Webhook with name '" + name + "' not found.");
+                Utilities.WriteToChat("Webhook with name '" + name + "' not found.");
 
                 return;
             }
@@ -283,11 +283,11 @@ namespace TownCrier
 
             if (message.Length == 0)
             {
-                Util.WriteToChat("Can't trigger webhook '" + name + "' with an empty message.");
+                Utilities.WriteToChat("Can't trigger webhook '" + name + "' with an empty message.");
                 PrintCommandLineHelp();
             }
 
-            Util.WriteToChat("Triggering webhook '" + name + "' with message '" + message + "'");
+            Utilities.WriteToChat("Triggering webhook '" + name + "' with message '" + message + "'");
 
             TriggerWebhook(name, message);
         }
@@ -300,16 +300,16 @@ namespace TownCrier
             }
 
             string name = tokens[3];
-            string profilePath = string.Format(@"{0}\{1}.json", Util.GetSharedProfilesDirectory(), name);
+            string profilePath = string.Format(@"{0}\{1}.json", Utilities.GetSharedProfilesDirectory(), name);
 
             if (!File.Exists(profilePath))
             {
-                Util.WriteToChat(string.Format("Profile '{0}' doesn't exist at '{1}'.", name, profilePath));
+                Utilities.WriteToChat(string.Format("Profile '{0}' doesn't exist at '{1}'.", name, profilePath));
 
                 return;
             }
 
-            Util.WriteToChat(String.Format("Loading profile '{0}'", name));
+            Utilities.WriteToChat(String.Format("Loading profile '{0}'", name));
 
             // Try to load the profile, gracefully handled a failure case like IO failure
             string oldProfile = Globals.CurrentProfile;
@@ -323,21 +323,21 @@ namespace TownCrier
             {
                 Globals.CurrentProfile = oldProfile;
 
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
         private static void PrintCommandLineHelp()
         {
-            Util.WriteToChat("Trigger TownCrier's command line options with @tc, @towncrier, /tc, or /towncrier.");
-            Util.WriteToChat("");
-            Util.WriteToChat("  Available commands: trigger, profile\n\n");
-            Util.WriteToChat("");
-            Util.WriteToChat("  trigger:");
-            Util.WriteToChat("    Trigger webhooks with '@tc trigger ${webhookname} ${message}'. You can use Variables.");
-            Util.WriteToChat("");
-            Util.WriteToChat("  profile:");
-            Util.WriteToChat("    Load a profile with '@tc profile load ${profilename}'");
+            Utilities.WriteToChat("Trigger TownCrier's command line options with @tc, @towncrier, /tc, or /towncrier.");
+            Utilities.WriteToChat("");
+            Utilities.WriteToChat("  Available commands: trigger, profile\n\n");
+            Utilities.WriteToChat("");
+            Utilities.WriteToChat("  trigger:");
+            Utilities.WriteToChat("    Trigger webhooks with '@tc trigger ${webhookname} ${message}'. You can use Variables.");
+            Utilities.WriteToChat("");
+            Utilities.WriteToChat("  profile:");
+            Utilities.WriteToChat("    Load a profile with '@tc profile load ${profilename}'");
         }
     }
 }
