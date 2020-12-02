@@ -157,7 +157,6 @@ namespace TownCrier
                     {
                         return;
                     }
-
                     
                     // Check if item was equipped and has entered our pack(s) that way
                     int item_old_wielder = Utilities.GetObjectOldWeilder(item);
