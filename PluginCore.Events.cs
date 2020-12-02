@@ -140,14 +140,34 @@ namespace TownCrier
                     int item = (int)e.Message["item"];
                     int container = (int)e.Message["container"];
 
-                    string item_name = Core.WorldFilter[item].Name;
+                    int item_old_container = Util.GetObjectOldContainer(item);
 
-                    if (container != Core.CharacterFilter.Id)
+                    // Stop now if the item was already in our main pack
+                    if (item_old_container == Core.CharacterFilter.Id)
                     {
                         return;
                     }
 
-                    TriggerWebhooksForEvent(EVENTS.ITEMPICKUP, item_name);
+                    // Check for the item being in in another pack (a container which is contained by
+                    // our character
+                    int item_old_container_container = Util.GetObjectOldContainer(item_old_container);
+
+                    // Return if item was in one of our other packs
+                    if (item_old_container_container == Core.CharacterFilter.Id)
+                    {
+                        return;
+                    }
+
+                    
+                    // Check if item was equipped and has entered our pack(s) that way
+                    int item_old_wielder = Util.GetObjectOldWeilder(item);
+
+                    if (item_old_wielder == Core.CharacterFilter.Id)
+                    {
+                        return;
+                    }
+
+                    TriggerWebhooksForEvent(EVENTS.ITEMPICKUP, Core.WorldFilter[item].Name);
                 }
             }
             catch (Exception ex)

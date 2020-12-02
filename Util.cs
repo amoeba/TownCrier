@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace TownCrier
 {
@@ -199,5 +200,40 @@ namespace TownCrier
                 LogError(ex);
             }
 		}
-	}
+
+        /** 
+         * GetWeenieProperty
+         * 
+         * Given to me by Yonneh & parad0x.
+         * 
+         * It turns out that Decal events run before the client sees the
+         * network event hits the client so we can ask the client for 
+         * what it knows about the object inside the event handler to get
+         * the previous state.
+         */
+        public static int GetWeenieProperty(int weenie, int property)
+        {
+            int wielderID = 0;
+
+            IntPtr weeniePtr = (IntPtr)Decal.Adapter.CoreManager.Current.Actions.Underlying.GetWeenieObjectPtr(weenie);
+
+            if (weeniePtr != IntPtr.Zero)
+            {
+                wielderID = Marshal.ReadInt32(weeniePtr, property);
+
+            }
+
+            return wielderID;
+        }
+        public static int GetObjectOldContainer(int id)
+        {
+            return GetWeenieProperty(id, 0xB4);
+
+        }
+
+        public static int GetObjectOldWeilder(int id)
+        {
+            return GetWeenieProperty(id, 0xB8);
+        }
+    }
 }
