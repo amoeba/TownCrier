@@ -72,7 +72,7 @@
     <Compile Include="Profile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimedTrigger.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="VirindiViews\ViewSystemSelector.cs" />
     <Compile Include="VirindiViews\Wrapper.cs" />
     <Compile Include="VirindiViews\Wrapper_Decal.cs" />

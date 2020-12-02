@@ -50,7 +50,7 @@ namespace TownCrier
         public void Send()
         {
 
-            Util.LogMessage("WebhookRequest.Send()");
+            Utilities.LogMessage("WebhookRequest.Send()");
 
             switch (Hook.Method)
             {
@@ -69,14 +69,14 @@ namespace TownCrier
 
         private void SendGET()
         {
-            Util.LogMessage("WebhookRequest.SendGET");
+            Utilities.LogMessage("WebhookRequest.SendGET");
 
             string url = Hook.URLFormatString;
             url = SubstituteAt(url, true);
             url = SubstituteVariables(url, true);
             url = SubstituteBackreferences(url, true);
 
-            Util.LogMessage("  Url is " + url);
+            Utilities.LogMessage("  Url is " + url);
 
             try
             {
@@ -110,18 +110,18 @@ namespace TownCrier
                             {
                                 string error = reader.ReadToEnd();
 
-                                Util.WriteToChat("Error encountered when sending webhook:");
-                                Util.WriteToChat(string.Format("URL: '{0}'", url));
-                                Util.WriteToChat(string.Format("Error: '{0}'", error));
-                                Util.WriteToChat("Double-check your URL, Method, and Payload values.");
+                                Utilities.WriteToChat("Error encountered when sending webhook:");
+                                Utilities.WriteToChat(string.Format("URL: '{0}'", url));
+                                Utilities.WriteToChat(string.Format("Error: '{0}'", error));
+                                Utilities.WriteToChat("Double-check your URL, Method, and Payload values.");
 
-                                Util.LogMessage(error);
+                                Utilities.LogMessage(error);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        Util.LogError(ex);
+                        Utilities.LogError(ex);
                     }
                 });
 
@@ -129,13 +129,13 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
         private void SendPOST()
         {
-            Util.LogMessage("WebhookRequest.SendPOST");
+            Utilities.LogMessage("WebhookRequest.SendPOST");
             
             string url = Hook.URLFormatString;
             url = SubstituteAt(url, true);
@@ -143,7 +143,7 @@ namespace TownCrier
             url = SubstituteBackreferences(url, true);
 
 
-            Util.LogMessage("  Url is " + url);
+            Utilities.LogMessage("  Url is " + url);
 
             try
             {
@@ -171,7 +171,7 @@ namespace TownCrier
                             payload_out.Add(pair.Key, valuetmp);
                         }
 
-                        Util.LogMessage("  Payload is " + JsonConvert.SerializeObject(payload_out));
+                        Utilities.LogMessage("  Payload is " + JsonConvert.SerializeObject(payload_out));
 
                         Uri uri = new Uri(url);
                         HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);
@@ -205,19 +205,19 @@ namespace TownCrier
                             {
                                 string error = reader.ReadToEnd();
 
-                                Util.WriteToChat("Error encountered when sending webhook:");
-                                Util.WriteToChat(string.Format("URL: '{0}'", url));
-                                Util.WriteToChat(string.Format("Payload: '{0}'", Hook.PayloadFormatString));
-                                Util.WriteToChat(string.Format("Error: '{0}'", error));
-                                Util.WriteToChat("Double-check your URL, Method, and Payload values.");
+                                Utilities.WriteToChat("Error encountered when sending webhook:");
+                                Utilities.WriteToChat(string.Format("URL: '{0}'", url));
+                                Utilities.WriteToChat(string.Format("Payload: '{0}'", Hook.PayloadFormatString));
+                                Utilities.WriteToChat(string.Format("Error: '{0}'", error));
+                                Utilities.WriteToChat("Double-check your URL, Method, and Payload values.");
 
-                                Util.LogMessage(error);
+                                Utilities.LogMessage(error);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        Util.LogError(ex);
+                        Utilities.LogError(ex);
                     }
                 });
 
@@ -225,7 +225,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -326,7 +326,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
 
                 return modified;
             }
@@ -380,7 +380,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
 
                 return message;
             }
@@ -401,7 +401,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
 
                 return message;
             }

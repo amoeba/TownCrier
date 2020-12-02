@@ -80,7 +80,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -93,7 +93,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -104,12 +104,12 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("LoadCurrentProfileSetting()");
-                string path = Util.GetPlayerSpecificFile("CurrentProfile.txt");
+                Utilities.LogMessage("LoadCurrentProfileSetting()");
+                string path = Utilities.GetPlayerSpecificFile("CurrentProfile.txt");
 
                 if (!File.Exists(path))
                 {
-                    Util.LogMessage("LoadCurrentProfileSetting(): CurrentProfile.txt not found, assuming [By char] profile.");
+                    Utilities.LogMessage("LoadCurrentProfileSetting(): CurrentProfile.txt not found, assuming [By char] profile.");
                     return;
                 }
 
@@ -123,12 +123,12 @@ namespace TownCrier
                     }
 
                     Globals.CurrentProfile = value.Trim();
-                    Util.LogMessage("LoadCurrentProfileSetting(): Current profile is now " + Globals.CurrentProfile);
+                    Utilities.LogMessage("LoadCurrentProfileSetting(): Current profile is now " + Globals.CurrentProfile);
                 }
             } 
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -139,9 +139,9 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("LoadProfile()");
+                Utilities.LogMessage("LoadProfile()");
 
-                string path = Util.GetProfilePath();
+                string path = Utilities.GetProfilePath();
 
                 if (!File.Exists(path))
                 {
@@ -175,8 +175,8 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogMessage("LoadProfile(): Failed to load profile due to " + ex.Message);
-                Util.LogError(ex);
+                Utilities.LogMessage("LoadProfile(): Failed to load profile due to " + ex.Message);
+                Utilities.LogError(ex);
             }
         }
 
@@ -187,13 +187,13 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("LoadWebhooks()");
+                Utilities.LogMessage("LoadWebhooks()");
 
                 Globals.Webhooks.Clear();
 
-                foreach (string path in Directory.GetFiles(Util.GetWebhookDirectory(), "*.json"))
+                foreach (string path in Directory.GetFiles(Utilities.GetWebhookDirectory(), "*.json"))
                 {
-                    Util.LogMessage("LoadWebhooks(): Attempting to load " + path);
+                    Utilities.LogMessage("LoadWebhooks(): Attempting to load " + path);
 
                     using (StreamReader reader = new StreamReader(path))
                     {
@@ -206,7 +206,7 @@ namespace TownCrier
                             // Don't add if one with this name already exists
                             if (Globals.Webhooks.FindAll(w => w.Name == webhook.Name).Count != 0)
                             {
-                                Util.WriteToChat(String.Format("Duplicate webhook found while loading webhooks from disk and was skipped. The webhook named '{0}' has already been used and webhooks must use unique names.", webhook.Name));
+                                Utilities.WriteToChat(String.Format("Duplicate webhook found while loading webhooks from disk and was skipped. The webhook named '{0}' has already been used and webhooks must use unique names.", webhook.Name));
                             } else
                             {
                                 Globals.Webhooks.Add(webhook);
@@ -214,13 +214,13 @@ namespace TownCrier
                         }
                         catch (Exception ex)
                         {
-                            Util.WriteToChat("Failed to load webhook at path '" + path + "' because it was malformed.");
-                            Util.WriteToChat(ex.Message);
-                            Util.LogError(ex);
+                            Utilities.WriteToChat("Failed to load webhook at path '" + path + "' because it was malformed.");
+                            Utilities.WriteToChat(ex.Message);
+                            Utilities.LogError(ex);
                         }
                     }
 
-                    Util.LogMessage("LoadWebhooks(): Done loading webhook " + path + " refreshing UI, etc.");
+                    Utilities.LogMessage("LoadWebhooks(): Done loading webhook " + path + " refreshing UI, etc.");
                 }
 
                 // Refresh UI
@@ -231,7 +231,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -242,8 +242,8 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("Loading legacy settings.");
-                Util.WriteToChat("TownCrier can now uses character-specific profiles by default and also supports sharing profiles across characters. See the Triggers > Profile tab. Your old settings have been migrated.");
+                Utilities.LogMessage("Loading legacy settings.");
+                Utilities.WriteToChat("TownCrier can now uses character-specific profiles by default and also supports sharing profiles across characters. See the Triggers > Profile tab. Your old settings have been migrated.");
 
                 Globals.DisposeAllTimers();
                 Globals.ChatTriggers.Clear();
@@ -258,7 +258,7 @@ namespace TownCrier
 
                 if (!File.Exists(path))
                 {
-                    Util.LogMessage("Legacy settings file, settings.txt, not found. Stopping loading.");
+                    Utilities.LogMessage("Legacy settings file, settings.txt, not found. Stopping loading.");
 
                     return;
                 }
@@ -285,7 +285,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -304,7 +304,7 @@ namespace TownCrier
                         switch (tokens[1])
                         {
                             case "verbose":
-                                Util.LogMessage("Verbosity setting ignored when importing from legacy settings because it is no longer supported.");
+                                Utilities.LogMessage("Verbosity setting ignored when importing from legacy settings because it is no longer supported.");
 
                                 break;
                             default:
@@ -380,7 +380,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -391,11 +391,11 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("SaveProfile()");
+                Utilities.LogMessage("SaveProfile()");
 
-                string path = Util.GetProfilePath();
+                string path = Utilities.GetProfilePath();
 
-                Util.LogMessage("SaveProfile(): Saving profile at path " + path);
+                Utilities.LogMessage("SaveProfile(): Saving profile at path " + path);
 
                 // Construct a temporary Dictionary so serialization is easy
                 Profile profile = new Profile
@@ -410,30 +410,30 @@ namespace TownCrier
                     writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(profile, Newtonsoft.Json.Formatting.Indented));
                 }
 
-                Util.LogMessage("SaveProfile(): Done saving.");
+                Utilities.LogMessage("SaveProfile(): Done saving.");
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex) { Utilities.LogError(ex); }
         }
 
         public static void SaveCurrentProfileSetting()
         {
             try
             {
-                Util.LogMessage("SaveCurrentProfileSetting()");
+                Utilities.LogMessage("SaveCurrentProfileSetting()");
 
-                Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
-                string path = Util.GetPlayerSpecificFile("CurrentProfile.txt");
+                Utilities.EnsurePathExists(Utilities.GetPlayerSpecificFolder());
+                string path = Utilities.GetPlayerSpecificFile("CurrentProfile.txt");
 
                 using (StreamWriter writer = new StreamWriter(path, false))
                 {
-                    Util.LogMessage("SaveCurrentProfileSetting(): Writing current profile setting of '" + Globals.CurrentProfile + "'");
+                    Utilities.LogMessage("SaveCurrentProfileSetting(): Writing current profile setting of '" + Globals.CurrentProfile + "'");
 
                     writer.Write(Globals.CurrentProfile);
                 }
             } 
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -441,7 +441,7 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("ClearProfile()");
+                Utilities.LogMessage("ClearProfile()");
 
                 Globals.ChatTriggers.Clear();
                 Globals.EventTriggers.Clear();
@@ -456,7 +456,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -469,12 +469,12 @@ namespace TownCrier
             {
                 if (webhook == null)
                 {
-                    Util.LogMessage("A call to SaveWebhook was called with a null webhook. Webhook not saved.");
+                    Utilities.LogMessage("A call to SaveWebhook was called with a null webhook. Webhook not saved.");
                     
                     return;
                 }
 
-                Util.EnsurePathExists(String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks"));
+                Utilities.EnsurePathExists(String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks"));
                 string path = String.Format(@"{0}\{1}\{2}.json", Globals.PluginDirectory, "Webhooks", webhook.Name);
 
                 using (StreamWriter writer = new StreamWriter(path, false))
@@ -482,7 +482,7 @@ namespace TownCrier
                     writer.Write(Newtonsoft.Json.JsonConvert.SerializeObject(webhook, Newtonsoft.Json.Formatting.Indented));
                 }
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex) { Utilities.LogError(ex); }
         }
 
         /**
@@ -492,14 +492,14 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage("DeleteWebhook(" + name + ")");
+                Utilities.LogMessage("DeleteWebhook(" + name + ")");
 
                 // Find the webhook first
                 List<Webhook> matches = Globals.Webhooks.FindAll(x => x.Name == name);
 
                 if (matches.Count != 1)
                 {
-                    Util.WriteToChat("Couldn't find webhook to delete. Stopping without deleting anything.");
+                    Utilities.WriteToChat("Couldn't find webhook to delete. Stopping without deleting anything.");
 
                     return;
                 }
@@ -512,18 +512,18 @@ namespace TownCrier
 
                 if (!File.Exists(path))
                 {
-                    Util.WriteToChat(string.Format("Couldn't find {0} on disk. Stopping without deleting anything.", path));
+                    Utilities.WriteToChat(string.Format("Couldn't find {0} on disk. Stopping without deleting anything.", path));
 
                     return;
                 }
 
                 File.Delete(path);
 
-                Util.LogMessage("DeleteWebhook(" + name + ") done.");
+                Utilities.LogMessage("DeleteWebhook(" + name + ") done.");
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -531,7 +531,7 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage(string.Format("TriggerWebhook({0}, {1})", name, message));
+                Utilities.LogMessage(string.Format("TriggerWebhook({0}, {1})", name, message));
                 Webhook webhook = Globals.Webhooks.Find(x => x.Name == name);
 
                 if (webhook == null) {
@@ -544,7 +544,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -552,7 +552,7 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage(string.Format("TriggerWebhooksForEvent({0}, {1})", evt, eventMessage));
+                Utilities.LogMessage(string.Format("TriggerWebhooksForEvent({0}, {1})", evt, eventMessage));
                 List<EventTrigger> matched = Globals.EventTriggers.FindAll(trigger => trigger.Enabled && trigger.Event == evt);
 
                 foreach (EventTrigger trigger in matched)
@@ -562,7 +562,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -571,7 +571,7 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage(string.Format("TriggerWebhooksForEventTrigger({0}, {1})", trigger.ToString(), eventMessage));
+                Utilities.LogMessage(string.Format("TriggerWebhooksForEventTrigger({0}, {1})", trigger.ToString(), eventMessage));
 
                 if (!trigger.Enabled)
                 {
@@ -610,7 +610,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -618,7 +618,7 @@ namespace TownCrier
         {
             try
             {
-                Util.LogMessage(string.Format("TriggerWebhooksForChatTrigger({0}, {1})", trigger.ToString(), eventMessage));
+                Utilities.LogMessage(string.Format("TriggerWebhooksForChatTrigger({0}, {1})", trigger.ToString(), eventMessage));
 
                 if (!trigger.Enabled)
                 {
@@ -641,7 +641,7 @@ namespace TownCrier
 
                 if (webhook == null)
                 {
-                    Util.WriteToChat(string.Format("Couldn't find webhook '{0}'." + trigger.WebhookName));
+                    Utilities.WriteToChat(string.Format("Couldn't find webhook '{0}'." + trigger.WebhookName));
 
                     return;
                 }
@@ -651,7 +651,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -659,11 +659,11 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat(trigger.ToString());
+                Utilities.WriteToChat(trigger.ToString());
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -671,11 +671,11 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat(trigger.ToString());
+                Utilities.WriteToChat(trigger.ToString());
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -683,11 +683,11 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat(trigger.ToString());
+                Utilities.WriteToChat(trigger.ToString());
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -695,11 +695,11 @@ namespace TownCrier
         {
             try
             {
-                Util.WriteToChat(webhook.ToString());
+                Utilities.WriteToChat(webhook.ToString());
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
     }

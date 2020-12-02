@@ -92,14 +92,14 @@ namespace TownCrier
             {
                 if (chcEventsWebhook.Count <= 0)
                 {
-                    Util.WriteToChat("Please add a webhook first.");
+                    Utilities.WriteToChat("Please add a webhook first.");
 
                     return;
                 }
 
                 if (chcEventsWebhook.Selected >= chcEventsWebhook.Count)
                 {
-                    Util.WriteToChat("Invalid webhook selected.");
+                    Utilities.WriteToChat("Invalid webhook selected.");
 
                     return;
                 }
@@ -118,8 +118,8 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error adding new EventTrigger: " + ex.Message);
-                Util.LogError(ex);
+                Utilities.WriteToChat("Error adding new EventTrigger: " + ex.Message);
+                Utilities.LogError(ex);
             }
         }
 
@@ -132,7 +132,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -182,14 +182,14 @@ namespace TownCrier
             {
                 if (copyProfileNewName == null)
                 {
-                    Util.WriteToChat("You must enter a new name. Profile not copied.");
+                    Utilities.WriteToChat("You must enter a new name. Profile not copied.");
 
                     return;
                 }
 
                 if (copyProfileNewName.Text.Length <= 0)
                 {
-                    Util.WriteToChat("New profile name must not be an empty string. Profile not copied.");
+                    Utilities.WriteToChat("New profile name must not be an empty string. Profile not copied.");
 
                     return;
                 }
@@ -198,7 +198,7 @@ namespace TownCrier
 
                 if (!x.IsMatch(copyProfileNewName.Text))
                 {
-                    Util.WriteToChat("New profile name must only use letters and numbers. (Regex [A-Za-z\\d]+).");
+                    Utilities.WriteToChat("New profile name must only use letters and numbers. (Regex [A-Za-z\\d]+).");
 
                     return;
                 }
@@ -210,7 +210,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
             finally
             {
@@ -250,7 +250,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -263,7 +263,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -276,7 +276,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -287,14 +287,14 @@ namespace TownCrier
             {
                 if (chcTimedTriggerWebhook.Count <= 0)
                 {
-                    Util.WriteToChat("Please add a webhook first.");
+                    Utilities.WriteToChat("Please add a webhook first.");
 
                     return;
                 }
 
                 if (chcTimedTriggerWebhook.Selected >= chcTimedTriggerWebhook.Count)
                 {
-                    Util.WriteToChat("Invalid webhook selected.");
+                    Utilities.WriteToChat("Invalid webhook selected.");
 
                     return;
                 }
@@ -322,8 +322,8 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error adding new Timer: " + ex.Message);
-                Util.LogError(ex);
+                Utilities.WriteToChat("Error adding new Timer: " + ex.Message);
+                Utilities.LogError(ex);
             }
         }
 
@@ -334,14 +334,14 @@ namespace TownCrier
             {
                 if (chcChatTriggerWebhook.Count <= 0)
                 {
-                    Util.WriteToChat("Please add a webhook first.");
+                    Utilities.WriteToChat("Please add a webhook first.");
 
                     return;
                 }
 
                 if (chcChatTriggerWebhook.Selected >= chcChatTriggerWebhook.Count)
                 {
-                    Util.WriteToChat("Invalid webhook selected.");
+                    Utilities.WriteToChat("Invalid webhook selected.");
 
                     return;
                 }
@@ -364,8 +364,8 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error adding new ChatTrigger: " + ex.Message);
-                Util.LogError(ex);
+                Utilities.WriteToChat("Error adding new ChatTrigger: " + ex.Message);
+                Utilities.LogError(ex);
             }
         }
 
@@ -377,14 +377,14 @@ namespace TownCrier
                 // Webhooks need names
                 if (edtName.Text.Length <= 0)
                 {
-                    Util.WriteToChat("Webhooks must have names.");
+                    Utilities.WriteToChat("Webhooks must have names.");
                     throw new Exception("Webhooks must have names");
                 }
 
                 // Either the URL or the PayloadFormatString should have an @ symbol, but just warn
                 if (!(edtURL.Text.Contains("@") || edtPayload.Text.Contains("@")))
                 {
-                    Util.WriteToChat("Warning: Neither your URL or JSON had an @ symbol in them which means your webhooks will trigger without a message.");
+                    Utilities.WriteToChat("Warning: Neither your URL or JSON had an @ symbol in them which means your webhooks will trigger without a message.");
                 }
 
                 // Stop if the name isn't unique
@@ -409,8 +409,8 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error adding new Webhook: " + ex.Message);
-                Util.LogError(ex);
+                Utilities.WriteToChat("Error adding new Webhook: " + ex.Message);
+                Utilities.LogError(ex);
             }
         }
 
@@ -451,7 +451,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -493,7 +493,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -534,7 +534,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -547,8 +547,8 @@ namespace TownCrier
                 switch (col)
                 {
                     case WebhooksList.Test:
-                        Util.WriteToChat("Testing webhook " + Globals.Webhooks[row].Name);
-                        Util.LogMessage("Testing webhook " + Globals.Webhooks[row].Name);
+                        Utilities.WriteToChat("Testing webhook " + Globals.Webhooks[row].Name);
+                        Utilities.LogMessage("Testing webhook " + Globals.Webhooks[row].Name);
 
                         WebhookRequest req = new WebhookRequest(Globals.Webhooks[row], "Test");
                         req.Send();
@@ -570,7 +570,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -590,7 +590,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -613,7 +613,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -636,7 +636,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -659,7 +659,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -683,7 +683,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -702,7 +702,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -721,7 +721,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -740,7 +740,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -757,7 +757,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -771,7 +771,7 @@ namespace TownCrier
                 chcProfile.Selected = 0;
 
                 // Stop now if there are no shared profiles
-                string path = Util.GetSharedProfilesDirectory();
+                string path = Utilities.GetSharedProfilesDirectory();
 
                 if (!Directory.Exists(path))
                 {
@@ -804,7 +804,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -823,7 +823,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
         void RefreshEventTriggerFilterVisibility()
@@ -843,7 +843,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -856,7 +856,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -869,7 +869,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -882,7 +882,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -895,7 +895,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -908,7 +908,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
     }

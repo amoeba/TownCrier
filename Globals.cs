@@ -90,7 +90,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
         }
 
@@ -103,7 +103,7 @@ namespace TownCrier
 
             foreach (TimedTrigger timer in TimedTriggers)
             {
-                Util.LogMessage("Disposing of " + timer.ToString());
+                Utilities.LogMessage("Disposing of " + timer.ToString());
 
                 timer.Dispose();
             }

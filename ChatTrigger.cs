@@ -26,8 +26,8 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.WriteToChat("Error creating new Chat Trigger: " + ex.Message);
-                Util.LogError(ex);
+                Utilities.WriteToChat("Error creating new Chat Trigger: " + ex.Message);
+                Utilities.LogError(ex);
             }
         }
 
@@ -67,7 +67,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
 
                 return "Failed to print ChatTrigger.";
             }

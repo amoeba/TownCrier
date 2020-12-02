@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace TownCrier
 {
-	public static class Util
+	public static class Utilities
 	{
         private static int logFileSizeLimit = 1048576; // 1MiB 
 
@@ -24,7 +24,7 @@ namespace TownCrier
             }
             catch (Exception ex)
             {
-                Util.LogError(ex);
+                Utilities.LogError(ex);
             }
 
             return path;
@@ -37,7 +37,7 @@ namespace TownCrier
             {
                 path = String.Format(@"{0}\{1}", Globals.PluginDirectory, "Webhooks");
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex) { Utilities.LogError(ex); }
 
             return path;
         }
@@ -50,7 +50,7 @@ namespace TownCrier
             {
                 path = String.Format(@"{0}\{1}\{2}", Globals.PluginDirectory, Globals.Server, Globals.Name);
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex) { Utilities.LogError(ex); }
 
             return path;
         }
@@ -64,7 +64,7 @@ namespace TownCrier
                 path = String.Format(@"{0}\{1}", GetPlayerSpecificFolder(), filename);
 
             }
-            catch (Exception ex) { Util.LogError(ex); }
+            catch (Exception ex) { Utilities.LogError(ex); }
 
             return path;
         }
@@ -88,13 +88,13 @@ namespace TownCrier
         {
             if (Globals.CurrentProfile != null && Globals.CurrentProfile.Length > 0)
             {
-                Util.EnsurePathExists(GetSharedProfilesDirectory());
+                Utilities.EnsurePathExists(GetSharedProfilesDirectory());
                 return string.Format(@"{0}\{1}.json", GetSharedProfilesDirectory(), Globals.CurrentProfile);
             }
             else
             {
-                Util.EnsurePathExists(Util.GetPlayerSpecificFolder());
-                return Util.GetPlayerSpecificFile("Profile.json");
+                Utilities.EnsurePathExists(Utilities.GetPlayerSpecificFolder());
+                return Utilities.GetPlayerSpecificFile("Profile.json");
             }
         }
 
@@ -117,8 +117,8 @@ namespace TownCrier
                 }
                 else
                 {
-                    EnsurePathExists(Util.GetPlayerSpecificFolder());
-                    path = Util.GetPlayerSpecificFile(LOGFILE.ERROR);
+                    EnsurePathExists(Utilities.GetPlayerSpecificFolder());
+                    path = Utilities.GetPlayerSpecificFile(LOGFILE.ERROR);
                 }
 
                 // Determine whether we should cut the log file off
@@ -166,8 +166,8 @@ namespace TownCrier
                 }
                 else
                 {
-                    EnsurePathExists(Util.GetPlayerSpecificFolder());
-                    path = Util.GetPlayerSpecificFile(LOGFILE.MESSAGE);
+                    EnsurePathExists(Utilities.GetPlayerSpecificFolder());
+                    path = Utilities.GetPlayerSpecificFile(LOGFILE.MESSAGE);
                 }
 
                 // Determine whether we should cut the log file off
@@ -220,7 +220,6 @@ namespace TownCrier
             if (weeniePtr != IntPtr.Zero)
             {
                 wielderID = Marshal.ReadInt32(weeniePtr, property);
-
             }
 
             return wielderID;
@@ -228,7 +227,6 @@ namespace TownCrier
         public static int GetObjectOldContainer(int id)
         {
             return GetWeenieProperty(id, 0xB4);
-
         }
 
         public static int GetObjectOldWeilder(int id)
