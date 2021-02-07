@@ -140,6 +140,7 @@
               <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="70" width="580" height="200" text="Available variables are $NAME, $SERVER, $LEVEL, $UXP (unassigned xp), $TXP (total XP), $HEALTH, $STAMINA, $MANA, $VITAE, $LOC (Your location), $DATETIME, $DATE, and $TIME. Example: 'Hello, $NAME' would print 'Hello, ' followed by your character's name." />
               <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="130" width="580" height="200" text="Event and Chat Triggers can also make use of a special variable, $EVENT, that lets you print the text of the event or chat message that triggered the webhook. For example, a Chat trigger with the Pattern 'You say' and a Message of '$EVENT' will send everything you say to your webhook. $EVENT does not work for TimedTriggers." />
               <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="210" width="580" height="200" text="If you use capture groups in your regular expressions, you can use numbered backreferences ($1 for first capture) as variables too." />
+			  <control progid="DecalControls.StaticText" name="txtVariablesMessage" left="10" top="270" width="580" height="200" text="Variables also work in Chat Triggers' RegEx field. For example, to trigger a webhook when your exact name shows up in chat, set your RegEx to '$NAME'. The advantage to doing this is that it will work across characters if you used shared profiles." />
             </control>
           </page>
         </control>

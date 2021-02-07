@@ -233,5 +233,111 @@ namespace TownCrier
         {
             return GetWeenieProperty(id, 0xB8);
         }
+
+        public static string MaybeURLEncode(string message, bool escape)
+        {
+ 
+            if (escape)
+            {
+                return Uri.EscapeUriString(message);
+            }
+            else
+            {
+                return message;
+            }
+        }
+
+        public static string SubstituteVariables(string target, bool escape)
+        {
+            string modified = target;
+
+            try
+            { 
+                if (modified.Contains("$NAME"))
+                {
+                    modified = modified.Replace("$NAME", MaybeURLEncode(Globals.Core.CharacterFilter.Name, escape));
+                }
+
+                if (modified.Contains("$SERVER"))
+                {
+                    modified = modified.Replace("$SERVER", MaybeURLEncode(Globals.Core.CharacterFilter.Server, escape));
+                }
+
+                if (modified.Contains("$LEVEL"))
+                {
+                    modified = modified.Replace("$LEVEL", MaybeURLEncode(Globals.Core.CharacterFilter.Level.ToString(), escape));
+                }
+
+                if (modified.Contains("$UXP"))
+                {
+                    modified = modified.Replace("$UXP", MaybeURLEncode(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.UnassignedXP), escape));
+                }
+
+                if (modified.Contains("$TXP"))
+                {
+                    modified = modified.Replace("$TXP", MaybeURLEncode(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.TotalXP), escape));
+                }
+
+                if (modified.Contains("$HEALTH"))
+                {
+                    modified = modified.Replace("$HEALTH", MaybeURLEncode(Globals.Core.CharacterFilter.Health.ToString(), escape));
+                }
+
+                if (modified.Contains("$STAMINA"))
+                {
+                    modified = modified.Replace("$STAMINA", MaybeURLEncode(Globals.Core.CharacterFilter.Stamina.ToString(), escape));
+                }
+
+                if (modified.Contains("$MANA"))
+                {
+                    modified = modified.Replace("$MANA", MaybeURLEncode(Globals.Core.CharacterFilter.Mana.ToString(), escape));
+                }
+
+                if (modified.Contains("$VITAE"))
+                {
+                    modified = modified.Replace("$VITAE", MaybeURLEncode(Globals.Core.CharacterFilter.Vitae.ToString() + "%", escape));
+                }
+
+                if (modified.Contains("$LOC"))
+                {
+                    modified = modified.Replace("$LOC", MaybeURLEncode(new Location(Globals.Host.Actions.Landcell, Globals.Host.Actions.LocationX, Globals.Host.Actions.LocationY).ToString(), escape));
+                }
+
+                if (modified.Contains("$DATETIME"))
+                {
+                    DateTime now = DateTime.Now;
+
+                    modified = modified.Replace(
+                        "$DATETIME",
+                        MaybeURLEncode(
+                            String.Format("{0} {1}",
+                                now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern),
+                                now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)),
+                            escape));
+                }
+
+                if (modified.Contains("$DATE"))
+                {
+                    modified = modified.Replace(
+                        "$DATE",
+                        MaybeURLEncode(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern), escape));
+                }
+
+                if (modified.Contains("$TIME"))
+                {
+                    modified = modified.Replace(
+                        "$TIME",
+                        MaybeURLEncode(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern), escape));
+                }
+
+                return modified;
+            }
+            catch (Exception ex)
+            {
+                LogError(ex);
+
+                return modified;
+            }
+        }
     }
 }

@@ -7,7 +7,6 @@ namespace TownCrier
     public class ChatTrigger
     {
         public string Pattern { get; set; }
-        public Regex Regex { get; set; }
         public string WebhookName { get; set; }
         public string MessageFormat { get; set; }
         public bool Enabled { get; set; }
@@ -20,9 +19,6 @@ namespace TownCrier
                 WebhookName = webhookName;
                 MessageFormat = message;
                 Enabled = enabled;
-
-                // Compile regex and set
-                Regex = new Regex(pattern, RegexOptions.Compiled);
             }
             catch (Exception ex)
             {
@@ -38,7 +34,10 @@ namespace TownCrier
                 return false;
             }
 
-            if (Regex.IsMatch(e.Text))
+            string finalPattern = Utilities.SubstituteVariables(Pattern, false);
+            Regex r = new Regex(finalPattern);
+
+            if (r.IsMatch(e.Text))
             {
                 return true;
             }

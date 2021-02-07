@@ -13,7 +13,7 @@ namespace TownCrier
         private Webhook Hook { get; set; }
         private string MessageTemplate { get; set; }
         private string EventMessage { get; set; }
-        private Regex Pattern { get; set; }
+        private string Pattern { get; set; }
 
         public WebhookRequest(Webhook webhook, string message)
         {
@@ -23,23 +23,7 @@ namespace TownCrier
             Pattern = null;
         }
 
-        public WebhookRequest(Webhook webhook, string messageTemplate, string eventMessage)
-        {
-            Hook = webhook;
-            MessageTemplate = messageTemplate;
-            EventMessage = StripTags(eventMessage);
-            Pattern = null;
-        }
-
-        public WebhookRequest(Webhook webhook, string eventMessage, Regex pattern)
-        {
-            Hook = webhook;
-            MessageTemplate = null;
-            EventMessage = StripTags(eventMessage);
-            Pattern = pattern;
-        }
-
-        public WebhookRequest(Webhook webhook, string messageTemplate, string eventMessage, Regex pattern)
+        public WebhookRequest(Webhook webhook, string messageTemplate, string eventMessage, string pattern)
         {
             Hook = webhook;
             MessageTemplate = messageTemplate;
@@ -73,7 +57,8 @@ namespace TownCrier
 
             string url = Hook.URLFormatString;
             url = SubstituteAt(url, true);
-            url = SubstituteVariables(url, true);
+            url = SubstituteEventVariable(url, true);
+            url = Utilities.SubstituteVariables(url, true);
             url = SubstituteBackreferences(url, true);
 
             Utilities.LogMessage("  Url is " + url);
@@ -139,7 +124,8 @@ namespace TownCrier
             
             string url = Hook.URLFormatString;
             url = SubstituteAt(url, true);
-            url = SubstituteVariables(url, true);
+            url = SubstituteEventVariable(url, true);
+            url = Utilities.SubstituteVariables(url, true);
             url = SubstituteBackreferences(url, true);
 
 
@@ -161,7 +147,8 @@ namespace TownCrier
                         {
                             valuetmp = pair.Value;
                             valuetmp = SubstituteAt(valuetmp, false);
-                            valuetmp = SubstituteVariables(valuetmp, false);
+                            valuetmp = SubstituteEventVariable(valuetmp, false);
+                            valuetmp = Utilities.SubstituteVariables(valuetmp, false);
 
                             if (EventMessage != null && Pattern != null)
                             {
@@ -231,107 +218,20 @@ namespace TownCrier
 
         public string SubstituteAt(string target, bool escape)
         {
-            return target.Replace("@", MaybeURLEncode(MessageTemplate, escape));
+            return target.Replace("@", Utilities.MaybeURLEncode(MessageTemplate, escape));
         }
 
-        public string SubstituteVariables(string target, bool escape)
+        private string SubstituteEventVariable(string target, bool escape)
         {
             string modified = target;
 
-            try
+            if (modified.Contains("$EVENT") && (EventMessage != null || EventMessage.Length > 0))
             {
-                if (modified.Contains("$EVENT") && (EventMessage != null || EventMessage.Length > 0))
-                {
-                    modified = modified.Replace("$EVENT", MaybeURLEncode(EventMessage, escape));
-                }
-
-                if (modified.Contains("$NAME"))
-                {
-                    modified = modified.Replace("$NAME", MaybeURLEncode(Globals.Core.CharacterFilter.Name, escape));
-                }
-
-                if (modified.Contains("$SERVER"))
-                {
-                    modified = modified.Replace("$SERVER", MaybeURLEncode(Globals.Core.CharacterFilter.Server, escape));
-                }
-
-                if (modified.Contains("$LEVEL"))
-                {
-                    modified = modified.Replace("$LEVEL", MaybeURLEncode(Globals.Core.CharacterFilter.Level.ToString(), escape));
-                }
-
-                if (modified.Contains("$UXP"))
-                {
-                    modified = modified.Replace("$UXP", MaybeURLEncode(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.UnassignedXP), escape));
-                }
-
-                if (modified.Contains("$TXP"))
-                {
-                    modified = modified.Replace("$TXP", MaybeURLEncode(string.Format("{0:#,##0}", Globals.Core.CharacterFilter.TotalXP), escape));
-                }
-
-                if (modified.Contains("$HEALTH"))
-                {
-                    modified = modified.Replace("$HEALTH", MaybeURLEncode(Globals.Core.CharacterFilter.Health.ToString(), escape));
-                }
-
-                if (modified.Contains("$STAMINA"))
-                {
-                    modified = modified.Replace("$STAMINA", MaybeURLEncode(Globals.Core.CharacterFilter.Stamina.ToString(), escape));
-                }
-
-                if (modified.Contains("$MANA"))
-                {
-                    modified = modified.Replace("$MANA", MaybeURLEncode(Globals.Core.CharacterFilter.Mana.ToString(), escape));
-                }
-
-                if (modified.Contains("$VITAE"))
-                {
-                    modified = modified.Replace("$VITAE", MaybeURLEncode(Globals.Core.CharacterFilter.Vitae.ToString() + "%", escape));
-                }
-
-                if (modified.Contains("$LOC"))
-                {
-                    modified = modified.Replace("$LOC", MaybeURLEncode(new Location(Globals.Host.Actions.Landcell, Globals.Host.Actions.LocationX, Globals.Host.Actions.LocationY).ToString(), escape));
-                }
-
-                if (modified.Contains("$DATETIME"))
-                {
-                    DateTime now = DateTime.Now;
-
-                    modified = modified.Replace(
-                        "$DATETIME",
-                        MaybeURLEncode(
-                            String.Format("{0} {1}",
-                                now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern),
-                                now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)),
-                            escape));
-                }
-
-                if (modified.Contains("$DATE"))
-                {
-                    modified = modified.Replace(
-                        "$DATE",
-                        MaybeURLEncode(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern), escape));
-                }
-
-                if (modified.Contains("$TIME"))
-                {
-                    modified = modified.Replace(
-                        "$TIME",
-                        MaybeURLEncode(DateTime.Now.ToString(System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern), escape));
-                }
-
-                return modified;
+                modified = modified.Replace("$EVENT", Utilities.MaybeURLEncode(EventMessage, escape));
             }
-            catch (Exception ex)
-            {
-                Utilities.LogError(ex);
 
-                return modified;
-            }
+            return modified;
         }
-
         public string SubstituteBackreferences(string target, bool escape)
         {
             if (Pattern == null)
@@ -339,7 +239,8 @@ namespace TownCrier
                 return target;
             }
 
-            Match m = Pattern.Match(EventMessage);
+            Regex r = new Regex(Pattern);
+            Match m = r.Match(EventMessage);
 
             if (!m.Success)
             {
@@ -356,9 +257,9 @@ namespace TownCrier
             string result = target;
 
             // Replace groups by name
-            foreach (var name in Pattern.GetGroupNames())
+            foreach (var name in r.GetGroupNames())
             {
-                result = result.Replace("$" + name, MaybeURLEncode(groups[name].Value, escape));
+                result = result.Replace("$" + name, Utilities.MaybeURLEncode(groups[name].Value, escape));
             }
 
             return result;
@@ -385,28 +286,5 @@ namespace TownCrier
                 return message;
             }
         }
-
-        private static string MaybeURLEncode(string message, bool escape)
-        {
-            try
-            {
-                if (escape)
-                {
-                    return Uri.EscapeUriString(message);
-                }
-                else
-                { 
-                    return message;
-                }
-            }
-            catch (Exception ex)
-            {
-                Utilities.LogError(ex);
-
-                return message;
-            }
-        }
-
-
     }
 }

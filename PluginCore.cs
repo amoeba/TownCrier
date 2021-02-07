@@ -605,7 +605,7 @@ namespace TownCrier
                     message = trigger.MessageFormat;
                 }
 
-                WebhookRequest req = new WebhookRequest(webhook, message, eventMessage);
+                WebhookRequest req = new WebhookRequest(webhook, message, eventMessage, null);
                 req.Send();
             }
             catch (Exception ex)
@@ -646,7 +646,7 @@ namespace TownCrier
                     return;
                 }
 
-                WebhookRequest req = new WebhookRequest(webhook, message, eventMessage, trigger.Regex);
+                WebhookRequest req = new WebhookRequest(webhook, message, eventMessage, trigger.Pattern);
                 req.Send();
             }
             catch (Exception ex)
