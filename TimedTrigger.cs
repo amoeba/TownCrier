@@ -41,7 +41,7 @@ namespace TownCrier
             {
                 Timer = new System.Windows.Forms.Timer
                 {
-                    Interval = Minute * 1000 // Interval is milliseconds
+                    Interval = Minute * 60 * 1000 // Interval is milliseconds
                 };
                 Timer.Tick += Timer_Tick;
                 Timer.Start();
