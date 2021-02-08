@@ -1,5 +1,3 @@
-TODO: Show how to use varialbes in messages to set Discord name
-
 [![](https://img.shields.io/github/downloads/amoeba/towncrier/total.svg)](https://github.com/amoeba/TownCrier/releases)
 [![](https://img.shields.io/discord/283662381081427968.svg)](https://discord.gg/Xq4TeA)
 
