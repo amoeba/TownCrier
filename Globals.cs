@@ -28,6 +28,10 @@ namespace TownCrier
         public static List<Webhook> Webhooks { get; set; }
         public static List<ChatPattern> ChatPatterns { get; set; }
 
+        // Rate limiting stuff
+        public static DateTime RateLimitLastNotice { get; set; }
+        public static TimeSpan RateLimitNoticeWindowSpan { get; set; }
+
         public static void Init(string pluginName, PluginHost host, CoreManager core, string server, string name)
         {
             // General globals
@@ -47,6 +51,9 @@ namespace TownCrier
             TimedTriggers = new List<TimedTrigger>();
             ChatTriggers = new List<ChatTrigger>();
             Webhooks = new List<Webhook>();
+
+            // Rate limiting
+            RateLimitNoticeWindowSpan = new TimeSpan(0, 1, 0);
         }
 
         public static void Destroy()

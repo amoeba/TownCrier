@@ -188,6 +188,15 @@ namespace TownCrier
 
                         using (var errorResponse = (HttpWebResponse)wex.Response)
                         {
+                            // Detect being rate limited
+                            // Is there a better way of doing this comparison?
+                            if (errorResponse.StatusCode.ToString() == "429")
+                            {
+                                HandleRateLimitResponse(errorResponse);
+
+                                return;
+                            }
+
                             using (var reader = new StreamReader(errorResponse.GetResponseStream()))
                             {
                                 string error = reader.ReadToEnd();
@@ -213,6 +222,18 @@ namespace TownCrier
             catch (Exception ex)
             {
                 Utilities.LogError(ex);
+            }
+        }
+
+        private void HandleRateLimitResponse(HttpWebResponse response)
+        {
+            Utilities.LogMessage(string.Format("Webhook {0} is being rate limited.", Hook.Name));
+
+            // Notify in chat but don't be spammy about it
+            if (DateTime.UtcNow > (Globals.RateLimitLastNotice + Globals.RateLimitNoticeWindowSpan))
+            {
+                Utilities.WriteToChat(string.Format("Your webhook, '{0}', is being rate-limited by its provider. Consult their API documentation and/or consider disabling triggers that use this webhook so you don't miss any messages.", Hook.Name));
+                Globals.RateLimitLastNotice = DateTime.UtcNow;
             }
         }
 
