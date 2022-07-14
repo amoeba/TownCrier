@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 
 using Decal.Adapter;
 using MyClasses.MetaViewWrappers;
@@ -76,6 +77,7 @@ namespace TownCrier
         {
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolTypeExtensions.Tls12;
                 MVWireupHelper.WireupStart(this, Host);
             }
             catch (Exception ex)
